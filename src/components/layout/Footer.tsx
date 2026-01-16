@@ -6,9 +6,9 @@ const footerLinks = {
   vehiculos: {
     title: "Vehículos",
     links: [
-      { name: "Autos", href: "/vehiculos?type=AUTO" },
-      { name: "Motos", href: "/vehiculos?type=MOTO" },
-      { name: "Comerciales", href: "/vehiculos?type=COMERCIAL" },
+      { name: "Autos", href: "/vehiculos?vehicleType=AUTO" },
+      { name: "Motos", href: "/vehiculos?vehicleType=MOTO" },
+      { name: "Comerciales", href: "/vehiculos?vehicleType=COMERCIAL" },
       { name: "Nuevos", href: "/vehiculos?condition=NUEVO" },
       { name: "Usados", href: "/vehiculos?condition=USADO" },
       { name: "Concesionarios", href: "/concesionarios" },
