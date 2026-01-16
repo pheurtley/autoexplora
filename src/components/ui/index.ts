@@ -24,3 +24,9 @@ export { Skeleton, SkeletonCard, SkeletonVehicleCard } from "./Skeleton";
 export { Spinner, LoadingOverlay } from "./Spinner";
 
 export { SingleImageUpload } from "./SingleImageUpload";
+
+export { BusinessHoursEditor } from "./BusinessHoursEditor";
+export type { WeekSchedule, BusinessHoursEditorProps } from "./BusinessHoursEditor";
+
+export { BusinessHoursDisplay } from "./BusinessHoursDisplay";
+export type { BusinessHoursDisplayProps } from "./BusinessHoursDisplay";

@@ -14,7 +14,9 @@ import {
   Car,
   ExternalLink,
 } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button, BusinessHoursDisplay } from "@/components/ui";
+import type { WeekSchedule } from "@/components/ui";
+import { Clock } from "lucide-react";
 
 interface DealerPageProps {
   params: Promise<{ slug: string }>;
@@ -54,7 +56,21 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
 
   const dealer = await prisma.dealer.findFirst({
     where: { slug, status: "ACTIVE" },
-    include: {
+    select: {
+      id: true,
+      tradeName: true,
+      businessName: true,
+      type: true,
+      email: true,
+      phone: true,
+      whatsapp: true,
+      website: true,
+      address: true,
+      logo: true,
+      banner: true,
+      description: true,
+      schedule: true,
+      verifiedAt: true,
       region: true,
       comuna: true,
       vehicles: {
@@ -252,6 +268,20 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
 
           {/* Sidebar */}
           <div className="space-y-6">
+            {/* Business Hours Card */}
+            <div className="bg-white rounded-xl border border-neutral-200 p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <Clock className="w-5 h-5 text-neutral-700" />
+                <h2 className="text-lg font-semibold text-neutral-900">
+                  Horarios de Atención
+                </h2>
+              </div>
+              <BusinessHoursDisplay
+                schedule={dealer.schedule as WeekSchedule | null}
+                showStatus={true}
+              />
+            </div>
+
             {/* Contact Card */}
             <div className="bg-white rounded-xl border border-neutral-200 p-6">
               <h2 className="text-lg font-semibold text-neutral-900 mb-4">

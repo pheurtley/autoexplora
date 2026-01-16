@@ -11,7 +11,8 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { Button, Input, Select, SingleImageUpload } from "@/components/ui";
+import { Button, Input, Select, SingleImageUpload, BusinessHoursEditor } from "@/components/ui";
+import type { WeekSchedule } from "@/components/ui";
 import { ImageIcon } from "lucide-react";
 import { formatRut } from "@/lib/rut";
 
@@ -39,6 +40,7 @@ interface DealerProfile {
   banner: string | null;
   bannerPublicId: string | null;
   description: string | null;
+  schedule: WeekSchedule | null;
   status: string;
   region: { id: string; name: string };
   comuna: { id: string; name: string } | null;
@@ -60,7 +62,22 @@ export default function DealerProfilePage() {
   const [errorMessage, setErrorMessage] = useState("");
 
   // Form state
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+    tradeName: string;
+    email: string;
+    phone: string;
+    whatsapp: string;
+    website: string;
+    address: string;
+    regionId: string;
+    comunaId: string;
+    description: string;
+    logo: string;
+    logoPublicId: string;
+    banner: string;
+    bannerPublicId: string;
+    schedule: WeekSchedule | null;
+  }>({
     tradeName: "",
     email: "",
     phone: "",
@@ -74,6 +91,7 @@ export default function DealerProfilePage() {
     logoPublicId: "",
     banner: "",
     bannerPublicId: "",
+    schedule: null,
   });
 
   useEffect(() => {
@@ -109,6 +127,7 @@ export default function DealerProfilePage() {
           logoPublicId: data.dealer.logoPublicId || "",
           banner: data.dealer.banner || "",
           bannerPublicId: data.dealer.bannerPublicId || "",
+          schedule: data.dealer.schedule || null,
         });
       }
     } catch (error) {
@@ -411,6 +430,14 @@ export default function DealerProfilePage() {
               placeholder="Av. Principal 1234"
             />
           </div>
+        </div>
+
+        {/* Business Hours */}
+        <div className="bg-white rounded-xl border border-neutral-200 p-6">
+          <BusinessHoursEditor
+            value={formData.schedule}
+            onChange={(schedule) => setFormData({ ...formData, schedule })}
+          />
         </div>
 
         {/* Submit */}
