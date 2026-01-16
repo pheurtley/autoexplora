@@ -144,9 +144,21 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
         <div className="sm:col-span-2">
           <Input
             type="number"
+            inputMode="numeric"
+            pattern="[0-9]*"
             label="Kilometraje"
             value={data.mileage || ""}
             onChange={(e) => onChange("mileage", parseInt(e.target.value) || 0)}
+            onKeyDown={(e) => {
+              // Permitir: backspace, delete, tab, escape, enter, flechas
+              if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+                return;
+              }
+              // Bloquear si no es número
+              if (!/[0-9]/.test(e.key)) {
+                e.preventDefault();
+              }
+            }}
             placeholder="Ej: 50000"
             error={errors.mileage}
             helperText="Ingresa 0 si el vehículo es nuevo"

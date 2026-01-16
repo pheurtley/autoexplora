@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, Suspense } from "react";
-import { signIn } from "next-auth/react";
-import { useSearchParams } from "next/navigation";
+import { useState, useEffect, Suspense } from "react";
+import { signIn, useSession } from "next-auth/react";
+import { useSearchParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { Container } from "@/components/layout";
 import { Button, Input, Spinner } from "@/components/ui";
 import { Mail, Lock, Loader2 } from "lucide-react";
 
 function LoginForm() {
+  const { status } = useSession();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const error = searchParams.get("error");
@@ -17,6 +19,18 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [formError, setFormError] = useState("");
+
+  // Redirigir si ya está logueado
+  useEffect(() => {
+    if (status === "authenticated") {
+      router.replace(callbackUrl);
+    }
+  }, [status, router, callbackUrl]);
+
+  // Mostrar loading mientras verifica sesión o si ya está autenticado
+  if (status === "loading" || status === "authenticated") {
+    return <LoginLoading />;
+  }
 
   const handleCredentialsLogin = async (e: React.FormEvent) => {
     e.preventDefault();
