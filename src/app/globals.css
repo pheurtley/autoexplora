@@ -1,17 +1,64 @@
 @import "tailwindcss";
 
+/* ========================================
+   PortalAndino - Paleta Verde Andino
+   ======================================== */
+
 :root {
-  --background: #ffffff;
+  /* Background & Foreground */
+  --background: #fafafa;
   --foreground: #171717;
+
+  /* Verde Andino - Color Principal */
+  --andino-50: #f0fdf4;
+  --andino-100: #dcfce7;
+  --andino-200: #bbf7d0;
+  --andino-300: #86efac;
+  --andino-400: #4ade80;
+  --andino-500: #22c55e;
+  --andino-600: #16a34a;
+  --andino-700: #15803d;
+  --andino-800: #166534;
+  --andino-900: #14532d;
+  --andino-950: #052e16;
+
+  /* Colores Semánticos */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
 @theme inline {
+  /* Background & Foreground */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+
+  /* Verde Andino */
+  --color-andino-50: var(--andino-50);
+  --color-andino-100: var(--andino-100);
+  --color-andino-200: var(--andino-200);
+  --color-andino-300: var(--andino-300);
+  --color-andino-400: var(--andino-400);
+  --color-andino-500: var(--andino-500);
+  --color-andino-600: var(--andino-600);
+  --color-andino-700: var(--andino-700);
+  --color-andino-800: var(--andino-800);
+  --color-andino-900: var(--andino-900);
+  --color-andino-950: var(--andino-950);
+
+  /* Colores Semánticos */
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+  --color-info: var(--info);
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, monospace;
 }
 
+/* Dark mode support (opcional) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,8 +66,35 @@
   }
 }
 
+/* Base Styles */
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Utility Classes */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Focus ring styles */
+@layer base {
+  *:focus-visible {
+    outline: 2px solid var(--andino-500);
+    outline-offset: 2px;
+  }
 }
