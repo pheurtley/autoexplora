@@ -69,9 +69,10 @@ export function truncate(text: string, length: number): string {
 /**
  * Get relative time string (e.g., "hace 2 días")
  */
-export function getRelativeTime(date: Date): string {
+export function getRelativeTime(date: Date | string): string {
   const now = new Date();
-  const diffInMs = now.getTime() - date.getTime();
+  const dateObj = typeof date === "string" ? new Date(date) : date;
+  const diffInMs = now.getTime() - dateObj.getTime();
   const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
 
   if (diffInDays === 0) return "Hoy";
