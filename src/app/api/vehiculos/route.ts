@@ -187,6 +187,12 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Check if user belongs to a dealer
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { dealerId: true },
+    });
+
     // Crear el vehículo con slug temporal, luego actualizar con slug final
     const vehicle = await prisma.$transaction(async (tx) => {
       // Crear con slug temporal
@@ -215,6 +221,7 @@ export async function POST(request: NextRequest) {
           contactWhatsApp: data.contactWhatsApp,
           showPhone: data.showPhone,
           userId: session.user!.id!,
+          dealerId: user?.dealerId || null,
           status: "ACTIVE",
           publishedAt: new Date(),
           expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 días
