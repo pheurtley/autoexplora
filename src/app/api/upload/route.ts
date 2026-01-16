@@ -20,6 +20,7 @@ export async function POST(request: NextRequest) {
     // Get form data
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
+    const folder = formData.get("folder") as string | null;
 
     if (!file) {
       return NextResponse.json(
@@ -52,7 +53,7 @@ export async function POST(request: NextRequest) {
     const buffer = Buffer.from(bytes);
 
     // Upload to Cloudinary
-    const result = await uploadToCloudinary(buffer);
+    const result = await uploadToCloudinary(buffer, folder || "vehicles");
 
     return NextResponse.json({
       url: result.secure_url,

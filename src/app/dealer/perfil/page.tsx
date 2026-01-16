@@ -11,7 +11,8 @@ import {
   Upload,
   X,
 } from "lucide-react";
-import { Button, Input, Select } from "@/components/ui";
+import { Button, Input, Select, SingleImageUpload } from "@/components/ui";
+import { ImageIcon } from "lucide-react";
 import { formatRut } from "@/lib/rut";
 
 interface Region {
@@ -69,6 +70,10 @@ export default function DealerProfilePage() {
     regionId: "",
     comunaId: "",
     description: "",
+    logo: "",
+    logoPublicId: "",
+    banner: "",
+    bannerPublicId: "",
   });
 
   useEffect(() => {
@@ -100,6 +105,10 @@ export default function DealerProfilePage() {
           regionId: data.dealer.regionId,
           comunaId: data.dealer.comunaId || "",
           description: data.dealer.description || "",
+          logo: data.dealer.logo || "",
+          logoPublicId: data.dealer.logoPublicId || "",
+          banner: data.dealer.banner || "",
+          bannerPublicId: data.dealer.bannerPublicId || "",
         });
       }
     } catch (error) {
@@ -301,6 +310,62 @@ export default function DealerProfilePage() {
               leftIcon={<Globe className="w-4 h-4" />}
               placeholder="https://www.tuempresa.cl"
             />
+          </div>
+        </div>
+
+        {/* Images */}
+        <div className="bg-white rounded-xl border border-neutral-200 p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <ImageIcon className="w-5 h-5 text-neutral-700" />
+            <h2 className="text-lg font-semibold text-neutral-900">
+              Imágenes
+            </h2>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Logo */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+                Logo del negocio
+              </label>
+              <p className="text-xs text-neutral-500 mb-3">
+                Recomendado: 400×400px, formato cuadrado
+              </p>
+              <SingleImageUpload
+                value={formData.logo}
+                publicId={formData.logoPublicId}
+                onChange={(url, publicId) =>
+                  setFormData({ ...formData, logo: url, logoPublicId: publicId })
+                }
+                onRemove={() =>
+                  setFormData({ ...formData, logo: "", logoPublicId: "" })
+                }
+                folder="dealers/logos"
+                aspectRatio="square"
+              />
+            </div>
+
+            {/* Banner */}
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+                Banner
+              </label>
+              <p className="text-xs text-neutral-500 mb-3">
+                Recomendado: 1200×400px, formato horizontal
+              </p>
+              <SingleImageUpload
+                value={formData.banner}
+                publicId={formData.bannerPublicId}
+                onChange={(url, publicId) =>
+                  setFormData({ ...formData, banner: url, bannerPublicId: publicId })
+                }
+                onRemove={() =>
+                  setFormData({ ...formData, banner: "", bannerPublicId: "" })
+                }
+                folder="dealers/banners"
+                aspectRatio="banner"
+              />
+            </div>
           </div>
         </div>
 
