@@ -243,7 +243,7 @@ export function ImageUpload({ images, onChange, error }: ImageUploadProps) {
       {images.length > 0 && (
         <div className="space-y-3">
           <p className="text-sm text-neutral-600">
-            Arrastra para reordenar • La primera imagen será la principal
+            Usa las flechas o arrastra para reordenar • Haz clic en la X para eliminar • La imagen #1 será la principal
           </p>
           <ImagePreview
             images={images}
