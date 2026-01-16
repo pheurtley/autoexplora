@@ -29,6 +29,7 @@ const navigation = [
   { name: "Autos", href: "/vehiculos?type=AUTO", icon: Car },
   { name: "Motos", href: "/vehiculos?type=MOTO", icon: Bike },
   { name: "Comerciales", href: "/vehiculos?type=COMERCIAL", icon: Truck },
+  { name: "Concesionarios", href: "/concesionarios", icon: Building2 },
 ];
 
 export function Header() {

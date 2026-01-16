@@ -135,3 +135,17 @@ export const COLORS = {
   DORADO: { label: "Dorado", hex: "#FFD700" },
   OTRO: { label: "Otro", hex: "#CCCCCC" },
 } as const;
+
+// ==================== Dealer Constants ====================
+
+export const DEALER_TYPES = {
+  CONCESIONARIO: { label: "Concesionario", description: "Vehículos nuevos" },
+  AUTOMOTORA: { label: "Automotora", description: "Vehículos usados" },
+  RENT_A_CAR: { label: "Rent a Car", description: "Arriendo de vehículos" },
+} as const;
+
+export const DEALER_SORT_OPTIONS = [
+  { value: "recent", label: "Más recientes" },
+  { value: "name", label: "Nombre A-Z" },
+  { value: "vehicles", label: "Más vehículos" },
+] as const;

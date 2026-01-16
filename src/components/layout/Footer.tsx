@@ -11,6 +11,7 @@ const footerLinks = {
       { name: "Comerciales", href: "/vehiculos?type=COMERCIAL" },
       { name: "Nuevos", href: "/vehiculos?condition=NUEVO" },
       { name: "Usados", href: "/vehiculos?condition=USADO" },
+      { name: "Concesionarios", href: "/concesionarios" },
     ],
   },
   marcas: {
