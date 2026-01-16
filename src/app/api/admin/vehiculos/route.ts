@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     const status = searchParams.get("status") as ListingStatus | null;
     const search = searchParams.get("search");
     const userId = searchParams.get("userId");
+    const dealerId = searchParams.get("dealerId");
 
     const skip = (page - 1) * limit;
 
@@ -27,6 +28,10 @@ export async function GET(request: NextRequest) {
 
     if (userId) {
       where.userId = userId;
+    }
+
+    if (dealerId) {
+      where.dealerId = dealerId;
     }
 
     if (search) {
@@ -50,6 +55,7 @@ export async function GET(request: NextRequest) {
           model: { select: { id: true, name: true } },
           region: { select: { id: true, name: true } },
           user: { select: { id: true, name: true, email: true } },
+          dealer: { select: { id: true, tradeName: true, slug: true } },
           images: {
             select: { url: true, isPrimary: true },
             orderBy: { order: "asc" },

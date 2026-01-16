@@ -13,6 +13,7 @@ import {
   Pause,
   Play,
   Trash2,
+  Building2,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -30,6 +31,7 @@ interface Vehicle {
   brand: { name: string };
   model: { name: string };
   user: { id: string; name: string | null; email: string | null };
+  dealer: { id: string; tradeName: string; slug: string } | null;
   images: { url: string; isPrimary: boolean }[];
   _count: { reports: number };
 }
@@ -157,6 +159,9 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                 Usuario
               </th>
               <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">
+                Automotora
+              </th>
+              <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">
                 Precio
               </th>
               <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">
@@ -224,6 +229,19 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                     >
                       {vehicle.user.name || vehicle.user.email}
                     </Link>
+                  </td>
+                  <td className="px-4 py-3">
+                    {vehicle.dealer ? (
+                      <Link
+                        href={`/admin/concesionarios/${vehicle.dealer.id}`}
+                        className="inline-flex items-center gap-1.5 text-sm text-andino-600 hover:text-andino-700"
+                      >
+                        <Building2 className="w-3.5 h-3.5" />
+                        {vehicle.dealer.tradeName}
+                      </Link>
+                    ) : (
+                      <span className="text-sm text-neutral-400">—</span>
+                    )}
                   </td>
                   <td className="px-4 py-3">
                     <span className="font-medium text-neutral-900">

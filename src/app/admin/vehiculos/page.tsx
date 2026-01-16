@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { VehicleTable } from "@/components/admin/VehicleTable";
-import { Search, Filter, ChevronLeft, ChevronRight } from "lucide-react";
+import { Search, Filter, ChevronLeft, ChevronRight, Building2 } from "lucide-react";
 
 interface Vehicle {
   id: string;
@@ -18,8 +18,14 @@ interface Vehicle {
   brand: { name: string };
   model: { name: string };
   user: { id: string; name: string | null; email: string | null };
+  dealer: { id: string; tradeName: string; slug: string } | null;
   images: { url: string; isPrimary: boolean }[];
   _count: { reports: number };
+}
+
+interface Dealer {
+  id: string;
+  tradeName: string;
 }
 
 const statusFilters = [
@@ -38,6 +44,7 @@ export default function AdminVehiclesPage() {
   const searchParams = useSearchParams();
 
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [dealers, setDealers] = useState<Dealer[]>([]);
   const [total, setTotal] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -48,6 +55,7 @@ export default function AdminVehiclesPage() {
   const page = parseInt(searchParams.get("page") || "1");
   const status = searchParams.get("status") || "";
   const search = searchParams.get("search") || "";
+  const dealerId = searchParams.get("dealerId") || "";
 
   const fetchVehicles = useCallback(async () => {
     setLoading(true);
@@ -56,6 +64,7 @@ export default function AdminVehiclesPage() {
       params.set("page", page.toString());
       if (status) params.set("status", status);
       if (search) params.set("search", search);
+      if (dealerId) params.set("dealerId", dealerId);
 
       const response = await fetch(`/api/admin/vehiculos?${params.toString()}`);
       if (response.ok) {
@@ -69,11 +78,27 @@ export default function AdminVehiclesPage() {
     } finally {
       setLoading(false);
     }
-  }, [page, status, search]);
+  }, [page, status, search, dealerId]);
+
+  const fetchDealers = useCallback(async () => {
+    try {
+      const response = await fetch("/api/admin/dealers?limit=100&status=ACTIVE");
+      if (response.ok) {
+        const data = await response.json();
+        setDealers(data.dealers || []);
+      }
+    } catch (error) {
+      console.error("Error fetching dealers:", error);
+    }
+  }, []);
 
   useEffect(() => {
     fetchVehicles();
   }, [fetchVehicles]);
+
+  useEffect(() => {
+    fetchDealers();
+  }, [fetchDealers]);
 
   const updateParams = (updates: Record<string, string>) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -85,7 +110,7 @@ export default function AdminVehiclesPage() {
       }
     });
     // Reset page when filters change
-    if ("status" in updates || "search" in updates) {
+    if ("status" in updates || "search" in updates || "dealerId" in updates) {
       params.delete("page");
     }
     router.push(`${pathname}?${params.toString()}`);
@@ -133,6 +158,23 @@ export default function AdminVehiclesPage() {
             {statusFilters.map((filter) => (
               <option key={filter.value} value={filter.value}>
                 {filter.label}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Dealer Filter */}
+        <div className="flex items-center gap-2">
+          <Building2 className="h-4 w-4 text-neutral-400" />
+          <select
+            value={dealerId}
+            onChange={(e) => updateParams({ dealerId: e.target.value })}
+            className="px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+          >
+            <option value="">Todas las automotoras</option>
+            {dealers.map((dealer) => (
+              <option key={dealer.id} value={dealer.id}>
+                {dealer.tradeName}
               </option>
             ))}
           </select>
