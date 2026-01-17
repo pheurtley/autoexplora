@@ -55,6 +55,8 @@ function generateTimeOptions(): string[] {
 
 const TIME_OPTIONS = generateTimeOptions();
 
+const DEFAULT_DAY_CLOSED: DaySchedule = { isOpen: false, openTime: "09:00", closeTime: "18:00" };
+
 const DEFAULT_SCHEDULE: WeekSchedule = {
   lunes: { isOpen: true, openTime: "09:00", closeTime: "18:00" },
   martes: { isOpen: true, openTime: "09:00", closeTime: "18:00" },
@@ -62,7 +64,7 @@ const DEFAULT_SCHEDULE: WeekSchedule = {
   jueves: { isOpen: true, openTime: "09:00", closeTime: "18:00" },
   viernes: { isOpen: true, openTime: "09:00", closeTime: "18:00" },
   sabado: { isOpen: true, openTime: "10:00", closeTime: "14:00" },
-  domingo: { isOpen: false },
+  domingo: { isOpen: false, openTime: "09:00", closeTime: "18:00" },
 };
 
 export function BusinessHoursEditor({
@@ -142,7 +144,7 @@ export function BusinessHoursEditor({
       {/* Schedule Grid */}
       <div className="space-y-3">
         {DAYS.map(({ key, label }) => {
-          const day = schedule[key];
+          const day = schedule[key] || DEFAULT_DAY_CLOSED;
           return (
             <div
               key={key}
@@ -157,8 +159,8 @@ export function BusinessHoursEditor({
                     onChange={(e) =>
                       updateDay(key, {
                         isOpen: e.target.checked,
-                        openTime: e.target.checked ? "09:00" : undefined,
-                        closeTime: e.target.checked ? "18:00" : undefined,
+                        openTime: e.target.checked ? (day.openTime || "09:00") : day.openTime,
+                        closeTime: e.target.checked ? (day.closeTime || "18:00") : day.closeTime,
                       })
                     }
                     className="sr-only peer"

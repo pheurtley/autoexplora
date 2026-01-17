@@ -47,7 +47,7 @@ function isCurrentlyOpen(schedule: WeekSchedule): boolean {
   const { dayKey, time } = getCurrentChileTime();
   const today = schedule[dayKey];
 
-  if (!today.isOpen || !today.openTime || !today.closeTime) {
+  if (!today?.isOpen || !today.openTime || !today.closeTime) {
     return false;
   }
 
@@ -112,7 +112,7 @@ export function BusinessHoursDisplay({
       {/* Schedule List */}
       <div className={compact ? "space-y-1" : "space-y-2"}>
         {DAYS.map(({ key, label, shortLabel }) => {
-          const day = schedule[key];
+          const day = schedule[key] || { isOpen: false, openTime: "", closeTime: "" };
           const isToday = key === currentDay;
 
           return (
