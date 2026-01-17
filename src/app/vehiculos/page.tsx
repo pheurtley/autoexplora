@@ -15,7 +15,7 @@ import {
 } from "@prisma/client";
 
 export const metadata: Metadata = {
-  title: "Buscar Vehículos | PortalAndino",
+  title: "Buscar Vehículos | AutoExplora.cl",
   description:
     "Encuentra autos, motos y vehículos comerciales en venta en Chile. Filtra por marca, modelo, precio, año y más.",
 };

@@ -5,8 +5,8 @@ import { PublishForm } from "@/components/forms/PublishForm";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Publicar Vehículo | PortalAndino",
-  description: "Publica tu vehículo en PortalAndino y llega a miles de compradores en Chile.",
+  title: "Publicar Vehículo | AutoExplora.cl",
+  description: "Publica tu vehículo en AutoExplora.cl y llega a miles de compradores en Chile.",
 };
 
 export default async function PublicarPage() {

@@ -4,7 +4,7 @@ import { ConversationList } from "@/components/chat";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mensajes | Panel Concesionario | PortalAndino",
+  title: "Mensajes | Panel Concesionario | AutoExplora.cl",
 };
 
 export default async function DealerMensajesPage() {

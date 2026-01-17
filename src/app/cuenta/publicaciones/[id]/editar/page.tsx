@@ -12,7 +12,7 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Editar Vehículo | PortalAndino",
+  title: "Editar Vehículo | AutoExplora.cl",
 };
 
 export default async function EditVehiclePage({ params }: PageProps) {

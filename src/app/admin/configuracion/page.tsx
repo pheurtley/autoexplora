@@ -1,19 +1,19 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import Image from "next/image";
 import {
   Save,
-  Settings,
   Building2,
   Mail,
-  Phone,
   Globe,
   Type,
-  ImageIcon,
   AlertCircle,
   CheckCircle,
+  Palette,
+  Settings,
+  Search,
 } from "lucide-react";
+import { SingleImageUpload } from "@/components/ui/SingleImageUpload";
 
 interface SiteConfig {
   id: string;
@@ -21,6 +21,12 @@ interface SiteConfig {
   siteTagline: string | null;
   logo: string | null;
   favicon: string | null;
+  headerLogoSize: string;
+  footerLogoSize: string;
+  showSiteNameInHeader: boolean;
+  showSiteNameInFooter: boolean;
+  primaryColor: string;
+  accentColor: string;
   contactEmail: string | null;
   contactPhone: string | null;
   whatsapp: string | null;
@@ -32,8 +38,28 @@ interface SiteConfig {
   heroTitle: string | null;
   heroSubtitle: string | null;
   footerText: string | null;
+  metaDescription: string | null;
+  googleAnalyticsId: string | null;
+  maxImagesPerVehicle: number;
+  showWhatsAppButton: boolean;
+  maintenanceMode: boolean;
+  maintenanceMessage: string | null;
   updatedAt: string;
 }
+
+const LOGO_SIZES = [
+  { value: "xs", label: "Extra pequeño", description: "20px" },
+  { value: "sm", label: "Pequeño", description: "24px" },
+  { value: "md", label: "Mediano", description: "32px" },
+  { value: "lg", label: "Grande", description: "40px" },
+  { value: "xl", label: "Extra grande", description: "48px" },
+  { value: "2xl", label: "2XL", description: "64px" },
+  { value: "3xl", label: "3XL", description: "80px" },
+  { value: "4xl", label: "4XL", description: "96px" },
+  { value: "5xl", label: "5XL", description: "128px" },
+  { value: "6xl", label: "6XL", description: "192px" },
+  { value: "7xl", label: "7XL", description: "256px" },
+];
 
 export default function AdminConfigPage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -48,6 +74,12 @@ export default function AdminConfigPage() {
     siteTagline: "",
     logo: "",
     favicon: "",
+    headerLogoSize: "md",
+    footerLogoSize: "md",
+    showSiteNameInHeader: true,
+    showSiteNameInFooter: true,
+    primaryColor: "#2563eb",
+    accentColor: "#f97316",
     contactEmail: "",
     contactPhone: "",
     whatsapp: "",
@@ -59,6 +91,12 @@ export default function AdminConfigPage() {
     heroTitle: "",
     heroSubtitle: "",
     footerText: "",
+    metaDescription: "",
+    googleAnalyticsId: "",
+    maxImagesPerVehicle: 10,
+    showWhatsAppButton: true,
+    maintenanceMode: false,
+    maintenanceMessage: "",
   });
 
   const fetchConfig = useCallback(async () => {
@@ -73,6 +111,12 @@ export default function AdminConfigPage() {
           siteTagline: data.siteTagline || "",
           logo: data.logo || "",
           favicon: data.favicon || "",
+          headerLogoSize: data.headerLogoSize || "md",
+          footerLogoSize: data.footerLogoSize || "md",
+          showSiteNameInHeader: data.showSiteNameInHeader ?? true,
+          showSiteNameInFooter: data.showSiteNameInFooter ?? true,
+          primaryColor: data.primaryColor || "#2563eb",
+          accentColor: data.accentColor || "#f97316",
           contactEmail: data.contactEmail || "",
           contactPhone: data.contactPhone || "",
           whatsapp: data.whatsapp || "",
@@ -84,6 +128,12 @@ export default function AdminConfigPage() {
           heroTitle: data.heroTitle || "",
           heroSubtitle: data.heroSubtitle || "",
           footerText: data.footerText || "",
+          metaDescription: data.metaDescription || "",
+          googleAnalyticsId: data.googleAnalyticsId || "",
+          maxImagesPerVehicle: data.maxImagesPerVehicle || 10,
+          showWhatsAppButton: data.showWhatsAppButton ?? true,
+          maintenanceMode: data.maintenanceMode ?? false,
+          maintenanceMessage: data.maintenanceMessage || "",
         });
       }
     } catch (error) {
@@ -97,7 +147,7 @@ export default function AdminConfigPage() {
     fetchConfig();
   }, [fetchConfig]);
 
-  const handleChange = (field: keyof typeof formData, value: string) => {
+  const handleChange = (field: keyof typeof formData, value: string | boolean | number) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     setError(null);
     setSuccess(false);
@@ -155,7 +205,7 @@ export default function AdminConfigPage() {
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Configuración</h1>
           <p className="text-neutral-600 mt-1">
-            Personaliza la identidad y textos del sitio
+            Personaliza la identidad, apariencia y funcionalidad del sitio
           </p>
         </div>
         <button
@@ -200,7 +250,7 @@ export default function AdminConfigPage() {
                   type="text"
                   value={formData.siteName}
                   onChange={(e) => handleChange("siteName", e.target.value)}
-                  placeholder="PortalAndino"
+                  placeholder="AutoExplora.cl"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -223,49 +273,167 @@ export default function AdminConfigPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-2">
-                  URL del logo
+                  Logo del sitio
                 </label>
-                <input
-                  type="url"
+                <SingleImageUpload
                   value={formData.logo}
-                  onChange={(e) => handleChange("logo", e.target.value)}
-                  placeholder="https://ejemplo.com/logo.png"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  onChange={(url) => handleChange("logo", url)}
+                  onRemove={() => handleChange("logo", "")}
+                  folder="site"
+                  aspectRatio="square"
+                  placeholder="Logo (400×400px recomendado)"
                   disabled={saving}
+                  className="max-w-[200px]"
                 />
-                {formData.logo && (
-                  <div className="mt-2 relative w-32 h-12 rounded border border-neutral-200 bg-neutral-50">
-                    <Image
-                      src={formData.logo}
-                      alt="Logo preview"
-                      fill
-                      className="object-contain p-1"
-                    />
-                  </div>
-                )}
               </div>
               <div>
                 <label className="block text-sm font-medium text-neutral-700 mb-2">
-                  URL del favicon
+                  Favicon
                 </label>
-                <input
-                  type="url"
+                <SingleImageUpload
                   value={formData.favicon}
-                  onChange={(e) => handleChange("favicon", e.target.value)}
-                  placeholder="https://ejemplo.com/favicon.ico"
+                  onChange={(url) => handleChange("favicon", url)}
+                  onRemove={() => handleChange("favicon", "")}
+                  folder="site"
+                  aspectRatio="square"
+                  placeholder="Favicon (32×32px recomendado)"
+                  disabled={saving}
+                  className="max-w-[120px]"
+                />
+                <p className="text-xs text-neutral-500 mt-2">
+                  Icono que aparece en la pestaña del navegador
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Apariencia del Logo */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Palette className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">Apariencia del Logo</h2>
+          </div>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Tamaño del logo en Header
+                </label>
+                <select
+                  value={formData.headerLogoSize}
+                  onChange={(e) => handleChange("headerLogoSize", e.target.value)}
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
+                >
+                  {LOGO_SIZES.map((size) => (
+                    <option key={size.value} value={size.value}>
+                      {size.label} ({size.description})
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Tamaño del logo en Footer
+                </label>
+                <select
+                  value={formData.footerLogoSize}
+                  onChange={(e) => handleChange("footerLogoSize", e.target.value)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                >
+                  {LOGO_SIZES.map((size) => (
+                    <option key={size.value} value={size.value}>
+                      {size.label} ({size.description})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.showSiteNameInHeader}
+                  onChange={(e) => handleChange("showSiteNameInHeader", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
                 />
-                {formData.favicon && (
-                  <div className="mt-2 relative w-8 h-8 rounded border border-neutral-200 bg-neutral-50">
-                    <Image
-                      src={formData.favicon}
-                      alt="Favicon preview"
-                      fill
-                      className="object-contain"
-                    />
-                  </div>
-                )}
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">
+                    Mostrar nombre en Header
+                  </span>
+                  <p className="text-xs text-neutral-500">
+                    Muestra el nombre del sitio junto al logo
+                  </p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={formData.showSiteNameInFooter}
+                  onChange={(e) => handleChange("showSiteNameInFooter", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">
+                    Mostrar nombre en Footer
+                  </span>
+                  <p className="text-xs text-neutral-500">
+                    Muestra el nombre del sitio junto al logo
+                  </p>
+                </div>
+              </label>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Color primario
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={formData.primaryColor}
+                    onChange={(e) => handleChange("primaryColor", e.target.value)}
+                    className="w-12 h-10 rounded border border-neutral-300 cursor-pointer"
+                    disabled={saving}
+                  />
+                  <input
+                    type="text"
+                    value={formData.primaryColor}
+                    onChange={(e) => handleChange("primaryColor", e.target.value)}
+                    placeholder="#2563eb"
+                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Color de acento
+                </label>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="color"
+                    value={formData.accentColor}
+                    onChange={(e) => handleChange("accentColor", e.target.value)}
+                    className="w-12 h-10 rounded border border-neutral-300 cursor-pointer"
+                    disabled={saving}
+                  />
+                  <input
+                    type="text"
+                    value={formData.accentColor}
+                    onChange={(e) => handleChange("accentColor", e.target.value)}
+                    placeholder="#f97316"
+                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -287,7 +455,7 @@ export default function AdminConfigPage() {
                   type="email"
                   value={formData.contactEmail}
                   onChange={(e) => handleChange("contactEmail", e.target.value)}
-                  placeholder="contacto@portalandino.cl"
+                  placeholder="contacto@autoexplora.cl"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -357,7 +525,7 @@ export default function AdminConfigPage() {
                   type="url"
                   value={formData.facebook}
                   onChange={(e) => handleChange("facebook", e.target.value)}
-                  placeholder="https://facebook.com/portalandino"
+                  placeholder="https://facebook.com/autoexplora"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -370,7 +538,7 @@ export default function AdminConfigPage() {
                   type="url"
                   value={formData.instagram}
                   onChange={(e) => handleChange("instagram", e.target.value)}
-                  placeholder="https://instagram.com/portalandino"
+                  placeholder="https://instagram.com/autoexplora"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -386,7 +554,7 @@ export default function AdminConfigPage() {
                   type="url"
                   value={formData.twitter}
                   onChange={(e) => handleChange("twitter", e.target.value)}
-                  placeholder="https://twitter.com/portalandino"
+                  placeholder="https://twitter.com/autoexplora"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -399,7 +567,7 @@ export default function AdminConfigPage() {
                   type="url"
                   value={formData.youtube}
                   onChange={(e) => handleChange("youtube", e.target.value)}
-                  placeholder="https://youtube.com/@portalandino"
+                  placeholder="https://youtube.com/@autoexplora"
                   className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
@@ -450,11 +618,135 @@ export default function AdminConfigPage() {
               <textarea
                 value={formData.footerText}
                 onChange={(e) => handleChange("footerText", e.target.value)}
-                placeholder="© 2024 PortalAndino. Todos los derechos reservados."
+                placeholder="© 2024 AutoExplora.cl. Todos los derechos reservados."
                 rows={3}
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                 disabled={saving}
               />
+            </div>
+          </div>
+        </div>
+
+        {/* SEO y Analytics */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Search className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">SEO y Analytics</h2>
+          </div>
+          <div className="p-6 space-y-6">
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
+                Meta descripción por defecto
+              </label>
+              <textarea
+                value={formData.metaDescription}
+                onChange={(e) => handleChange("metaDescription", e.target.value)}
+                placeholder="Descripción que aparece en los resultados de búsqueda de Google..."
+                rows={3}
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                disabled={saving}
+              />
+              <p className="text-xs text-neutral-500 mt-1">
+                Recomendado: 150-160 caracteres
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
+                Google Analytics ID
+              </label>
+              <input
+                type="text"
+                value={formData.googleAnalyticsId}
+                onChange={(e) => handleChange("googleAnalyticsId", e.target.value)}
+                placeholder="G-XXXXXXXXXX"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                disabled={saving}
+              />
+              <p className="text-xs text-neutral-500 mt-1">
+                ID de medición de Google Analytics 4
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Opciones de Funcionalidad */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Settings className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">Opciones de Funcionalidad</h2>
+          </div>
+          <div className="p-6 space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Máximo de imágenes por vehículo
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={formData.maxImagesPerVehicle}
+                  onChange={(e) => handleChange("maxImagesPerVehicle", parseInt(e.target.value) || 10)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                />
+              </div>
+              <div className="flex items-center">
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.showWhatsAppButton}
+                    onChange={(e) => handleChange("showWhatsAppButton", e.target.checked)}
+                    className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                    disabled={saving}
+                  />
+                  <div>
+                    <span className="text-sm font-medium text-neutral-700">
+                      Mostrar botón de WhatsApp
+                    </span>
+                    <p className="text-xs text-neutral-500">
+                      Muestra botón de contacto por WhatsApp en vehículos
+                    </p>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div className="border-t border-neutral-200 pt-6">
+              <label className="flex items-center gap-3 cursor-pointer mb-4">
+                <input
+                  type="checkbox"
+                  checked={formData.maintenanceMode}
+                  onChange={(e) => handleChange("maintenanceMode", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-red-600 focus:ring-red-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-red-700">
+                    Modo mantenimiento
+                  </span>
+                  <p className="text-xs text-neutral-500">
+                    Muestra una página de mantenimiento a los usuarios
+                  </p>
+                </div>
+              </label>
+
+              {formData.maintenanceMode && (
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Mensaje de mantenimiento
+                  </label>
+                  <textarea
+                    value={formData.maintenanceMessage}
+                    onChange={(e) => handleChange("maintenanceMessage", e.target.value)}
+                    placeholder="Estamos realizando mejoras en el sitio. Volvemos pronto..."
+                    rows={3}
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                    disabled={saving}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>

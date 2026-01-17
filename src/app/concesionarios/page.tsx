@@ -9,7 +9,7 @@ import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { DealerType } from "@prisma/client";
 
 export const metadata: Metadata = {
-  title: "Concesionarios y Automotoras | PortalAndino",
+  title: "Concesionarios y Automotoras | AutoExplora.cl",
   description:
     "Encuentra concesionarios, automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
 };

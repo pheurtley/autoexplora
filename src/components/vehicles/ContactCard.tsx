@@ -35,7 +35,7 @@ export function ContactCard({
 }: ContactCardProps) {
   const [showPhone, setShowPhone] = useState(false);
 
-  const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en PortalAndino. ¿Está disponible?`;
+  const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en AutoExplora.cl. ¿Está disponible?`;
 
   const formatPhone = (phone: string) => {
     // Format Chilean phone: +56 9 1234 5678

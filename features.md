@@ -1,8 +1,8 @@
-# PortalAndino - Features & Roadmap
+# AutoExplora.cl - Features & Roadmap
 
 ## Estado del Proyecto
 
-Este documento rastrea todas las funcionalidades implementadas y pendientes del marketplace de vehículos PortalAndino.
+Este documento rastrea todas las funcionalidades implementadas y pendientes del marketplace de vehículos AutoExplora.cl.
 
 ---
 
@@ -130,15 +130,33 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 ### Notificaciones
 
-#### Emails Transaccionales
-- [ ] Configurar servicio de email (Resend, SendGrid, etc.)
-- [ ] Email de bienvenida al registrar dealer
-- [ ] Email de aprobación de dealer
-- [ ] Email de rechazo con motivo
-- [ ] Email de nuevo mensaje recibido
-- [ ] Email de vehículo próximo a expirar
-- [ ] Email de vehículo expirado
-- [ ] Plantillas de email con branding
+#### Sistema de Email con Resend
+- [ ] Configurar Resend como servicio de email transaccional
+- [ ] OTP (One-Time Password)
+  - [ ] Envío de código OTP para verificación
+  - [ ] Validación de código con expiración (5 min)
+  - [ ] Rate limiting para evitar abuso
+- [ ] Verificación de Email
+  - [ ] Email de verificación al registrar cuenta
+  - [ ] Link de verificación con token seguro
+  - [ ] Reenvío de email de verificación
+  - [ ] Marcar cuenta como verificada
+- [ ] Password Reset
+  - [ ] Solicitud de recuperación de contraseña
+  - [ ] Email con link de reset (token con expiración)
+  - [ ] Formulario de nueva contraseña
+  - [ ] Invalidar token después de uso
+- [ ] Emails Transaccionales
+  - [ ] Email de bienvenida al registrar usuario/dealer
+  - [ ] Email de aprobación de dealer
+  - [ ] Email de rechazo de dealer con motivo
+  - [ ] Email de nuevo mensaje recibido
+  - [ ] Email de vehículo próximo a expirar
+  - [ ] Email de vehículo expirado
+- [ ] Notificaciones del Sitio
+  - [ ] Preferencias de notificación por usuario
+  - [ ] Configuración de frecuencia de emails
+- [ ] Plantillas de email con branding AutoExplora.cl
 
 #### Notificaciones In-App
 - [ ] Modelo de Notification en base de datos

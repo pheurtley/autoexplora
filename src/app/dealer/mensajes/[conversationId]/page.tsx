@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { title: "Chat | Panel Concesionario | PortalAndino" };
+    return { title: "Chat | Panel Concesionario | AutoExplora.cl" };
   }
 
   const conversation = await prisma.conversation.findUnique({
@@ -26,14 +26,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   });
 
   if (!conversation) {
-    return { title: "Conversación no encontrada | PortalAndino" };
+    return { title: "Conversación no encontrada | AutoExplora.cl" };
   }
 
   const isBuyer = session.user.id === conversation.buyerId;
   const otherUser = isBuyer ? conversation.seller : conversation.buyer;
 
   return {
-    title: `Chat con ${otherUser.name || "Usuario"} | Panel Concesionario | PortalAndino`,
+    title: `Chat con ${otherUser.name || "Usuario"} | Panel Concesionario | AutoExplora.cl`,
   };
 }
 

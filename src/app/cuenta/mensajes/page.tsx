@@ -4,7 +4,7 @@ import { ConversationList } from "@/components/chat";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mis Mensajes | PortalAndino",
+  title: "Mis Mensajes | AutoExplora.cl",
 };
 
 export default async function MisMensajesPage() {

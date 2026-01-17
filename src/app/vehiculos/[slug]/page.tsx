@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   return {
-    title: `${vehicle.title} | PortalAndino`,
+    title: `${vehicle.title} | AutoExplora.cl`,
     description: `${vehicle.brand.name} - ${formatPrice(vehicle.price)}. Ver detalles y contactar al vendedor.`,
     alternates: {
       canonical: `/vehiculos/${vehicle.slug}`,

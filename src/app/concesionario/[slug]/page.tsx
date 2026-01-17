@@ -33,7 +33,7 @@ export async function generateMetadata({
   });
 
   if (!dealer) {
-    return { title: "Concesionario no encontrado | PortalAndino" };
+    return { title: "Concesionario no encontrado | AutoExplora.cl" };
   }
 
   const typeLabel =
@@ -44,7 +44,7 @@ export async function generateMetadata({
       : "Rent a Car";
 
   return {
-    title: `${dealer.tradeName} - ${typeLabel} | PortalAndino`,
+    title: `${dealer.tradeName} - ${typeLabel} | AutoExplora.cl`,
     description:
       dealer.description?.slice(0, 160) ||
       `Encuentra vehículos en ${dealer.tradeName}`,

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mis Favoritos | PortalAndino",
+  title: "Mis Favoritos | AutoExplora.cl",
 };
 
 export default async function MisFavoritosPage() {

@@ -5,8 +5,8 @@ import { isAdmin } from "@/lib/admin";
 import { AdminLayoutClient } from "@/components/admin";
 
 export const metadata: Metadata = {
-  title: "Panel de Administración | PortalAndino",
-  description: "Panel de administración de PortalAndino",
+  title: "Panel de Administración | AutoExplora.cl",
+  description: "Panel de administración de AutoExplora.cl",
 };
 
 export default async function AdminLayout({

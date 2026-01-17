@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { Container } from "./Container";
@@ -23,6 +24,21 @@ import {
   Building2,
 } from "lucide-react";
 import { UnreadBadge } from "@/components/chat";
+import { useSiteConfig, LogoSize } from "@/components/providers/SiteConfigProvider";
+
+const LOGO_SIZE_CLASSES: Record<LogoSize, string> = {
+  xs: "h-5 w-5",       // 20px
+  sm: "h-6 w-6",       // 24px
+  md: "h-8 w-8",       // 32px
+  lg: "h-10 w-10",     // 40px
+  xl: "h-12 w-12",     // 48px
+  "2xl": "h-16 w-16",  // 64px
+  "3xl": "h-20 w-20",  // 80px
+  "4xl": "h-24 w-24",  // 96px
+  "5xl": "h-32 w-32",  // 128px
+  "6xl": "h-48 w-48",  // 192px
+  "7xl": "h-64 w-64",  // 256px
+};
 
 const navigation = [
   { name: "Autos", href: "/vehiculos?vehicleType=AUTO", icon: Car },
@@ -33,6 +49,7 @@ const navigation = [
 
 export function Header() {
   const { data: session, status } = useSession();
+  const { config } = useSiteConfig();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
@@ -40,6 +57,8 @@ export function Header() {
 
   const isLoading = status === "loading";
   const isLoggedIn = !!session?.user;
+  const logoSrc = config.logo; // Use configured logo, no fallback
+  const logoSizeClass = LOGO_SIZE_CLASSES[config.headerLogoSize] || LOGO_SIZE_CLASSES.md;
 
   // Close user menu when clicking outside
   useEffect(() => {
@@ -61,11 +80,17 @@ export function Header() {
       <Container>
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <Search className="h-8 w-8 text-andino-600" />
-            <span className="text-xl font-bold text-andino-700">
-              AutoExplora.cl
-            </span>
+          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+            {logoSrc ? (
+              <img src={logoSrc} alt={config.siteName} className={`${logoSizeClass} max-h-12 w-auto rounded-full object-cover`} />
+            ) : (
+              <Search className="h-8 w-8 text-andino-600" />
+            )}
+            {config.showSiteNameInHeader && (
+              <span className="text-xl font-bold text-andino-700 whitespace-nowrap">
+                {config.siteName}
+              </span>
+            )}
           </Link>
 
           {/* Desktop Navigation */}

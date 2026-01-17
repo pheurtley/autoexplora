@@ -5,9 +5,9 @@ import { DealerRegistrationForm } from "@/components/forms/DealerRegistrationFor
 import { Building2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Registrar Concesionario | PortalAndino",
+  title: "Registrar Concesionario | AutoExplora.cl",
   description:
-    "Registra tu concesionario o automotora en PortalAndino y llega a miles de compradores.",
+    "Registra tu concesionario o automotora en AutoExplora.cl y llega a miles de compradores.",
 };
 
 export default function RegistroConcesionarioPage() {
@@ -18,7 +18,7 @@ export default function RegistroConcesionarioPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
             <span className="text-2xl font-bold text-andino-600">
-              PortalAndino
+              AutoExplora.cl
             </span>
           </Link>
         </div>

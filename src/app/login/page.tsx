@@ -75,7 +75,7 @@ function LoginForm() {
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
               <span className="text-2xl font-bold text-andino-600">
-                PortalAndino
+                AutoExplora.cl
               </span>
             </Link>
             <h1 className="mt-4 text-2xl font-bold text-neutral-900">

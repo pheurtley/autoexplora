@@ -7,7 +7,6 @@ import {
   Car,
   Flag,
   Users,
-  Search,
   ChevronLeft,
   Tag,
   MapPin,
@@ -16,9 +15,11 @@ import {
   ChevronRight,
   Building2,
   X,
+  Search,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { useSiteConfig } from "@/components/providers/SiteConfigProvider";
 
 interface NavItem {
   name: string;
@@ -90,9 +91,12 @@ const settingsNavigation: NavItem[] = [
 
 export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
+  const { config } = useSiteConfig();
   const [catalogOpen, setCatalogOpen] = useState(
     pathname.startsWith("/admin/marcas") || pathname.startsWith("/admin/regiones")
   );
+
+  const logoSrc = config.logo; // Use configured logo, no fallback
 
   const isItemActive = (href: string) =>
     pathname === href || (href !== "/admin" && pathname.startsWith(href));
@@ -128,9 +132,15 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
               className="flex items-center gap-2 flex-1"
               onClick={handleLinkClick}
             >
-              <Search className="h-8 w-8 text-andino-400" />
+              <div className="h-8 w-8 rounded-full bg-white p-0.5 flex items-center justify-center">
+                {logoSrc ? (
+                  <img src={logoSrc} alt={config.siteName} width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
+                ) : (
+                  <Search className="h-5 w-5 text-andino-600" />
+                )}
+              </div>
               <div>
-                <span className="text-lg font-bold text-white">AutoExplora.cl</span>
+                <span className="text-lg font-bold text-white">{config.siteName}</span>
                 <span className="block text-xs text-neutral-400">Panel Admin</span>
               </div>
             </Link>

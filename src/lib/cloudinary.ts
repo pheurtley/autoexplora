@@ -8,7 +8,7 @@ cloudinary.config({
 
 export { cloudinary };
 
-export const CLOUDINARY_UPLOAD_PRESET = "portalandino";
+export const CLOUDINARY_UPLOAD_PRESET = "autoexplora";
 
 export interface CloudinaryUploadResult {
   public_id: string;
@@ -27,7 +27,7 @@ export async function uploadToCloudinary(
     cloudinary.uploader
       .upload_stream(
         {
-          folder: `portalandino/${folder}`,
+          folder: `autoexplora/${folder}`,
           resource_type: "image",
           transformation: [
             { quality: "auto", fetch_format: "auto" },

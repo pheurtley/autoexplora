@@ -1,18 +1,18 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: portalandino-db
+    container_name: autoexplora-db
     environment:
-      POSTGRES_USER: portalandino
-      POSTGRES_PASSWORD: portalandino123
-      POSTGRES_DB: portalandino
+      POSTGRES_USER: autoexplora
+      POSTGRES_PASSWORD: autoexplora123
+      POSTGRES_DB: autoexplora
     ports:
       - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U portalandino -d portalandino"]
+      test: ["CMD-SHELL", "pg_isready -U autoexplora -d autoexplora"]
       interval: 5s
       timeout: 5s
       retries: 5

@@ -1,31 +1,58 @@
 import prisma from "./prisma";
 
+export type LogoSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl";
+
 export interface SiteConfig {
   id: string;
   siteName: string;
   siteTagline: string | null;
   logo: string | null;
   favicon: string | null;
+  // Logo appearance
+  headerLogoSize: LogoSize;
+  footerLogoSize: LogoSize;
+  showSiteNameInHeader: boolean;
+  showSiteNameInFooter: boolean;
+  // Theme colors
+  primaryColor: string;
+  accentColor: string;
+  // Contact
   contactEmail: string | null;
   contactPhone: string | null;
   whatsapp: string | null;
   address: string | null;
+  // Social
   facebook: string | null;
   instagram: string | null;
   twitter: string | null;
   youtube: string | null;
+  // Texts
   heroTitle: string | null;
   heroSubtitle: string | null;
   footerText: string | null;
+  // SEO
+  metaDescription: string | null;
+  googleAnalyticsId: string | null;
+  // Features
+  maxImagesPerVehicle: number;
+  showWhatsAppButton: boolean;
+  maintenanceMode: boolean;
+  maintenanceMessage: string | null;
   updatedAt: Date;
 }
 
 const DEFAULT_CONFIG: SiteConfig = {
   id: "default",
-  siteName: "PortalAndino",
+  siteName: "AutoExplora.cl",
   siteTagline: "Tu marketplace de vehículos en Chile",
   logo: null,
   favicon: null,
+  headerLogoSize: "md",
+  footerLogoSize: "md",
+  showSiteNameInHeader: true,
+  showSiteNameInFooter: true,
+  primaryColor: "#2563eb",
+  accentColor: "#f97316",
   contactEmail: null,
   contactPhone: null,
   whatsapp: null,
@@ -37,6 +64,12 @@ const DEFAULT_CONFIG: SiteConfig = {
   heroTitle: "Encuentra tu vehículo ideal",
   heroSubtitle: "Miles de autos, motos y comerciales te esperan en Chile",
   footerText: null,
+  metaDescription: null,
+  googleAnalyticsId: null,
+  maxImagesPerVehicle: 10,
+  showWhatsAppButton: true,
+  maintenanceMode: false,
+  maintenanceMessage: null,
   updatedAt: new Date(),
 };
 
@@ -65,6 +98,8 @@ export async function getSiteConfig(): Promise<SiteConfig> {
   return {
     ...DEFAULT_CONFIG,
     ...config,
+    headerLogoSize: (config.headerLogoSize as LogoSize) || DEFAULT_CONFIG.headerLogoSize,
+    footerLogoSize: (config.footerLogoSize as LogoSize) || DEFAULT_CONFIG.footerLogoSize,
   };
 }
 
@@ -86,5 +121,7 @@ export async function updateSiteConfig(
   return {
     ...DEFAULT_CONFIG,
     ...config,
+    headerLogoSize: (config.headerLogoSize as LogoSize) || DEFAULT_CONFIG.headerLogoSize,
+    footerLogoSize: (config.footerLogoSize as LogoSize) || DEFAULT_CONFIG.footerLogoSize,
   };
 }

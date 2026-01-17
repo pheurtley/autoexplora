@@ -1,10 +1,10 @@
 // ==================== Site Configuration ====================
 
-export const SITE_NAME = "PortalAndino";
+export const SITE_NAME = "AutoExplora.cl";
 export const SITE_DESCRIPTION =
   "El marketplace de vehículos más grande de Chile. Compra y vende autos, motos y vehículos comerciales.";
 export const SITE_URL =
-  process.env.NEXT_PUBLIC_APP_URL || "https://portalandino.cl";
+  process.env.NEXT_PUBLIC_APP_URL || "https://autoexplora.cl";
 
 // ==================== Vehicle Constants ====================
 
@@ -81,7 +81,7 @@ export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 // ==================== Cloudinary ====================
 
-export const CLOUDINARY_FOLDER = "portalandino";
+export const CLOUDINARY_FOLDER = "autoexplora";
 export const CLOUDINARY_TRANSFORMATIONS = {
   thumbnail: "w_400,h_300,c_fill,q_auto,f_auto",
   card: "w_600,h_400,c_fill,q_auto,f_auto",

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mis Publicaciones | PortalAndino",
+  title: "Mis Publicaciones | AutoExplora.cl",
 };
 
 export default async function MisPublicacionesPage() {

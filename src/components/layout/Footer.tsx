@@ -1,6 +1,23 @@
+"use client";
+
 import Link from "next/link";
 import { Container } from "./Container";
-import { Search, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
+import { Facebook, Instagram, Youtube, Twitter, Search } from "lucide-react";
+import { useSiteConfig, LogoSize } from "@/components/providers/SiteConfigProvider";
+
+const LOGO_SIZE_CLASSES: Record<LogoSize, string> = {
+  xs: "h-5 w-5",       // 20px
+  sm: "h-6 w-6",       // 24px
+  md: "h-8 w-8",       // 32px
+  lg: "h-10 w-10",     // 40px
+  xl: "h-12 w-12",     // 48px
+  "2xl": "h-16 w-16",  // 64px
+  "3xl": "h-20 w-20",  // 80px
+  "4xl": "h-24 w-24",  // 96px
+  "5xl": "h-32 w-32",  // 128px
+  "6xl": "h-48 w-48",  // 192px
+  "7xl": "h-64 w-64",  // 256px
+};
 
 const footerLinks = {
   vehiculos: {
@@ -54,6 +71,10 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { config } = useSiteConfig();
+  const logoSrc = config.logo; // Use configured logo, no fallback
+  const logoSizeClass = LOGO_SIZE_CLASSES[config.footerLogoSize] || LOGO_SIZE_CLASSES.md;
+
   return (
     <footer className="bg-neutral-900 text-neutral-300 mt-auto">
       <Container>
@@ -63,14 +84,19 @@ export function Footer() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-4">
-                <Search className="h-8 w-8 text-andino-500" />
-                <span className="text-xl font-bold text-white">
-                  AutoExplora.cl
-                </span>
+                {logoSrc ? (
+                  <img src={logoSrc} alt={config.siteName} className={`${logoSizeClass} rounded-full object-cover`} />
+                ) : (
+                  <Search className="h-8 w-8 text-white" />
+                )}
+                {config.showSiteNameInFooter && (
+                  <span className="text-xl font-bold text-white">
+                    {config.siteName}
+                  </span>
+                )}
               </Link>
               <p className="text-sm text-neutral-400 mb-4">
-                El marketplace de vehículos más grande de Chile. Compra y vende
-                de forma segura.
+                {config.siteTagline || "El marketplace de vehículos más grande de Chile. Compra y vende de forma segura."}
               </p>
               {/* Social Links */}
               <div className="flex gap-3">
@@ -112,7 +138,7 @@ export function Footer() {
           {/* Bottom Section */}
           <div className="pt-8 border-t border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-neutral-500">
-              © {new Date().getFullYear()} AutoExplora.cl. Todos los derechos
+              © {new Date().getFullYear()} {config.siteName}. Todos los derechos
               reservados.
             </p>
             <div className="flex gap-6 text-sm text-neutral-500">

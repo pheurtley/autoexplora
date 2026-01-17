@@ -38,11 +38,15 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
 
     // Validate and sanitize input - only allow specific fields
-    const allowedFields = [
+    const stringFields = [
       "siteName",
       "siteTagline",
       "logo",
       "favicon",
+      "headerLogoSize",
+      "footerLogoSize",
+      "primaryColor",
+      "accentColor",
       "contactEmail",
       "contactPhone",
       "whatsapp",
@@ -54,11 +58,26 @@ export async function PATCH(request: NextRequest) {
       "heroTitle",
       "heroSubtitle",
       "footerText",
+      "metaDescription",
+      "googleAnalyticsId",
+      "maintenanceMessage",
     ];
 
-    const updateData: Record<string, string | null> = {};
+    const booleanFields = [
+      "showSiteNameInHeader",
+      "showSiteNameInFooter",
+      "showWhatsAppButton",
+      "maintenanceMode",
+    ];
 
-    for (const field of allowedFields) {
+    const numberFields = [
+      "maxImagesPerVehicle",
+    ];
+
+    const updateData: Record<string, string | boolean | number | null> = {};
+
+    // Handle string fields
+    for (const field of stringFields) {
       if (field in body) {
         const value = body[field];
         // Convert empty strings to null, trim strings
@@ -66,6 +85,23 @@ export async function PATCH(request: NextRequest) {
           updateData[field] = null;
         } else if (typeof value === "string") {
           updateData[field] = value.trim();
+        }
+      }
+    }
+
+    // Handle boolean fields
+    for (const field of booleanFields) {
+      if (field in body) {
+        updateData[field] = Boolean(body[field]);
+      }
+    }
+
+    // Handle number fields
+    for (const field of numberFields) {
+      if (field in body) {
+        const value = parseInt(body[field], 10);
+        if (!isNaN(value)) {
+          updateData[field] = value;
         }
       }
     }
@@ -79,7 +115,8 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Validate email format if provided
-    if (updateData.contactEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updateData.contactEmail)) {
+    const contactEmail = updateData.contactEmail;
+    if (contactEmail && typeof contactEmail === "string" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
       return NextResponse.json(
         { error: "El email de contacto no es válido" },
         { status: 400 }
@@ -89,9 +126,10 @@ export async function PATCH(request: NextRequest) {
     // Validate URLs if provided
     const urlFields = ["logo", "favicon", "facebook", "instagram", "twitter", "youtube"];
     for (const field of urlFields) {
-      if (updateData[field]) {
+      const value = updateData[field];
+      if (value && typeof value === "string") {
         try {
-          new URL(updateData[field] as string);
+          new URL(value);
         } catch {
           return NextResponse.json(
             { error: `La URL de ${field} no es válida` },

@@ -21,7 +21,7 @@ interface VehicleCardProps {
 
 export function VehicleCard({ vehicle }: VehicleCardProps) {
   const primaryImage = vehicle.images.find((img) => img.isPrimary) || vehicle.images[0];
-  const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en PortalAndino`;
+  const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en AutoExplora.cl`;
 
   return (
     <Card hover padding="none" className="overflow-hidden group">

@@ -7,7 +7,7 @@ import { User, Mail, Phone, Calendar } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Mi Cuenta | PortalAndino",
+  title: "Mi Cuenta | AutoExplora.cl",
 };
 
 export default async function ConfiguracionPage() {

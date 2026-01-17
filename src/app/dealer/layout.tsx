@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { DealerLayoutClient } from "@/components/dealer/DealerLayoutClient";
 
 export const metadata: Metadata = {
-  title: "Panel de Concesionario | PortalAndino",
-  description: "Gestiona tu concesionario en PortalAndino",
+  title: "Panel de Concesionario | AutoExplora.cl",
+  description: "Gestiona tu concesionario en AutoExplora.cl",
 };
 
 export default async function DealerLayout({

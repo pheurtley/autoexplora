@@ -80,7 +80,7 @@ export function DealerInfoCard({ dealer }: DealerInfoCardProps) {
       <div className="mt-4 space-y-2">
         {dealer.whatsapp && (
           <a
-            href={`https://wa.me/${dealer.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, me interesa un vehículo que vi en PortalAndino")}`}
+            href={`https://wa.me/${dealer.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, me interesa un vehículo que vi en AutoExplora.cl")}`}
             target="_blank"
             rel="noopener noreferrer"
             className="block"
