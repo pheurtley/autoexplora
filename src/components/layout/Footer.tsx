@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "./Container";
-import { Mountain, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
+import { Search, Facebook, Instagram, Youtube, Twitter } from "lucide-react";
 
 const footerLinks = {
   vehiculos: {
@@ -63,9 +63,9 @@ export function Footer() {
             {/* Brand */}
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-4">
-                <Mountain className="h-8 w-8 text-andino-500" />
+                <Search className="h-8 w-8 text-andino-500" />
                 <span className="text-xl font-bold text-white">
-                  PortalAndino
+                  AutoExplora.cl
                 </span>
               </Link>
               <p className="text-sm text-neutral-400 mb-4">
@@ -112,7 +112,7 @@ export function Footer() {
           {/* Bottom Section */}
           <div className="pt-8 border-t border-neutral-800 flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-sm text-neutral-500">
-              © {new Date().getFullYear()} PortalAndino. Todos los derechos
+              © {new Date().getFullYear()} AutoExplora.cl. Todos los derechos
               reservados.
             </p>
             <div className="flex gap-6 text-sm text-neutral-500">

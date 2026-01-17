@@ -7,7 +7,7 @@ import {
   Car,
   Flag,
   Users,
-  Mountain,
+  Search,
   ChevronLeft,
   Tag,
   MapPin,
@@ -128,9 +128,9 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
               className="flex items-center gap-2 flex-1"
               onClick={handleLinkClick}
             >
-              <Mountain className="h-8 w-8 text-andino-400" />
+              <Search className="h-8 w-8 text-andino-400" />
               <div>
-                <span className="text-lg font-bold text-white">PortalAndino</span>
+                <span className="text-lg font-bold text-white">AutoExplora.cl</span>
                 <span className="block text-xs text-neutral-400">Panel Admin</span>
               </div>
             </Link>

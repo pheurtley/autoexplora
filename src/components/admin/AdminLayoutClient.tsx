@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Menu, Mountain } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { AdminSidebar } from "./AdminSidebar";
 
 interface AdminLayoutClientProps {
@@ -27,7 +27,7 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
           >
             <Menu className="w-6 h-6 text-neutral-700" />
           </button>
-          <Mountain className="h-6 w-6 text-andino-600" />
+          <Search className="h-6 w-6 text-andino-600" />
           <span className="font-semibold text-neutral-900">Panel Admin</span>
         </div>
 

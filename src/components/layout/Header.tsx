@@ -16,7 +16,6 @@ import {
   User,
   Heart,
   Plus,
-  Mountain,
   LogOut,
   Settings,
   ChevronDown,
@@ -63,9 +62,9 @@ export function Header() {
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2">
-            <Mountain className="h-8 w-8 text-andino-600" />
+            <Search className="h-8 w-8 text-andino-600" />
             <span className="text-xl font-bold text-andino-700">
-              PortalAndino
+              AutoExplora.cl
             </span>
           </Link>
 
