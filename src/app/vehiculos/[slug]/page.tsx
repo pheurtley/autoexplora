@@ -5,8 +5,10 @@ import { Container } from "@/components/layout";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
 import { VehicleSpecs } from "@/components/vehicles/VehicleSpecs";
 import { ContactCard } from "@/components/vehicles/ContactCard";
+import { DealerInfoCard } from "@/components/vehicles/DealerInfoCard";
 import { FavoriteButton } from "@/components/vehicles/FavoriteButton";
 import { Badge } from "@/components/ui";
+import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, isCuid } from "@/lib/utils";
 import { Star, Eye, Calendar } from "lucide-react";
 import type { Metadata } from "next";
@@ -66,6 +68,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
       comuna: true,
       images: { orderBy: { order: "asc" } },
       user: { select: { id: true, name: true, image: true, createdAt: true } },
+      dealer: {
+        select: {
+          id: true,
+          slug: true,
+          tradeName: true,
+          type: true,
+          logo: true,
+          phone: true,
+          whatsapp: true,
+          verifiedAt: true,
+          schedule: true,
+        },
+      },
     },
   });
 
@@ -237,6 +252,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                   )}
                 </div>
               </div>
+
+              {/* Dealer Info Card - only shown if vehicle belongs to a dealer */}
+              {vehicle.dealer && (
+                <DealerInfoCard
+                  dealer={{
+                    ...vehicle.dealer,
+                    schedule: vehicle.dealer.schedule as WeekSchedule | null,
+                  }}
+                />
+              )}
 
               {/* Contact Card */}
               <ContactCard
