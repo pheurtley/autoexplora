@@ -1,4 +1,4 @@
-// Prisma Schema for PortalAndino
+// Prisma Schema for AutoExplora.cl
 // Marketplace de vehículos en Chile
 
 generator client {
@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL") // For Neon: use direct connection for migrations
 }
 
 // ==================== AUTENTICACIÓN (NextAuth) ====================
@@ -494,10 +495,20 @@ model SiteConfig {
   id String @id @default("default")
 
   // Identidad
-  siteName    String  @default("PortalAndino")
+  siteName    String  @default("AutoExplora.cl")
   siteTagline String?
   logo        String?
   favicon     String?
+
+  // Apariencia del Logo
+  headerLogoSize       String @default("md") // sm, md, lg, xl
+  footerLogoSize       String @default("md") // sm, md, lg, xl
+  showSiteNameInHeader Boolean @default(true)
+  showSiteNameInFooter Boolean @default(true)
+
+  // Colores del tema
+  primaryColor String @default("#2563eb") // Azul por defecto
+  accentColor  String @default("#f97316") // Naranja por defecto
 
   // Contacto
   contactEmail String?
@@ -515,6 +526,16 @@ model SiteConfig {
   heroTitle    String?
   heroSubtitle String?
   footerText   String?
+
+  // SEO y Analytics
+  metaDescription   String?
+  googleAnalyticsId String?
+
+  // Opciones de funcionalidad
+  maxImagesPerVehicle Int     @default(10)
+  showWhatsAppButton  Boolean @default(true)
+  maintenanceMode     Boolean @default(false)
+  maintenanceMessage  String?
 
   updatedAt DateTime @updatedAt
 }
