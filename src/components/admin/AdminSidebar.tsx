@@ -15,8 +15,10 @@ import {
   ChevronDown,
   ChevronRight,
   Building2,
+  X,
 } from "lucide-react";
 import { useState } from "react";
+import { cn } from "@/lib/utils";
 
 interface NavItem {
   name: string;
@@ -27,6 +29,11 @@ interface NavItem {
 interface NavGroup {
   name: string;
   items: NavItem[];
+}
+
+interface AdminSidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 const mainNavigation: NavItem[] = [
@@ -81,7 +88,7 @@ const settingsNavigation: NavItem[] = [
   },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const [catalogOpen, setCatalogOpen] = useState(
     pathname.startsWith("/admin/marcas") || pathname.startsWith("/admin/regiones")
@@ -90,125 +97,165 @@ export function AdminSidebar() {
   const isItemActive = (href: string) =>
     pathname === href || (href !== "/admin" && pathname.startsWith(href));
 
+  const handleLinkClick = () => {
+    onClose?.();
+  };
+
   return (
-    <aside className="w-64 bg-neutral-900 min-h-screen flex flex-col">
-      {/* Logo */}
-      <div className="p-4 border-b border-neutral-800">
-        <Link href="/admin" className="flex items-center gap-2">
-          <Mountain className="h-8 w-8 text-andino-400" />
-          <div>
-            <span className="text-lg font-bold text-white">PortalAndino</span>
-            <span className="block text-xs text-neutral-400">Panel Admin</span>
+    <>
+      {/* Overlay for mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 z-50",
+          "w-64 bg-neutral-900 min-h-screen flex flex-col",
+          "transform transition-transform duration-200 ease-in-out lg:transform-none",
+          isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+        )}
+      >
+        {/* Logo */}
+        <div className="p-4 border-b border-neutral-800">
+          <div className="flex items-center justify-between">
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 flex-1"
+              onClick={handleLinkClick}
+            >
+              <Mountain className="h-8 w-8 text-andino-400" />
+              <div>
+                <span className="text-lg font-bold text-white">PortalAndino</span>
+                <span className="block text-xs text-neutral-400">Panel Admin</span>
+              </div>
+            </Link>
+            {/* Close button for mobile */}
+            <button
+              onClick={onClose}
+              className="lg:hidden p-2 -mr-2 rounded-lg hover:bg-neutral-800 transition-colors"
+              aria-label="Cerrar menú"
+            >
+              <X className="w-5 h-5 text-neutral-400" />
+            </button>
           </div>
-        </Link>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 p-4 overflow-y-auto">
-        {/* Main Navigation */}
-        <ul className="space-y-1">
-          {mainNavigation.map((item) => {
-            const isActive = isItemActive(item.href);
-
-            return (
-              <li key={item.name}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${
-                    isActive
-                      ? "bg-andino-600 text-white"
-                      : "text-neutral-400 hover:text-white hover:bg-neutral-800"
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* Divider */}
-        <div className="my-4 border-t border-neutral-800" />
-
-        {/* Catalog Navigation (Collapsible) */}
-        <div>
-          <button
-            onClick={() => setCatalogOpen(!catalogOpen)}
-            className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
-          >
-            <span className="flex items-center gap-3">
-              <Tag className="h-5 w-5" />
-              {catalogNavigation.name}
-            </span>
-            {catalogOpen ? (
-              <ChevronDown className="h-4 w-4" />
-            ) : (
-              <ChevronRight className="h-4 w-4" />
-            )}
-          </button>
-          {catalogOpen && (
-            <ul className="mt-1 ml-4 space-y-1">
-              {catalogNavigation.items.map((item) => {
-                const isActive = isItemActive(item.href);
-
-                return (
-                  <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                        isActive
-                          ? "bg-andino-600 text-white"
-                          : "text-neutral-400 hover:text-white hover:bg-neutral-800"
-                      }`}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {item.name}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
         </div>
 
-        {/* Divider */}
-        <div className="my-4 border-t border-neutral-800" />
+        {/* Navigation */}
+        <nav className="flex-1 p-4 overflow-y-auto">
+          {/* Main Navigation */}
+          <ul className="space-y-1">
+            {mainNavigation.map((item) => {
+              const isActive = isItemActive(item.href);
 
-        {/* Settings Navigation */}
-        <ul className="space-y-1">
-          {settingsNavigation.map((item) => {
-            const isActive = isItemActive(item.href);
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${
+                      isActive
+                        ? "bg-andino-600 text-white"
+                        : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
 
-            return (
-              <li key={item.name}>
-                <Link
-                  href={item.href}
-                  className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${
-                    isActive
-                      ? "bg-andino-600 text-white"
-                      : "text-neutral-400 hover:text-white hover:bg-neutral-800"
-                  }`}
-                >
-                  <item.icon className="h-5 w-5" />
-                  {item.name}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </nav>
+          {/* Divider */}
+          <div className="my-4 border-t border-neutral-800" />
 
-      {/* Back to site */}
-      <div className="p-4 border-t border-neutral-800">
-        <Link
-          href="/"
-          className="flex items-center gap-2 px-3 py-2.5 text-neutral-400 hover:text-white transition-colors"
-        >
-          <ChevronLeft className="h-4 w-4" />
-          Volver al sitio
-        </Link>
-      </div>
-    </aside>
+          {/* Catalog Navigation (Collapsible) */}
+          <div>
+            <button
+              onClick={() => setCatalogOpen(!catalogOpen)}
+              className="w-full flex items-center justify-between px-3 py-2.5 rounded-lg font-medium text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+            >
+              <span className="flex items-center gap-3">
+                <Tag className="h-5 w-5" />
+                {catalogNavigation.name}
+              </span>
+              {catalogOpen ? (
+                <ChevronDown className="h-4 w-4" />
+              ) : (
+                <ChevronRight className="h-4 w-4" />
+              )}
+            </button>
+            {catalogOpen && (
+              <ul className="mt-1 ml-4 space-y-1">
+                {catalogNavigation.items.map((item) => {
+                  const isActive = isItemActive(item.href);
+
+                  return (
+                    <li key={item.name}>
+                      <Link
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                          isActive
+                            ? "bg-andino-600 text-white"
+                            : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                        }`}
+                      >
+                        <item.icon className="h-4 w-4" />
+                        {item.name}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className="my-4 border-t border-neutral-800" />
+
+          {/* Settings Navigation */}
+          <ul className="space-y-1">
+            {settingsNavigation.map((item) => {
+              const isActive = isItemActive(item.href);
+
+              return (
+                <li key={item.name}>
+                  <Link
+                    href={item.href}
+                    onClick={handleLinkClick}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg font-medium transition-colors ${
+                      isActive
+                        ? "bg-andino-600 text-white"
+                        : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                    }`}
+                  >
+                    <item.icon className="h-5 w-5" />
+                    {item.name}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </nav>
+
+        {/* Back to site */}
+        <div className="p-4 border-t border-neutral-800">
+          <Link
+            href="/"
+            onClick={handleLinkClick}
+            className="flex items-center gap-2 px-3 py-2.5 text-neutral-400 hover:text-white transition-colors"
+          >
+            <ChevronLeft className="h-4 w-4" />
+            Volver al sitio
+          </Link>
+        </div>
+      </aside>
+    </>
   );
 }

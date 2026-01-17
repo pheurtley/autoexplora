@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { DealerSidebar } from "@/components/dealer/DealerSidebar";
+import { DealerLayoutClient } from "@/components/dealer/DealerLayoutClient";
 
 export const metadata: Metadata = {
   title: "Panel de Concesionario | PortalAndino",
@@ -45,11 +45,8 @@ export default async function DealerLayout({
   }
 
   return (
-    <div className="flex min-h-screen bg-neutral-100">
-      <DealerSidebar dealer={user.dealer} userRole={user.dealerRole} />
-      <main className="flex-1 overflow-auto">
-        <div className="p-6 lg:p-8">{children}</div>
-      </main>
-    </div>
+    <DealerLayoutClient dealer={user.dealer} userRole={user.dealerRole}>
+      {children}
+    </DealerLayoutClient>
   );
 }
