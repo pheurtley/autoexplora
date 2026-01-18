@@ -67,10 +67,14 @@ export default async function VehiculosPage({ searchParams }: PageProps) {
     status: "ACTIVE",
   };
 
-  if (params.vehicleType) {
+  // Validate enum values before using them
+  const validVehicleTypes = Object.values(VehicleType);
+  const validCategories = Object.values(VehicleCategory);
+
+  if (params.vehicleType && validVehicleTypes.includes(params.vehicleType as VehicleType)) {
     where.vehicleType = params.vehicleType as VehicleType;
   }
-  if (params.category) {
+  if (params.category && validCategories.includes(params.category as VehicleCategory)) {
     where.category = params.category as VehicleCategory;
   }
   if (params.brandId) {
@@ -82,13 +86,17 @@ export default async function VehiculosPage({ searchParams }: PageProps) {
   if (params.regionId) {
     where.regionId = params.regionId;
   }
-  if (params.condition) {
+  const validConditions = Object.values(VehicleCondition);
+  const validFuelTypes = Object.values(FuelType);
+  const validTransmissions = Object.values(Transmission);
+
+  if (params.condition && validConditions.includes(params.condition as VehicleCondition)) {
     where.condition = params.condition as VehicleCondition;
   }
-  if (params.fuelType) {
+  if (params.fuelType && validFuelTypes.includes(params.fuelType as FuelType)) {
     where.fuelType = params.fuelType as FuelType;
   }
-  if (params.transmission) {
+  if (params.transmission && validTransmissions.includes(params.transmission as Transmission)) {
     where.transmission = params.transmission as Transmission;
   }
 
