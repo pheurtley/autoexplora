@@ -7,6 +7,8 @@ import { VehicleSpecs } from "@/components/vehicles/VehicleSpecs";
 import { ContactCard } from "@/components/vehicles/ContactCard";
 import { DealerInfoCard } from "@/components/vehicles/DealerInfoCard";
 import { FavoriteButton } from "@/components/vehicles/FavoriteButton";
+import { ShareButtons } from "@/components/vehicles/ShareButtons";
+import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
 import { Badge } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, isCuid } from "@/lib/utils";
@@ -167,12 +169,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                       {vehicle.title}
                     </h1>
                   </div>
-                  <FavoriteButton
-                    vehicleId={vehicle.id}
-                    vehicleSlug={vehicle.slug}
-                    initialFavorited={isFavorited}
-                    isLoggedIn={!!session?.user}
-                  />
+                  <div className="flex items-center gap-2">
+                    <ShareButtons
+                      title={vehicle.title}
+                      url={`/vehiculos/${vehicle.slug}`}
+                      description={`${vehicle.brand.name} ${vehicle.model.name} ${vehicle.year} - ${formatPrice(vehicle.price)}`}
+                    />
+                    <FavoriteButton
+                      vehicleId={vehicle.id}
+                      vehicleSlug={vehicle.slug}
+                      initialFavorited={isFavorited}
+                      isLoggedIn={!!session?.user}
+                    />
+                  </div>
                 </div>
                 <div className="mt-3">
                   <p className="text-3xl font-bold text-andino-700">
@@ -233,12 +242,19 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                       <Badge variant="default" size="sm">Usado</Badge>
                     )}
                   </div>
-                  <FavoriteButton
-                    vehicleId={vehicle.id}
-                    vehicleSlug={vehicle.slug}
-                    initialFavorited={isFavorited}
-                    isLoggedIn={!!session?.user}
-                  />
+                  <div className="flex items-center gap-2">
+                    <ShareButtons
+                      title={vehicle.title}
+                      url={`/vehiculos/${vehicle.slug}`}
+                      description={`${vehicle.brand.name} ${vehicle.model.name} ${vehicle.year} - ${formatPrice(vehicle.price)}`}
+                    />
+                    <FavoriteButton
+                      vehicleId={vehicle.id}
+                      vehicleSlug={vehicle.slug}
+                      initialFavorited={isFavorited}
+                      isLoggedIn={!!session?.user}
+                    />
+                  </div>
                 </div>
                 <h1 className="text-2xl font-bold text-neutral-900 mt-2">
                   {vehicle.title}
@@ -286,6 +302,14 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           </div>
         </div>
       </Container>
+
+      {/* Related Vehicles */}
+      <RelatedVehicles
+        currentVehicleId={vehicle.id}
+        brandId={vehicle.brandId}
+        price={vehicle.price}
+        vehicleType={vehicle.vehicleType}
+      />
     </main>
   );
 }

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui";
 import { ChatButton } from "@/components/chat";
 import { getWhatsAppLink, getRelativeTime } from "@/lib/utils";
-import { Phone, MessageCircle, User, MapPin, Calendar } from "lucide-react";
+import { Phone, MessageCircle, User, MapPin, Calendar, Copy, Check } from "lucide-react";
 
 interface ContactCardProps {
   vehicle: {
@@ -34,8 +34,21 @@ export function ContactCard({
   currentUserId,
 }: ContactCardProps) {
   const [showPhone, setShowPhone] = useState(false);
+  const [phoneCopied, setPhoneCopied] = useState(false);
 
   const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en AutoExplora.cl. ¿Está disponible?`;
+
+  const handleCopyPhone = async () => {
+    if (vehicle.contactPhone) {
+      try {
+        await navigator.clipboard.writeText(vehicle.contactPhone);
+        setPhoneCopied(true);
+        setTimeout(() => setPhoneCopied(false), 2000);
+      } catch (error) {
+        console.error("Error copying phone:", error);
+      }
+    }
+  };
 
   const formatPhone = (phone: string) => {
     // Format Chilean phone: +56 9 1234 5678
@@ -101,13 +114,30 @@ export function ContactCard({
         {vehicle.showPhone && vehicle.contactPhone && (
           <>
             {showPhone ? (
-              <a
-                href={`tel:${vehicle.contactPhone}`}
-                className="flex items-center justify-center gap-2 w-full py-3 bg-andino-600 hover:bg-andino-700 text-white rounded-xl font-medium transition-colors"
-              >
-                <Phone className="w-5 h-5" />
-                {formatPhone(vehicle.contactPhone)}
-              </a>
+              <div className="flex gap-2">
+                <a
+                  href={`tel:${vehicle.contactPhone}`}
+                  className="flex-1 flex items-center justify-center gap-2 py-3 bg-andino-600 hover:bg-andino-700 text-white rounded-xl font-medium transition-colors"
+                >
+                  <Phone className="w-5 h-5" />
+                  {formatPhone(vehicle.contactPhone)}
+                </a>
+                <button
+                  onClick={handleCopyPhone}
+                  className={`px-4 rounded-xl border-2 transition-all ${
+                    phoneCopied
+                      ? "bg-green-50 border-green-500 text-green-600"
+                      : "bg-white border-neutral-200 text-neutral-600 hover:border-andino-500 hover:text-andino-600"
+                  }`}
+                  title={phoneCopied ? "¡Copiado!" : "Copiar teléfono"}
+                >
+                  {phoneCopied ? (
+                    <Check className="w-5 h-5" />
+                  ) : (
+                    <Copy className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
             ) : (
               <Button
                 variant="outline"
