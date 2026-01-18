@@ -10,12 +10,15 @@
     "typecheck": "tsc --noEmit",
     "postinstall": "prisma generate",
     "db:generate": "prisma generate",
-    "db:push": "prisma db push",
-    "db:migrate": "prisma migrate dev",
+    "db:push": "dotenv -e .env.local -- prisma db push",
+    "db:push:prod": "prisma db push",
+    "db:migrate": "dotenv -e .env.local -- prisma migrate dev",
     "db:migrate:deploy": "prisma migrate deploy",
-    "db:seed": "npx tsx prisma/seed.ts",
-    "db:studio": "prisma studio",
-    "db:reset": "prisma migrate reset"
+    "db:seed": "dotenv -e .env.local -- npx tsx prisma/seed.ts",
+    "db:seed:prod": "npx tsx prisma/seed.ts",
+    "db:studio": "dotenv -e .env.local -- prisma studio",
+    "db:studio:prod": "prisma studio",
+    "db:reset": "dotenv -e .env.local -- prisma migrate reset"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -46,6 +49,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.2",
     "prisma": "^5.22.0",
