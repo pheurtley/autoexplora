@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Header, Footer } from "@/components/layout";
+import { Header, ConditionalFooter } from "@/components/layout";
 import { SessionProvider } from "@/components/providers/SessionProvider";
 import { SiteConfigProvider } from "@/components/providers/SiteConfigProvider";
 import { getSiteConfig } from "@/lib/config";
@@ -78,7 +78,7 @@ export default function RootLayout({
           <SiteConfigProvider>
             <Header />
             <main className="flex-1">{children}</main>
-            <Footer />
+            <ConditionalFooter />
           </SiteConfigProvider>
         </SessionProvider>
       </body>

@@ -59,11 +59,26 @@ export default async function ConversationPage({ params }: PageProps) {
   }
 
   return (
-    <div className="h-[calc(100vh-12rem)] md:h-[calc(100vh-10rem)]">
-      <ChatWindow
-        conversationId={conversationId}
-        currentUserId={session!.user!.id}
-      />
-    </div>
+    <>
+      {/* Mobile: fullscreen fixed chat */}
+      <div className="contents md:hidden">
+        <div
+          className="fixed z-40 bg-white"
+          style={{ top: '65px', left: 0, right: 0, bottom: 0 }}
+        >
+          <ChatWindow
+            conversationId={conversationId}
+            currentUserId={session!.user!.id}
+          />
+        </div>
+      </div>
+      {/* Desktop: normal layout */}
+      <div className="hidden md:block h-[calc(100vh-10rem)]">
+        <ChatWindow
+          conversationId={conversationId}
+          currentUserId={session!.user!.id}
+        />
+      </div>
+    </>
   );
 }
