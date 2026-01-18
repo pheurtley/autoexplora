@@ -64,6 +64,7 @@ export default async function DealerConversationPage({ params }: PageProps) {
         conversationId={conversationId}
         currentUserId={session!.user!.id}
         basePath="/dealer/mensajes"
+        isDealer={true}
       />
     </div>
   );
