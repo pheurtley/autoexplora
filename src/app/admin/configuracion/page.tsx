@@ -12,6 +12,9 @@ import {
   Palette,
   Settings,
   Search,
+  Home,
+  Eye,
+  Hash,
 } from "lucide-react";
 import { SingleImageUpload } from "@/components/ui/SingleImageUpload";
 
@@ -38,6 +41,25 @@ interface SiteConfig {
   heroTitle: string | null;
   heroSubtitle: string | null;
   footerText: string | null;
+  // Home Sections Texts
+  whyChooseUsTitle: string;
+  whyChooseUsSubtitle: string;
+  ctaTitle: string;
+  ctaSubtitle: string;
+  ctaButtonText: string;
+  // Home Section Visibility
+  showFeaturedVehicles: boolean;
+  showRecentVehicles: boolean;
+  showPopularBrands: boolean;
+  showWhyChooseUs: boolean;
+  showCTASection: boolean;
+  showTopDealers: boolean;
+  // Home Section Limits
+  featuredVehiclesLimit: number;
+  recentVehiclesLimit: number;
+  popularBrandsLimit: number;
+  topDealersLimit: number;
+  // SEO & Features
   metaDescription: string | null;
   googleAnalyticsId: string | null;
   maxImagesPerVehicle: number;
@@ -91,6 +113,25 @@ export default function AdminConfigPage() {
     heroTitle: "",
     heroSubtitle: "",
     footerText: "",
+    // Home Sections Texts
+    whyChooseUsTitle: "¿Por qué elegir AutoExplora.cl?",
+    whyChooseUsSubtitle: "Somos el marketplace de vehículos más confiable de Chile",
+    ctaTitle: "¿Listo para vender tu vehículo?",
+    ctaSubtitle: "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
+    ctaButtonText: "Publicar mi vehículo",
+    // Home Section Visibility
+    showFeaturedVehicles: true,
+    showRecentVehicles: true,
+    showPopularBrands: true,
+    showWhyChooseUs: true,
+    showCTASection: true,
+    showTopDealers: true,
+    // Home Section Limits
+    featuredVehiclesLimit: 8,
+    recentVehiclesLimit: 8,
+    popularBrandsLimit: 12,
+    topDealersLimit: 6,
+    // SEO & Features
     metaDescription: "",
     googleAnalyticsId: "",
     maxImagesPerVehicle: 10,
@@ -128,6 +169,25 @@ export default function AdminConfigPage() {
           heroTitle: data.heroTitle || "",
           heroSubtitle: data.heroSubtitle || "",
           footerText: data.footerText || "",
+          // Home Sections Texts
+          whyChooseUsTitle: data.whyChooseUsTitle || "¿Por qué elegir AutoExplora.cl?",
+          whyChooseUsSubtitle: data.whyChooseUsSubtitle || "Somos el marketplace de vehículos más confiable de Chile",
+          ctaTitle: data.ctaTitle || "¿Listo para vender tu vehículo?",
+          ctaSubtitle: data.ctaSubtitle || "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
+          ctaButtonText: data.ctaButtonText || "Publicar mi vehículo",
+          // Home Section Visibility
+          showFeaturedVehicles: data.showFeaturedVehicles ?? true,
+          showRecentVehicles: data.showRecentVehicles ?? true,
+          showPopularBrands: data.showPopularBrands ?? true,
+          showWhyChooseUs: data.showWhyChooseUs ?? true,
+          showCTASection: data.showCTASection ?? true,
+          showTopDealers: data.showTopDealers ?? true,
+          // Home Section Limits
+          featuredVehiclesLimit: data.featuredVehiclesLimit || 8,
+          recentVehiclesLimit: data.recentVehiclesLimit || 8,
+          popularBrandsLimit: data.popularBrandsLimit || 12,
+          topDealersLimit: data.topDealersLimit || 6,
+          // SEO & Features
           metaDescription: data.metaDescription || "",
           googleAnalyticsId: data.googleAnalyticsId || "",
           maxImagesPerVehicle: data.maxImagesPerVehicle || 10,
@@ -623,6 +683,268 @@ export default function AdminConfigPage() {
                 className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                 disabled={saving}
               />
+            </div>
+          </div>
+        </div>
+
+        {/* Textos del Home */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Home className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">Textos del Home</h2>
+          </div>
+          <div className="p-6 space-y-6">
+            <div className="border-b border-neutral-100 pb-6">
+              <h3 className="text-sm font-semibold text-neutral-800 mb-4">Sección &quot;¿Por qué elegirnos?&quot;</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Título
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.whyChooseUsTitle}
+                    onChange={(e) => handleChange("whyChooseUsTitle", e.target.value)}
+                    placeholder="¿Por qué elegir AutoExplora.cl?"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Subtítulo
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.whyChooseUsSubtitle}
+                    onChange={(e) => handleChange("whyChooseUsSubtitle", e.target.value)}
+                    placeholder="Somos el marketplace de vehículos más confiable de Chile"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="text-sm font-semibold text-neutral-800 mb-4">Sección CTA (Llamada a la Acción)</h3>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Título del CTA
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ctaTitle}
+                    onChange={(e) => handleChange("ctaTitle", e.target.value)}
+                    placeholder="¿Listo para vender tu vehículo?"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Subtítulo del CTA
+                  </label>
+                  <textarea
+                    value={formData.ctaSubtitle}
+                    onChange={(e) => handleChange("ctaSubtitle", e.target.value)}
+                    placeholder="Publica tu auto, moto o vehículo comercial en minutos..."
+                    rows={2}
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                    disabled={saving}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Texto del Botón
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.ctaButtonText}
+                    onChange={(e) => handleChange("ctaButtonText", e.target.value)}
+                    placeholder="Publicar mi vehículo"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    disabled={saving}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Visibilidad de Secciones del Home */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Eye className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">Visibilidad de Secciones del Home</h2>
+          </div>
+          <div className="p-6">
+            <p className="text-sm text-neutral-500 mb-4">
+              Activa o desactiva las secciones que se muestran en la página principal.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showFeaturedVehicles}
+                  onChange={(e) => handleChange("showFeaturedVehicles", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">Vehículos Destacados</span>
+                  <p className="text-xs text-neutral-500">Muestra los vehículos marcados como destacados</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showRecentVehicles}
+                  onChange={(e) => handleChange("showRecentVehicles", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">Vehículos Recientes</span>
+                  <p className="text-xs text-neutral-500">Muestra los últimos vehículos publicados</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showPopularBrands}
+                  onChange={(e) => handleChange("showPopularBrands", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">Marcas Populares</span>
+                  <p className="text-xs text-neutral-500">Muestra las marcas con más vehículos</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showTopDealers}
+                  onChange={(e) => handleChange("showTopDealers", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">Dealers Destacados</span>
+                  <p className="text-xs text-neutral-500">Muestra los dealers con más vehículos</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showWhyChooseUs}
+                  onChange={(e) => handleChange("showWhyChooseUs", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">¿Por qué elegirnos?</span>
+                  <p className="text-xs text-neutral-500">Sección de beneficios del sitio</p>
+                </div>
+              </label>
+
+              <label className="flex items-center gap-3 cursor-pointer p-3 rounded-lg hover:bg-neutral-50 transition-colors">
+                <input
+                  type="checkbox"
+                  checked={formData.showCTASection}
+                  onChange={(e) => handleChange("showCTASection", e.target.checked)}
+                  className="w-5 h-5 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  disabled={saving}
+                />
+                <div>
+                  <span className="text-sm font-medium text-neutral-700">Llamada a la Acción (CTA)</span>
+                  <p className="text-xs text-neutral-500">Sección para publicar vehículos</p>
+                </div>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        {/* Límites de Items del Home */}
+        <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
+          <div className="px-6 py-4 border-b border-neutral-200 flex items-center gap-3">
+            <Hash className="w-5 h-5 text-neutral-400" />
+            <h2 className="text-lg font-semibold text-neutral-900">Límites de Items del Home</h2>
+          </div>
+          <div className="p-6">
+            <p className="text-sm text-neutral-500 mb-4">
+              Define cuántos elementos se mostrarán en cada sección de la página principal.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Vehículos Destacados
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={formData.featuredVehiclesLimit}
+                  onChange={(e) => handleChange("featuredVehiclesLimit", parseInt(e.target.value) || 8)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                />
+                <p className="text-xs text-neutral-500 mt-1">Cantidad de vehículos destacados a mostrar</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Vehículos Recientes
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={20}
+                  value={formData.recentVehiclesLimit}
+                  onChange={(e) => handleChange("recentVehiclesLimit", parseInt(e.target.value) || 8)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                />
+                <p className="text-xs text-neutral-500 mt-1">Cantidad de vehículos recientes a mostrar</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Marcas Populares
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={30}
+                  value={formData.popularBrandsLimit}
+                  onChange={(e) => handleChange("popularBrandsLimit", parseInt(e.target.value) || 12)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                />
+                <p className="text-xs text-neutral-500 mt-1">Cantidad de marcas a mostrar</p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-neutral-700 mb-2">
+                  Dealers Destacados
+                </label>
+                <input
+                  type="number"
+                  min={1}
+                  max={12}
+                  value={formData.topDealersLimit}
+                  onChange={(e) => handleChange("topDealersLimit", parseInt(e.target.value) || 6)}
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  disabled={saving}
+                />
+                <p className="text-xs text-neutral-500 mt-1">Cantidad de dealers a mostrar</p>
+              </div>
             </div>
           </div>
         </div>
