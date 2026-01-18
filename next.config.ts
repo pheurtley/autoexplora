@@ -1,8 +1,9 @@
 import type { NextConfig } from "next";
+import packageJson from "./package.json";
 
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_APP_VERSION: process.env.npm_package_version || '0.0.0',
+    NEXT_PUBLIC_APP_VERSION: packageJson.version,
     NEXT_PUBLIC_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA?.slice(0, 7) || 'dev',
   },
   images: {
