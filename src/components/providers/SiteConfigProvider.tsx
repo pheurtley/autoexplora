@@ -31,6 +31,24 @@ export interface PublicSiteConfig {
   heroTitle: string | null;
   heroSubtitle: string | null;
   footerText: string | null;
+  // Home Sections Texts
+  whyChooseUsTitle: string;
+  whyChooseUsSubtitle: string;
+  ctaTitle: string;
+  ctaSubtitle: string;
+  ctaButtonText: string;
+  // Visibility
+  showFeaturedVehicles: boolean;
+  showRecentVehicles: boolean;
+  showPopularBrands: boolean;
+  showWhyChooseUs: boolean;
+  showCTASection: boolean;
+  showTopDealers: boolean;
+  // Limits
+  featuredVehiclesLimit: number;
+  recentVehiclesLimit: number;
+  popularBrandsLimit: number;
+  topDealersLimit: number;
   // Features
   showWhatsAppButton: boolean;
 }
@@ -57,6 +75,25 @@ const DEFAULT_CONFIG: PublicSiteConfig = {
   heroTitle: "Encuentra tu vehículo ideal",
   heroSubtitle: "Miles de autos, motos y comerciales te esperan en Chile",
   footerText: null,
+  // Home Sections Texts
+  whyChooseUsTitle: "¿Por qué elegir AutoExplora.cl?",
+  whyChooseUsSubtitle: "Somos el marketplace de vehículos más confiable de Chile",
+  ctaTitle: "¿Listo para vender tu vehículo?",
+  ctaSubtitle: "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
+  ctaButtonText: "Publicar mi vehículo",
+  // Visibility
+  showFeaturedVehicles: true,
+  showRecentVehicles: true,
+  showPopularBrands: true,
+  showWhyChooseUs: true,
+  showCTASection: true,
+  showTopDealers: true,
+  // Limits
+  featuredVehiclesLimit: 8,
+  recentVehiclesLimit: 8,
+  popularBrandsLimit: 12,
+  topDealersLimit: 6,
+  // Features
   showWhatsAppButton: true,
 };
 

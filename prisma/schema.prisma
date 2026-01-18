@@ -521,10 +521,31 @@ model SiteConfig {
   twitter   String?
   youtube   String?
 
-  // Textos Personalizables
+  // Textos Personalizables - Hero
   heroTitle    String?
   heroSubtitle String?
   footerText   String?
+
+  // Textos Personalizables - Home Sections
+  whyChooseUsTitle    String @default("¿Por qué elegir AutoExplora.cl?")
+  whyChooseUsSubtitle String @default("Somos el marketplace de vehículos más confiable de Chile")
+  ctaTitle            String @default("¿Listo para vender tu vehículo?")
+  ctaSubtitle         String @default("Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.")
+  ctaButtonText       String @default("Publicar mi vehículo")
+
+  // Visibilidad de secciones del Home
+  showFeaturedVehicles Boolean @default(true)
+  showRecentVehicles   Boolean @default(true)
+  showPopularBrands    Boolean @default(true)
+  showWhyChooseUs      Boolean @default(true)
+  showCTASection       Boolean @default(true)
+  showTopDealers       Boolean @default(true)
+
+  // Límites de items en el Home
+  featuredVehiclesLimit Int @default(8)
+  recentVehiclesLimit   Int @default(8)
+  popularBrandsLimit    Int @default(12)
+  topDealersLimit       Int @default(6)
 
   // SEO y Analytics
   metaDescription   String?

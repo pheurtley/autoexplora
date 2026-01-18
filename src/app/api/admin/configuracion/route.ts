@@ -58,6 +58,13 @@ export async function PATCH(request: NextRequest) {
       "heroTitle",
       "heroSubtitle",
       "footerText",
+      // Home Sections Texts
+      "whyChooseUsTitle",
+      "whyChooseUsSubtitle",
+      "ctaTitle",
+      "ctaSubtitle",
+      "ctaButtonText",
+      // SEO
       "metaDescription",
       "googleAnalyticsId",
       "maintenanceMessage",
@@ -68,10 +75,22 @@ export async function PATCH(request: NextRequest) {
       "showSiteNameInFooter",
       "showWhatsAppButton",
       "maintenanceMode",
+      // Home Section Visibility
+      "showFeaturedVehicles",
+      "showRecentVehicles",
+      "showPopularBrands",
+      "showWhyChooseUs",
+      "showCTASection",
+      "showTopDealers",
     ];
 
     const numberFields = [
       "maxImagesPerVehicle",
+      // Home Section Limits
+      "featuredVehiclesLimit",
+      "recentVehiclesLimit",
+      "popularBrandsLimit",
+      "topDealersLimit",
     ];
 
     const updateData: Record<string, string | boolean | number | null> = {};
