@@ -141,7 +141,7 @@ export function Footer() {
               © {new Date().getFullYear()} {config.siteName}. Todos los derechos
               reservados.
             </p>
-            <div className="flex gap-6 text-sm text-neutral-500">
+            <div className="flex items-center gap-6 text-sm text-neutral-500">
               <Link href="/terminos" className="hover:text-white transition-colors">
                 Términos
               </Link>
@@ -151,6 +151,9 @@ export function Footer() {
               <Link href="/cookies" className="hover:text-white transition-colors">
                 Cookies
               </Link>
+              <span className="text-xs text-neutral-600 select-all" title="Versión de la aplicación">
+                v{process.env.NEXT_PUBLIC_APP_VERSION}-{process.env.NEXT_PUBLIC_COMMIT_SHA}
+              </span>
             </div>
           </div>
         </div>
