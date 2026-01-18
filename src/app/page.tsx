@@ -4,13 +4,17 @@ import {
   FeaturedVehicles,
   RecentVehicles,
   PopularBrands,
+  TopDealers,
   WhyChooseUs,
   CTASection,
 } from "@/components/home";
 import { Suspense } from "react";
 import { Container } from "@/components/layout";
+import { getSiteConfig } from "@/lib/config";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const config = await getSiteConfig();
+
   return (
     <>
       {/* Hero Section */}
@@ -22,25 +26,49 @@ export default function HomePage() {
       <CategoryCarousel />
 
       {/* Featured Vehicles */}
-      <Suspense fallback={<VehiclesSkeleton title="Vehículos destacados" />}>
-        <FeaturedVehicles />
-      </Suspense>
+      {config.showFeaturedVehicles && (
+        <Suspense fallback={<VehiclesSkeleton title="Vehículos destacados" />}>
+          <FeaturedVehicles limit={config.featuredVehiclesLimit} />
+        </Suspense>
+      )}
 
       {/* Recent Vehicles */}
-      <Suspense fallback={<VehiclesSkeleton title="Publicados recientemente" hasBg />}>
-        <RecentVehicles />
-      </Suspense>
+      {config.showRecentVehicles && (
+        <Suspense fallback={<VehiclesSkeleton title="Publicados recientemente" hasBg />}>
+          <RecentVehicles limit={config.recentVehiclesLimit} />
+        </Suspense>
+      )}
 
       {/* Popular Brands */}
-      <Suspense fallback={<BrandsSkeleton />}>
-        <PopularBrands />
-      </Suspense>
+      {config.showPopularBrands && (
+        <Suspense fallback={<BrandsSkeleton />}>
+          <PopularBrands limit={config.popularBrandsLimit} />
+        </Suspense>
+      )}
+
+      {/* Top Dealers */}
+      {config.showTopDealers && (
+        <Suspense fallback={<DealersSkeleton />}>
+          <TopDealers limit={config.topDealersLimit} />
+        </Suspense>
+      )}
 
       {/* Why Choose Us */}
-      <WhyChooseUs />
+      {config.showWhyChooseUs && (
+        <WhyChooseUs
+          title={config.whyChooseUsTitle}
+          subtitle={config.whyChooseUsSubtitle}
+        />
+      )}
 
       {/* CTA Section */}
-      <CTASection />
+      {config.showCTASection && (
+        <CTASection
+          title={config.ctaTitle}
+          subtitle={config.ctaSubtitle}
+          buttonText={config.ctaButtonText}
+        />
+      )}
     </>
   );
 }
@@ -108,6 +136,37 @@ function BrandsSkeleton() {
               <div className="w-16 h-16 mb-3 bg-neutral-200 rounded-lg animate-pulse" />
               <div className="h-4 bg-neutral-200 rounded w-16 animate-pulse" />
               <div className="h-3 bg-neutral-100 rounded w-12 mt-1 animate-pulse" />
+            </div>
+          ))}
+        </div>
+      </Container>
+    </section>
+  );
+}
+
+function DealersSkeleton() {
+  return (
+    <section className="py-12 bg-neutral-50">
+      <Container>
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-bold text-neutral-900">Dealers destacados</h2>
+            <div className="h-5 bg-neutral-200 rounded w-64 mt-2 animate-pulse" />
+          </div>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="p-6 bg-white rounded-xl border border-neutral-200">
+              <div className="flex items-start gap-4">
+                <div className="w-16 h-16 bg-neutral-200 rounded-lg animate-pulse" />
+                <div className="flex-1">
+                  <div className="h-5 bg-neutral-200 rounded w-3/4 mb-2 animate-pulse" />
+                  <div className="h-4 bg-neutral-100 rounded w-1/2 animate-pulse" />
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-neutral-100">
+                <div className="h-4 bg-neutral-100 rounded w-32 animate-pulse" />
+              </div>
             </div>
           ))}
         </div>
