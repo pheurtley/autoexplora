@@ -27,6 +27,7 @@ interface PageProps {
     page?: string;
     sort?: SortOption;
     search?: string;
+    type?: string; // Alias for vehicleType (backwards compatibility)
     vehicleType?: string;
     category?: string;
     brandId?: string;
@@ -71,8 +72,10 @@ export default async function VehiculosPage({ searchParams }: PageProps) {
   const validVehicleTypes = Object.values(VehicleType);
   const validCategories = Object.values(VehicleCategory);
 
-  if (params.vehicleType && validVehicleTypes.includes(params.vehicleType as VehicleType)) {
-    where.vehicleType = params.vehicleType as VehicleType;
+  // Support both 'type' and 'vehicleType' params (type is for backwards compatibility)
+  const vehicleTypeParam = params.vehicleType || params.type;
+  if (vehicleTypeParam && validVehicleTypes.includes(vehicleTypeParam as VehicleType)) {
+    where.vehicleType = vehicleTypeParam as VehicleType;
   }
   if (params.category && validCategories.includes(params.category as VehicleCategory)) {
     where.category = params.category as VehicleCategory;

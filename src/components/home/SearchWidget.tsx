@@ -49,7 +49,7 @@ export function SearchWidget() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    params.set("type", selectedType);
+    params.set("vehicleType", selectedType);
     if (brand) params.set("brand", brand);
     if (priceMax) params.set("priceMax", priceMax);
     if (yearMin) params.set("yearMin", yearMin);
