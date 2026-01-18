@@ -47,7 +47,6 @@ interface DealerProfile {
 }
 
 const typeLabels: Record<string, string> = {
-  CONCESIONARIO: "Concesionario",
   AUTOMOTORA: "Automotora",
   RENT_A_CAR: "Rent a Car",
 };
@@ -196,7 +195,7 @@ export default function DealerProfilePage() {
       {/* Header */}
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">
-          Perfil del Concesionario
+          Perfil de la Automotora
         </h1>
         <p className="text-neutral-600 mt-1">
           Actualiza la información de tu negocio

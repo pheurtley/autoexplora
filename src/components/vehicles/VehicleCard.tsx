@@ -47,9 +47,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
             {vehicle.dealer && (
               <Badge variant="primary" size="sm" className="flex items-center gap-1">
                 <Building2 className="h-3 w-3" />
-                {vehicle.dealer.type === "CONCESIONARIO"
-                  ? "Concesionario"
-                  : vehicle.dealer.type === "AUTOMOTORA"
+                {vehicle.dealer.type === "AUTOMOTORA"
                   ? "Automotora"
                   : "Rent a Car"}
               </Badge>
@@ -108,7 +106,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         {/* Dealer Link */}
         {vehicle.dealer && (
           <Link
-            href={`/concesionario/${vehicle.dealer.slug}`}
+            href={`/automotora/${vehicle.dealer.slug}`}
             className="mt-2 flex items-center gap-2 text-sm text-andino-600 hover:text-andino-700"
             onClick={(e) => e.stopPropagation()}
           >

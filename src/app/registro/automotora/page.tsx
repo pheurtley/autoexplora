@@ -5,12 +5,12 @@ import { DealerRegistrationForm } from "@/components/forms/DealerRegistrationFor
 import { Building2 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Registrar Concesionario | AutoExplora.cl",
+  title: "Registrar Automotora | AutoExplora.cl",
   description:
-    "Registra tu concesionario o automotora en AutoExplora.cl y llega a miles de compradores.",
+    "Registra tu automotora en AutoExplora.cl y llega a miles de compradores.",
 };
 
-export default function RegistroConcesionarioPage() {
+export default function RegistroAutomotoraPage() {
   return (
     <main className="min-h-screen bg-neutral-50 py-8 px-4">
       <Container className="max-w-2xl">
@@ -32,10 +32,10 @@ export default function RegistroConcesionarioPage() {
             </div>
             <div>
               <h1 className="text-xl font-bold text-neutral-900">
-                Registrar Concesionario
+                Registrar Automotora
               </h1>
               <p className="text-sm text-neutral-600">
-                Crea tu cuenta de concesionario o automotora
+                Crea tu cuenta de automotora
               </p>
             </div>
           </div>

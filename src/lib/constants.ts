@@ -139,8 +139,7 @@ export const COLORS = {
 // ==================== Dealer Constants ====================
 
 export const DEALER_TYPES = {
-  CONCESIONARIO: { label: "Concesionario", description: "Vehículos nuevos" },
-  AUTOMOTORA: { label: "Automotora", description: "Vehículos usados" },
+  AUTOMOTORA: { label: "Automotora", description: "Vehículos nuevos y usados" },
   RENT_A_CAR: { label: "Rent a Car", description: "Arriendo de vehículos" },
 } as const;
 

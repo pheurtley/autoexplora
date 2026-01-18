@@ -44,7 +44,7 @@ const navigation = [
   { name: "Autos", href: "/vehiculos?vehicleType=AUTO", icon: Car },
   { name: "Motos", href: "/vehiculos?vehicleType=MOTO", icon: Bike },
   { name: "Comerciales", href: "/vehiculos?vehicleType=COMERCIAL", icon: Truck },
-  { name: "Concesionarios", href: "/concesionarios", icon: Building2 },
+  { name: "Automotoras", href: "/automotoras", icon: Building2 },
 ];
 
 export function Header() {
@@ -154,7 +154,7 @@ export function Header() {
                         onClick={() => setUserMenuOpen(false)}
                       >
                         <Building2 className="w-4 h-4" />
-                        Panel Concesionario
+                        Panel Automotora
                       </Link>
                     )}
                     <Link
@@ -275,7 +275,7 @@ export function Header() {
                       onClick={() => setMobileMenuOpen(false)}
                     >
                       <Building2 className="h-5 w-5" />
-                      Panel Concesionario
+                      Panel Automotora
                     </Link>
                   )}
                   <Link

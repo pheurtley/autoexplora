@@ -73,7 +73,6 @@ const statusConfig = {
 };
 
 const typeLabels: Record<string, string> = {
-  CONCESIONARIO: "Concesionario",
   AUTOMOTORA: "Automotora",
   RENT_A_CAR: "Rent a Car",
 };
@@ -106,7 +105,7 @@ export default function AdminDealerDetailPage({
         const data = await response.json();
         setDealer(data.dealer);
       } else if (response.status === 404) {
-        router.push("/admin/concesionarios");
+        router.push("/admin/automotoras");
       }
     } catch (error) {
       console.error("Error fetching dealer:", error);
@@ -141,7 +140,7 @@ export default function AdminDealerDetailPage({
   };
 
   const handleApprove = () => {
-    if (confirm("¿Aprobar este concesionario?")) {
+    if (confirm("¿Aprobar esta automotora?")) {
       handleStatusChange("ACTIVE");
     }
   };
@@ -171,8 +170,8 @@ export default function AdminDealerDetailPage({
   if (!dealer) {
     return (
       <div className="text-center py-12">
-        <p className="text-neutral-500">Concesionario no encontrado</p>
-        <Link href="/admin/concesionarios" className="text-andino-600 hover:underline mt-4 block">
+        <p className="text-neutral-500">Automotora no encontrada</p>
+        <Link href="/admin/automotoras" className="text-andino-600 hover:underline mt-4 block">
           Volver a la lista
         </Link>
       </div>
@@ -187,7 +186,7 @@ export default function AdminDealerDetailPage({
       {/* Header */}
       <div className="flex items-center gap-4">
         <Link
-          href="/admin/concesionarios"
+          href="/admin/automotoras"
           className="p-2 rounded-lg hover:bg-neutral-100 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-neutral-600" />
@@ -205,7 +204,7 @@ export default function AdminDealerDetailPage({
           <div className="flex-1">
             <h3 className="font-medium text-amber-800">Pendiente de aprobación</h3>
             <p className="text-sm text-amber-700 mt-1">
-              Este concesionario está esperando ser revisado y aprobado.
+              Esta automotora está esperando ser revisada y aprobada.
             </p>
           </div>
           <div className="flex gap-2">
@@ -433,7 +432,7 @@ export default function AdminDealerDetailPage({
             <div className="bg-white rounded-xl border border-neutral-200 p-6">
               <h3 className="font-medium text-neutral-900 mb-2">Perfil Público</h3>
               <Link
-                href={`/concesionario/${dealer.slug}`}
+                href={`/automotora/${dealer.slug}`}
                 target="_blank"
                 className="text-andino-600 hover:underline text-sm flex items-center gap-1"
               >

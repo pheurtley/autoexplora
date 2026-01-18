@@ -38,9 +38,9 @@ interface DealerData {
 }
 
 const DEALER_DATA: DealerData[] = [
-  // ==================== CONCESIONARIOS (Nuevos) ====================
+  // ==================== AUTOMOTORAS (Nuevos) ====================
   {
-    type: "CONCESIONARIO",
+    type: "AUTOMOTORA",
     status: "ACTIVE",
     businessName: "Automotriz del Sur SpA",
     tradeName: "Toyota Sur",
@@ -52,7 +52,7 @@ const DEALER_DATA: DealerData[] = [
     address: "Av. Vicuña Mackenna 1234",
     regionSlug: "metropolitana",
     comunaSlug: "la-florida",
-    description: "Concesionario oficial Toyota con más de 20 años de experiencia. Venta de vehículos nuevos, servicio técnico autorizado y repuestos originales. Financiamiento directo disponible.",
+    description: "Automotora oficial Toyota con más de 20 años de experiencia. Venta de vehículos nuevos, servicio técnico autorizado y repuestos originales. Financiamiento directo disponible.",
     ownerName: "Carlos Mendoza",
     ownerEmail: "carlos@toyotasur.cl",
     team: [
@@ -61,7 +61,7 @@ const DEALER_DATA: DealerData[] = [
     ],
   },
   {
-    type: "CONCESIONARIO",
+    type: "AUTOMOTORA",
     status: "ACTIVE",
     businessName: "Hyundai Providencia Ltda",
     tradeName: "Hyundai Providencia",
@@ -73,12 +73,12 @@ const DEALER_DATA: DealerData[] = [
     address: "Av. Providencia 2345",
     regionSlug: "metropolitana",
     comunaSlug: "providencia",
-    description: "Concesionario Hyundai certificado. Ofrecemos toda la gama de vehículos nuevos Hyundai con garantía de fábrica de 7 años. Servicio post-venta y repuestos genuinos.",
+    description: "Automotora Hyundai certificada. Ofrecemos toda la gama de vehículos nuevos Hyundai con garantía de fábrica de 7 años. Servicio post-venta y repuestos genuinos.",
     ownerName: "Andrea Muñoz",
     ownerEmail: "andrea@hyundaiprovidencia.cl",
   },
   {
-    type: "CONCESIONARIO",
+    type: "AUTOMOTORA",
     status: "PENDING",
     businessName: "Kia Motors Norte SpA",
     tradeName: "Kia Antofagasta",
@@ -87,7 +87,7 @@ const DEALER_DATA: DealerData[] = [
     phone: "+56552345678",
     address: "Av. Argentina 567",
     regionSlug: "antofagasta",
-    description: "Nuevo concesionario Kia en la región de Antofagasta. Próximamente disponibles todos los modelos de la marca.",
+    description: "Nueva automotora Kia en la región de Antofagasta. Próximamente disponibles todos los modelos de la marca.",
     ownerName: "Roberto Silva",
     ownerEmail: "roberto@kiaantofagasta.cl",
   },
@@ -235,7 +235,7 @@ const DEALER_DATA: DealerData[] = [
 ];
 
 async function main() {
-  console.log("🏢 Creando concesionarios y automotoras de prueba...\n");
+  console.log("🏢 Creando automotoras de prueba...\n");
 
   // Hash password for all users
   const passwordHash = await bcrypt.hash("Test1234!", 10);
@@ -361,7 +361,6 @@ async function main() {
       };
 
       const typeLabel = {
-        CONCESIONARIO: "Concesionario",
         AUTOMOTORA: "Automotora",
         RENT_A_CAR: "Rent a Car",
       };
@@ -404,8 +403,8 @@ async function main() {
   console.log(`   Password: Test1234!`);
   console.log(`\n🔗 URLs:`);
   console.log(`   Panel dealer: http://localhost:3000/dealer`);
-  console.log(`   Admin: http://localhost:3000/admin/concesionarios`);
-  console.log(`   Registro: http://localhost:3000/registro/concesionario`);
+  console.log(`   Admin: http://localhost:3000/admin/automotoras`);
+  console.log(`   Registro: http://localhost:3000/registro/automotora`);
 }
 
 main()

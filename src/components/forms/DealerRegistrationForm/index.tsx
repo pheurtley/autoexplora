@@ -165,14 +165,14 @@ export function DealerRegistrationForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setSubmitError(data.error || "Error al registrar el concesionario");
+        setSubmitError(data.error || "Error al registrar la automotora");
         return;
       }
 
       setIsSuccess(true);
     } catch (error) {
       console.error("Registration error:", error);
-      setSubmitError("Error al registrar el concesionario. Intenta nuevamente.");
+      setSubmitError("Error al registrar la automotora. Intenta nuevamente.");
     } finally {
       setIsSubmitting(false);
     }

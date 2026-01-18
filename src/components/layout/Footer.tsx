@@ -28,7 +28,7 @@ const footerLinks = {
       { name: "Comerciales", href: "/vehiculos?vehicleType=COMERCIAL" },
       { name: "Nuevos", href: "/vehiculos?condition=NUEVO" },
       { name: "Usados", href: "/vehiculos?condition=USADO" },
-      { name: "Concesionarios", href: "/concesionarios" },
+      { name: "Automotoras", href: "/automotoras" },
     ],
   },
   marcas: {

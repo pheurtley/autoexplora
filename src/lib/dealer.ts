@@ -7,7 +7,7 @@ import { UnauthorizedError, ForbiddenError } from "./admin";
  * Error thrown when dealer is not approved
  */
 export class DealerPendingError extends Error {
-  constructor(message: string = "Tu cuenta de concesionario está pendiente de aprobación") {
+  constructor(message: string = "Tu cuenta de automotora está pendiente de aprobación") {
     super(message);
     this.name = "DealerPendingError";
   }
@@ -20,7 +20,7 @@ export class DealerInactiveError extends Error {
   status: DealerStatus;
 
   constructor(status: DealerStatus, message?: string) {
-    super(message || `Tu cuenta de concesionario está ${status.toLowerCase()}`);
+    super(message || `Tu cuenta de automotora está ${status.toLowerCase()}`);
     this.name = "DealerInactiveError";
     this.status = status;
   }
@@ -70,7 +70,7 @@ export async function requireDealer(session: Session | null) {
   }
 
   if (!user.dealer) {
-    throw new ForbiddenError("No tienes una cuenta de concesionario");
+    throw new ForbiddenError("No tienes una cuenta de automotora");
   }
 
   // Check dealer status

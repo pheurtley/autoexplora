@@ -54,7 +54,7 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Configuración del sitio
 - [x] Dashboard con estadísticas
 
-### Sistema de Dealers (Concesionarios/Automotoras)
+### Sistema de Dealers (Automotoras)
 - [x] Modelo de datos (Dealer, DealerType, DealerStatus, DealerRole)
 - [x] Registro de dealer con formulario de 5 pasos
 - [x] Validación de RUT chileno
@@ -62,12 +62,12 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Dashboard de dealer con estadísticas
 - [x] Gestión de vehículos del dealer
 - [x] Mensajes en contexto de dealer
-- [x] Perfil público del dealer (`/concesionario/[slug]`)
+- [x] Perfil público del dealer (`/automotora/[slug]`)
 - [x] Badge de dealer en tarjetas de vehículos
 - [x] Admin: Lista de dealers con filtros
 - [x] Admin: Aprobar/Rechazar/Suspender dealers
 - [x] Sesión extendida con info de dealer (dealerId, dealerRole)
-- [x] Menú de usuario con opción "Panel Concesionario"
+- [x] Menú de usuario con opción "Panel Automotora"
 - [x] Redirección inteligente para dealers (publicaciones → dealer/vehiculos)
 - [x] APIs de dealer (registro, perfil, vehículos, equipo, stats)
 
@@ -78,8 +78,8 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 ### Alta Prioridad
 
 #### Directorio de Dealers
-- [ ] Página `/concesionarios` con listado de todos los dealers activos
-- [ ] Filtros por tipo (Concesionario, Automotora, Rent a Car)
+- [x] Página `/automotoras` con listado de todos los dealers activos
+- [ ] Filtros por tipo (Automotora, Rent a Car)
 - [ ] Filtros por región
 - [ ] Búsqueda por nombre
 - [ ] Ordenamiento (más recientes, más vehículos, alfabético)
@@ -87,7 +87,7 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 #### Filtro de Vendedor en Búsqueda
 - [ ] Agregar filtro "Tipo de vendedor" en `/vehiculos`
-- [ ] Opciones: Todos, Particular, Concesionario, Automotora, Rent a Car
+- [ ] Opciones: Todos, Particular, Automotora, Rent a Car
 - [ ] Actualizar API de búsqueda para soportar filtro
 
 #### Info de Dealer en Detalle de Vehículo

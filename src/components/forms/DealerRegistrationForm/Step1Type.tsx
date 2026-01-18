@@ -1,6 +1,6 @@
 "use client";
 
-import { Building2, Car, Key } from "lucide-react";
+import { Car, Key } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DealerRegistrationFormData } from "@/lib/validations/dealer";
 
@@ -12,15 +12,9 @@ interface Step1TypeProps {
 
 const dealerTypes = [
   {
-    value: "CONCESIONARIO",
-    label: "Concesionario",
-    description: "Venta de vehículos nuevos de marca autorizada",
-    icon: Building2,
-  },
-  {
     value: "AUTOMOTORA",
     label: "Automotora",
-    description: "Venta de vehículos usados y seminuevos",
+    description: "Venta de vehículos nuevos y usados",
     icon: Car,
   },
   {

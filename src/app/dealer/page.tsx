@@ -92,7 +92,7 @@ export default function DealerDashboardPage() {
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Dashboard</h1>
           <p className="text-neutral-600 mt-1">
-            Bienvenido a tu panel de concesionario
+            Bienvenido a tu panel de automotora
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function DealerDashboardPage() {
           <div>
             <h3 className="font-medium text-amber-800">Cuenta pendiente de aprobación</h3>
             <p className="text-sm text-amber-700 mt-1">
-              Tu cuenta de concesionario está siendo revisada. Te notificaremos por email cuando sea aprobada.
+              Tu cuenta de automotora está siendo revisada. Te notificaremos por email cuando sea aprobada.
               Mientras tanto, puedes completar tu perfil.
             </p>
             <Link
@@ -238,7 +238,7 @@ export default function DealerDashboardPage() {
           />
           <QuickActionCard
             title="Editar Perfil"
-            description="Actualiza la información de tu concesionario"
+            description="Actualiza la información de tu automotora"
             href="/dealer/perfil"
             icon={AlertCircle}
           />

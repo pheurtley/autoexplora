@@ -33,13 +33,11 @@ export async function generateMetadata({
   });
 
   if (!dealer) {
-    return { title: "Concesionario no encontrado | AutoExplora.cl" };
+    return { title: "Automotora no encontrada | AutoExplora.cl" };
   }
 
   const typeLabel =
-    dealer.type === "CONCESIONARIO"
-      ? "Concesionario"
-      : dealer.type === "AUTOMOTORA"
+    dealer.type === "AUTOMOTORA"
       ? "Automotora"
       : "Rent a Car";
 
@@ -102,9 +100,7 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
   }
 
   const typeLabel =
-    dealer.type === "CONCESIONARIO"
-      ? "Concesionario"
-      : dealer.type === "AUTOMOTORA"
+    dealer.type === "AUTOMOTORA"
       ? "Automotora"
       : "Rent a Car";
 

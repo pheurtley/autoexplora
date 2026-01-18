@@ -26,7 +26,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     if (!user?.dealerId) {
       return NextResponse.json(
-        { error: "No tienes una cuenta de concesionario" },
+        { error: "No tienes una cuenta de automotora" },
         { status: 403 }
       );
     }

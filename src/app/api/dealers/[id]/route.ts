@@ -45,7 +45,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (!dealer) {
       return NextResponse.json(
-        { error: "Concesionario no encontrado" },
+        { error: "Automotora no encontrada" },
         { status: 404 }
       );
     }
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
   } catch (error) {
     console.error("Error fetching dealer:", error);
     return NextResponse.json(
-      { error: "Error al obtener el concesionario" },
+      { error: "Error al obtener la automotora" },
       { status: 500 }
     );
   }

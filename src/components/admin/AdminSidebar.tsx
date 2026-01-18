@@ -49,8 +49,8 @@ const mainNavigation: NavItem[] = [
     icon: Car,
   },
   {
-    name: "Concesionarios",
-    href: "/admin/concesionarios",
+    name: "Automotoras",
+    href: "/admin/automotoras",
     icon: Building2,
   },
   {

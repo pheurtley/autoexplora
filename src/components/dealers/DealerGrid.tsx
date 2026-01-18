@@ -27,14 +27,14 @@ export function DealerGrid({ dealers }: DealerGridProps) {
           <Building2 className="h-8 w-8 text-neutral-400" />
         </div>
         <h3 className="text-lg font-semibold text-neutral-900 mb-2">
-          No se encontraron concesionarios
+          No se encontraron automotoras
         </h3>
         <p className="text-neutral-600 mb-6 max-w-md mx-auto">
           Intenta ajustar los filtros de búsqueda o explora todas las opciones
           disponibles.
         </p>
-        <Link href="/concesionarios">
-          <Button variant="outline">Ver todos los concesionarios</Button>
+        <Link href="/automotoras">
+          <Button variant="outline">Ver todas las automotoras</Button>
         </Link>
       </div>
     );

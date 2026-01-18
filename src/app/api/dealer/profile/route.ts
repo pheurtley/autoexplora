@@ -44,7 +44,7 @@ export async function GET() {
 
     if (!user?.dealer) {
       return NextResponse.json(
-        { error: "No tienes una cuenta de concesionario" },
+        { error: "No tienes una cuenta de automotora" },
         { status: 403 }
       );
     }

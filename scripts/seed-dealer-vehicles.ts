@@ -36,8 +36,8 @@ interface VehicleData {
   condition: VehicleCondition;
 }
 
-// Vehicles for CONCESIONARIO (new cars)
-const CONCESIONARIO_VEHICLES: VehicleData[] = [
+// Vehicles for AUTOMOTORA (new cars)
+const AUTOMOTORA_NEW_VEHICLES: VehicleData[] = [
   {
     brandSlug: "toyota",
     modelSlug: "corolla",
@@ -386,7 +386,7 @@ const RENT_A_CAR_VEHICLES: VehicleData[] = [
 ];
 
 async function main() {
-  console.log("🚗 Creando vehículos para concesionarios de prueba...\n");
+  console.log("🚗 Creando vehículos para automotoras de prueba...\n");
 
   // Get all active dealers
   const dealers = await prisma.dealer.findMany({
@@ -435,15 +435,13 @@ async function main() {
     // Select vehicles based on dealer type
     let vehiclePool: VehicleData[];
     switch (dealer.type) {
-      case DealerType.CONCESIONARIO:
-        vehiclePool = CONCESIONARIO_VEHICLES;
-        break;
       case DealerType.RENT_A_CAR:
         vehiclePool = RENT_A_CAR_VEHICLES;
         break;
       case DealerType.AUTOMOTORA:
       default:
-        vehiclePool = AUTOMOTORA_VEHICLES;
+        // Mix new and used vehicles for AUTOMOTORA
+        vehiclePool = [...AUTOMOTORA_NEW_VEHICLES, ...AUTOMOTORA_VEHICLES];
         break;
     }
 
@@ -558,7 +556,7 @@ async function main() {
 
   console.log(`\n🔗 Ver vehículos en:`);
   for (const dealer of dealers) {
-    console.log(`   http://localhost:3000/concesionario/${dealer.slug}`);
+    console.log(`   http://localhost:3000/automotora/${dealer.slug}`);
   }
 }
 

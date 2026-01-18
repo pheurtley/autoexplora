@@ -3,7 +3,7 @@ import { validateRut } from "../rut";
 
 // ==================== Enums ====================
 
-export const dealerTypeEnum = z.enum(["CONCESIONARIO", "AUTOMOTORA", "RENT_A_CAR"]);
+export const dealerTypeEnum = z.enum(["AUTOMOTORA", "RENT_A_CAR"]);
 export const dealerStatusEnum = z.enum(["PENDING", "ACTIVE", "SUSPENDED", "REJECTED"]);
 export const dealerRoleEnum = z.enum(["OWNER", "MANAGER", "SALES"]);
 
@@ -218,14 +218,12 @@ export const initialDealerFormData: DealerRegistrationFormData = {
 // ==================== Display Labels ====================
 
 export const dealerTypeLabels: Record<DealerType, string> = {
-  CONCESIONARIO: "Concesionario",
   AUTOMOTORA: "Automotora",
   RENT_A_CAR: "Rent a Car",
 };
 
 export const dealerTypeDescriptions: Record<DealerType, string> = {
-  CONCESIONARIO: "Venta de vehículos nuevos de marca",
-  AUTOMOTORA: "Venta de vehículos usados",
+  AUTOMOTORA: "Venta de vehículos nuevos y usados",
   RENT_A_CAR: "Arriendo y venta de vehículos",
 };
 

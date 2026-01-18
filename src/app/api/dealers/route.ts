@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error fetching dealers:", error);
     return NextResponse.json(
-      { error: "Error al obtener concesionarios" },
+      { error: "Error al obtener automotoras" },
       { status: 500 }
     );
   }

@@ -93,7 +93,7 @@ export function DealerSidebar({
                 <p className="font-semibold text-neutral-900 truncate">
                   {dealer.tradeName}
                 </p>
-                <p className="text-xs text-neutral-500">Panel de Concesionario</p>
+                <p className="text-xs text-neutral-500">Panel de Automotora</p>
               </div>
             </Link>
             {/* Close button for mobile */}

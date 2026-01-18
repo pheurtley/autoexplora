@@ -62,8 +62,7 @@ enum Role {
 // ==================== DEALERS ====================
 
 enum DealerType {
-  CONCESIONARIO // Vende vehículos nuevos
-  AUTOMOTORA // Vende vehículos usados
+  AUTOMOTORA // Vende vehículos nuevos y usados
   RENT_A_CAR // Arrienda y vende
 }
 

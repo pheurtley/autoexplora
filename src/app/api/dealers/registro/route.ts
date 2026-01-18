@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 
     if (existingDealer) {
       return NextResponse.json(
-        { error: "Ya existe un concesionario registrado con este RUT" },
+        { error: "Ya existe una automotora registrada con este RUT" },
         { status: 400 }
       );
     }
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Error in dealer registration:", error);
     return NextResponse.json(
-      { error: "Error al registrar el concesionario" },
+      { error: "Error al registrar la automotora" },
       { status: 500 }
     );
   }

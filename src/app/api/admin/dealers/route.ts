@@ -97,7 +97,7 @@ export async function GET(request: NextRequest) {
 
     console.error("Error fetching dealers for admin:", error);
     return NextResponse.json(
-      { error: "Error al obtener concesionarios" },
+      { error: "Error al obtener automotoras" },
       { status: 500 }
     );
   }

@@ -57,7 +57,6 @@ const statusFilters = [
 
 const typeFilters = [
   { value: "", label: "Todos los tipos" },
-  { value: "CONCESIONARIO", label: "Concesionarios" },
   { value: "AUTOMOTORA", label: "Automotoras" },
   { value: "RENT_A_CAR", label: "Rent a Car" },
 ];
@@ -70,12 +69,11 @@ const statusConfig: Record<string, { label: string; color: string; bg: string; i
 };
 
 const typeConfig: Record<string, { label: string; color: string; bg: string }> = {
-  CONCESIONARIO: { label: "Concesionario", color: "text-blue-700", bg: "bg-blue-100" },
   AUTOMOTORA: { label: "Automotora", color: "text-purple-700", bg: "bg-purple-100" },
   RENT_A_CAR: { label: "Rent a Car", color: "text-teal-700", bg: "bg-teal-100" },
 };
 
-export default function AdminConcesionariosPage() {
+export default function AdminAutomotorasPage() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -167,7 +165,7 @@ export default function AdminConcesionariosPage() {
   };
 
   const handleApprove = (dealerId: string) => {
-    if (confirm("¿Aprobar este concesionario?")) {
+    if (confirm("¿Aprobar esta automotora?")) {
       handleStatusChange(dealerId, "ACTIVE");
     }
   };
@@ -191,9 +189,9 @@ export default function AdminConcesionariosPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-neutral-900">Concesionarios</h1>
+          <h1 className="text-2xl font-bold text-neutral-900">Automotoras</h1>
           <p className="text-neutral-600 mt-1">
-            {total} {total === 1 ? "concesionario" : "concesionarios"} en total
+            {total} {total === 1 ? "automotora" : "automotoras"} en total
           </p>
         </div>
 
@@ -261,12 +259,12 @@ export default function AdminConcesionariosPage() {
       {loading ? (
         <div className="bg-white rounded-xl border border-neutral-200 p-12 text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-andino-600 mx-auto"></div>
-          <p className="text-neutral-500 mt-4">Cargando concesionarios...</p>
+          <p className="text-neutral-500 mt-4">Cargando automotoras...</p>
         </div>
       ) : dealers.length === 0 ? (
         <div className="bg-white rounded-xl border border-neutral-200 p-12 text-center">
           <Building2 className="h-12 w-12 text-neutral-300 mx-auto mb-4" />
-          <p className="text-neutral-500">No hay concesionarios para mostrar</p>
+          <p className="text-neutral-500">No hay automotoras para mostrar</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
@@ -274,7 +272,7 @@ export default function AdminConcesionariosPage() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-neutral-200 bg-neutral-50">
-                  <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">Concesionario</th>
+                  <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">Automotora</th>
                   <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">Tipo</th>
                   <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">Ubicación</th>
                   <th className="text-center px-4 py-3 text-sm font-medium text-neutral-600">Vehículos</th>
@@ -293,7 +291,7 @@ export default function AdminConcesionariosPage() {
                   return (
                     <tr key={dealer.id} className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50">
                       <td className="px-4 py-3">
-                        <Link href={`/admin/concesionarios/${dealer.id}`} className="flex items-center gap-3">
+                        <Link href={`/admin/automotoras/${dealer.id}`} className="flex items-center gap-3">
                           <div className="w-10 h-10 rounded-lg bg-andino-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
                             {dealer.logo ? (
                               <img src={dealer.logo} alt={dealer.tradeName} className="w-full h-full object-contain" />
@@ -357,7 +355,7 @@ export default function AdminConcesionariosPage() {
                             {openMenu === dealer.id && (
                               <div className="absolute right-0 mt-1 w-48 bg-white rounded-lg shadow-lg border border-neutral-200 py-1 z-10">
                                 <Link
-                                  href={`/admin/concesionarios/${dealer.id}`}
+                                  href={`/admin/automotoras/${dealer.id}`}
                                   className="block px-4 py-2 text-sm text-neutral-600 hover:bg-neutral-50"
                                 >
                                   Ver detalles

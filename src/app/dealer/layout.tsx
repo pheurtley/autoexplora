@@ -5,8 +5,8 @@ import prisma from "@/lib/prisma";
 import { DealerLayoutClient } from "@/components/dealer/DealerLayoutClient";
 
 export const metadata: Metadata = {
-  title: "Panel de Concesionario | AutoExplora.cl",
-  description: "Gestiona tu concesionario en AutoExplora.cl",
+  title: "Panel de Automotora | AutoExplora.cl",
+  description: "Gestiona tu automotora en AutoExplora.cl",
 };
 
 export default async function DealerLayout({
@@ -41,7 +41,7 @@ export default async function DealerLayout({
 
   // Verify user has a dealer account
   if (!user?.dealer) {
-    redirect("/registro/concesionario");
+    redirect("/registro/automotora");
   }
 
   return (

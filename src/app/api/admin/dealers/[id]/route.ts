@@ -54,7 +54,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (!dealer) {
       return NextResponse.json(
-        { error: "Concesionario no encontrado" },
+        { error: "Automotora no encontrada" },
         { status: 404 }
       );
     }
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     console.error("Error fetching dealer for admin:", error);
     return NextResponse.json(
-      { error: "Error al obtener el concesionario" },
+      { error: "Error al obtener la automotora" },
       { status: 500 }
     );
   }
@@ -102,7 +102,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     if (!dealer) {
       return NextResponse.json(
-        { error: "Concesionario no encontrado" },
+        { error: "Automotora no encontrada" },
         { status: 404 }
       );
     }
@@ -146,7 +146,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     console.error("Error updating dealer status:", error);
     return NextResponse.json(
-      { error: "Error al actualizar el concesionario" },
+      { error: "Error al actualizar la automotora" },
       { status: 500 }
     );
   }
@@ -155,11 +155,11 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 function getStatusMessage(status: DealerStatus): string {
   switch (status) {
     case DealerStatus.ACTIVE:
-      return "Concesionario aprobado correctamente";
+      return "Automotora aprobada correctamente";
     case DealerStatus.REJECTED:
-      return "Concesionario rechazado";
+      return "Automotora rechazada";
     case DealerStatus.SUSPENDED:
-      return "Concesionario suspendido";
+      return "Automotora suspendida";
     default:
       return "Estado actualizado";
   }

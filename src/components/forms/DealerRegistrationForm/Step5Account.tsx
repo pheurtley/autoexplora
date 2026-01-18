@@ -38,7 +38,7 @@ export function Step5Account({
           Cuenta de Administrador
         </h2>
         <p className="mt-2 text-neutral-600">
-          Crea tu cuenta personal para administrar el concesionario
+          Crea tu cuenta personal para administrar la automotora
         </p>
       </div>
 

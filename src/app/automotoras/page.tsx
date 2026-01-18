@@ -9,9 +9,9 @@ import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { DealerType } from "@prisma/client";
 
 export const metadata: Metadata = {
-  title: "Concesionarios y Automotoras | AutoExplora.cl",
+  title: "Automotoras | AutoExplora.cl",
   description:
-    "Encuentra concesionarios, automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
+    "Encuentra automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
 };
 
 type SortOption = "recent" | "name" | "vehicles";
@@ -32,7 +32,7 @@ const SORT_OPTIONS: Record<SortOption, { label: string; orderBy: object }> = {
   vehicles: { label: "Más vehículos", orderBy: { vehicles: { _count: "desc" } } },
 };
 
-export default async function ConcesionariosPage({ searchParams }: PageProps) {
+export default async function AutomotorasPage({ searchParams }: PageProps) {
   const params = await searchParams;
 
   const page = parseInt(params.page || "1");
@@ -105,7 +105,7 @@ export default async function ConcesionariosPage({ searchParams }: PageProps) {
         {/* Header */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-neutral-900">
-            Concesionarios y Automotoras
+            Automotoras
           </h1>
           <p className="text-neutral-600 mt-1">
             {total} {total === 1 ? "negocio encontrado" : "negocios encontrados"}
