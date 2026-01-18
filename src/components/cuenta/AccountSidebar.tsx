@@ -36,7 +36,7 @@ export function AccountSidebar({ userName, userEmail }: AccountSidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-full md:w-64 shrink-0">
+    <aside className="hidden md:block md:w-64 shrink-0">
       <div className="bg-white rounded-xl border border-neutral-200 overflow-hidden">
         {/* User Info */}
         <div className="p-4 bg-andino-50 border-b border-neutral-200">
