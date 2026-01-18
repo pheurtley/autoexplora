@@ -31,7 +31,7 @@ export function ChatWindow({
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
   const lastFetchRef = useRef<number>(0);
   const lastMessageCountRef = useRef<number>(0);
   const messageInputRef = useRef<MessageInputRef>(null);
@@ -43,8 +43,11 @@ export function ChatWindow({
     setSoundEnabled(isEnabled());
   }, [isEnabled]);
 
-  const scrollToBottom = useCallback((behavior: ScrollBehavior = "smooth") => {
-    messagesEndRef.current?.scrollIntoView({ behavior });
+  const scrollToBottom = useCallback(() => {
+    const container = messagesContainerRef.current;
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
   }, []);
 
   const fetchMessages = useCallback(async (markAsRead = true) => {
@@ -206,7 +209,7 @@ export function ChatWindow({
         basePath={basePath}
       />
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-neutral-50">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-neutral-50">
         {messages.length === 0 ? (
           <div className="text-center py-12">
             <div className="w-16 h-16 rounded-full bg-andino-50 flex items-center justify-center mx-auto mb-4">
@@ -264,7 +267,6 @@ export function ChatWindow({
             })}
           </>
         )}
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Message Templates - Only for dealers */}

@@ -148,7 +148,7 @@ export function ConversationList({ currentUserId, basePath = "/cuenta/mensajes" 
   return (
     <div>
       {/* Search and Filter Bar */}
-      <div className="p-4 border-b border-neutral-200 space-y-3 bg-white sticky top-0 z-10">
+      <div className="p-4 border-b border-neutral-200 space-y-3 bg-white">
         {/* Search Input */}
         <div className="relative">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400" />
