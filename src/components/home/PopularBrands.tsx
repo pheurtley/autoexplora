@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { Container } from "@/components/layout";
+import { AnimatedBrandsGrid } from "./AnimatedBrandsGrid";
 import { Button } from "@/components/ui";
-import { ArrowRight, Car } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import prisma from "@/lib/prisma";
 
 interface PopularBrand {
@@ -76,35 +76,7 @@ export async function PopularBrands() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-4">
-          {brands.map((brand) => (
-            <Link
-              key={brand.id}
-              href={`/vehiculos?marca=${brand.slug}`}
-              className="group flex flex-col items-center p-4 bg-white rounded-xl border border-neutral-200 hover:border-andino-300 hover:shadow-md transition-all"
-            >
-              <div className="w-16 h-16 mb-3 flex items-center justify-center bg-neutral-50 rounded-lg group-hover:bg-andino-50 transition-colors">
-                {brand.logo ? (
-                  <Image
-                    src={brand.logo}
-                    alt={brand.name}
-                    width={48}
-                    height={48}
-                    className="object-contain"
-                  />
-                ) : (
-                  <Car className="h-8 w-8 text-neutral-400 group-hover:text-andino-500 transition-colors" />
-                )}
-              </div>
-              <span className="text-sm font-medium text-neutral-800 group-hover:text-andino-700 transition-colors text-center">
-                {brand.name}
-              </span>
-              <span className="text-xs text-neutral-500 mt-1">
-                {brand.vehicleCount} vehículo{brand.vehicleCount !== 1 ? "s" : ""}
-              </span>
-            </Link>
-          ))}
-        </div>
+        <AnimatedBrandsGrid brands={brands} />
       </Container>
     </section>
   );

@@ -107,8 +107,8 @@ export function SearchModal({ onClose }: { onClose: () => void }) {
   ];
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200">
-      <div className="bg-white w-full max-w-2xl mx-auto mt-20 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-top-4 duration-300">
+    <div className="fixed inset-0 z-50 bg-black/50 animate-in fade-in duration-200 overflow-hidden">
+      <div className="bg-white w-full max-w-2xl mx-4 sm:mx-auto mt-20 rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-top-4 duration-300">
         <form onSubmit={handleSubmit} className="p-4">
           <div className="relative flex items-center">
             <Search className="absolute left-4 h-5 w-5 text-neutral-400 pointer-events-none" />

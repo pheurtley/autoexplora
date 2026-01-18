@@ -27,20 +27,20 @@ export function SearchWidget() {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl p-6 max-w-4xl mx-auto">
+    <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 max-w-4xl mx-auto animate-scale-in animation-delay-100 overflow-hidden">
       {/* Vehicle Type Tabs */}
-      <div className="flex gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6">
         {vehicleTypes.map((type) => (
           <button
             key={type.id}
             onClick={() => setSelectedType(type.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+            className={`group flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
               selectedType === type.id
-                ? "bg-andino-600 text-white"
-                : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
+                ? "bg-andino-600 text-white shadow-md shadow-andino-600/25"
+                : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200 hover:shadow-sm"
             }`}
           >
-            <type.icon className="h-4 w-4" />
+            <type.icon className="h-4 w-4 transition-transform group-hover:scale-110" />
             {type.label}
           </button>
         ))}
@@ -56,7 +56,7 @@ export function SearchWidget() {
             <select
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
             >
               <option value="">Todas las marcas</option>
               <option value="toyota">Toyota</option>
@@ -79,7 +79,7 @@ export function SearchWidget() {
             <select
               value={priceMax}
               onChange={(e) => setPriceMax(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20"
+              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
             >
               <option value="">Sin límite</option>
               <option value="5000000">$5.000.000</option>
@@ -92,7 +92,12 @@ export function SearchWidget() {
           </div>
 
           <div className="flex items-end">
-            <Button type="submit" fullWidth size="lg">
+            <Button
+              type="submit"
+              fullWidth
+              size="lg"
+              className="hover:shadow-lg hover:shadow-andino-600/25 active:scale-[0.98] transition-all"
+            >
               <Search className="h-5 w-5 mr-2" />
               Buscar
             </Button>

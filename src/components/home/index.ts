@@ -4,3 +4,7 @@ export { CategoryCarousel } from "./CategoryCarousel";
 export { FeaturedVehicles } from "./FeaturedVehicles";
 export { RecentVehicles } from "./RecentVehicles";
 export { PopularBrands } from "./PopularBrands";
+export { WhyChooseUs } from "./WhyChooseUs";
+export { CTASection } from "./CTASection";
+export { AnimatedVehicleGrid } from "./AnimatedVehicleGrid";
+export { AnimatedBrandsGrid } from "./AnimatedBrandsGrid";

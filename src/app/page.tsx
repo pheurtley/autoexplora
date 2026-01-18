@@ -4,12 +4,11 @@ import {
   FeaturedVehicles,
   RecentVehicles,
   PopularBrands,
+  WhyChooseUs,
+  CTASection,
 } from "@/components/home";
 import { Suspense } from "react";
 import { Container } from "@/components/layout";
-import { Button } from "@/components/ui";
-import { ArrowRight, Shield, Zap, Users } from "lucide-react";
-import Link from "next/link";
 
 export default function HomePage() {
   return (
@@ -38,84 +37,10 @@ export default function HomePage() {
       </Suspense>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-neutral-50">
-        <Container>
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-neutral-900 mb-4">
-              ¿Por qué elegir AutoExplora.cl?
-            </h2>
-            <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-              Somos el marketplace de vehículos más confiable de Chile
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-andino-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-andino-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">
-                Compra segura
-              </h3>
-              <p className="text-neutral-600">
-                Verificamos a los vendedores y te ayudamos en todo el proceso de
-                compra para que sea una experiencia segura.
-              </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-andino-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-8 w-8 text-andino-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">
-                Vende rápido
-              </h3>
-              <p className="text-neutral-600">
-                Publica tu vehículo en minutos y llega a miles de compradores
-                potenciales en todo Chile.
-              </p>
-            </div>
-
-            <div className="text-center p-6">
-              <div className="w-16 h-16 bg-andino-100 rounded-2xl flex items-center justify-center mx-auto mb-4">
-                <Users className="h-8 w-8 text-andino-600" />
-              </div>
-              <h3 className="text-xl font-semibold text-neutral-900 mb-2">
-                Gran comunidad
-              </h3>
-              <p className="text-neutral-600">
-                Más de 50,000 vehículos disponibles y una comunidad activa de
-                compradores y vendedores.
-              </p>
-            </div>
-          </div>
-        </Container>
-      </section>
+      <WhyChooseUs />
 
       {/* CTA Section */}
-      <section className="py-16 bg-andino-600">
-        <Container>
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              ¿Listo para vender tu vehículo?
-            </h2>
-            <p className="text-lg text-andino-100 mb-8 max-w-2xl mx-auto">
-              Publica tu auto, moto o vehículo comercial en minutos y conecta
-              con compradores interesados.
-            </p>
-            <Link href="/publicar">
-              <Button
-                variant="secondary"
-                size="lg"
-                className="bg-white text-andino-600 hover:bg-andino-50"
-              >
-                Publicar mi vehículo
-                <ArrowRight className="h-5 w-5 ml-2" />
-              </Button>
-            </Link>
-          </div>
-        </Container>
-      </section>
+      <CTASection />
     </>
   );
 }

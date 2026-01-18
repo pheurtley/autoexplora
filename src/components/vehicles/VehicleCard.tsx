@@ -29,13 +29,17 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
       <Link href={`/vehiculos/${vehicle.slug}`} className="block relative">
         <div className="relative aspect-[4/3] bg-neutral-100 overflow-hidden">
           {primaryImage ? (
-            <Image
-              src={primaryImage.url}
-              alt={vehicle.title}
-              fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            />
+            <>
+              <Image
+                src={primaryImage.url}
+                alt={vehicle.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              />
+              {/* Hover overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-neutral-400">
               <Settings2 className="h-12 w-12" />
@@ -77,7 +81,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
         </Link>
 
         {/* Price */}
-        <div className="mt-1 text-xl font-bold text-andino-700">
+        <div className="mt-1 text-xl font-bold text-andino-700 group-hover:text-andino-600 transition-colors">
           {formatPrice(vehicle.price)}
         </div>
 
@@ -129,9 +133,9 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
             href={getWhatsAppLink(vehicle.contactWhatsApp, whatsappMessage)}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 flex items-center justify-center gap-2 w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+            className="group/whatsapp mt-3 flex items-center justify-center gap-2 w-full py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-green-500/25 active:scale-[0.98]"
           >
-            <MessageCircle className="h-4 w-4" />
+            <MessageCircle className="h-4 w-4 transition-transform group-hover/whatsapp:scale-110" />
             WhatsApp
           </a>
         )}

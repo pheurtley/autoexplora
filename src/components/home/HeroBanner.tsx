@@ -66,10 +66,10 @@ export async function HeroBanner() {
 
       <Container className="relative z-10">
         <div className="text-center mb-8 md:mb-12">
-          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 animate-fade-in">
             Encuentra tu próximo vehículo
           </h1>
-          <p className="text-lg md:text-xl text-andino-100 max-w-2xl mx-auto">
+          <p className="text-lg md:text-xl text-andino-100 max-w-2xl mx-auto animate-fade-in animation-delay-200">
             Miles de autos, motos y vehículos comerciales te esperan en el
             marketplace más grande de Chile
           </p>
@@ -80,19 +80,19 @@ export async function HeroBanner() {
 
         {/* Stats */}
         <div className="mt-12 grid grid-cols-3 gap-4 max-w-2xl mx-auto">
-          <div className="text-center">
+          <div className="text-center animate-slide-up animation-delay-300 hover:scale-105 transition-transform cursor-default">
             <div className="text-2xl md:text-3xl font-bold text-white">
               {stats.totalVehicles > 0 ? formatStatNumber(stats.totalVehicles) : "0"}
             </div>
             <div className="text-sm text-andino-200">Vehículos</div>
           </div>
-          <div className="text-center">
+          <div className="text-center animate-slide-up animation-delay-400 hover:scale-105 transition-transform cursor-default">
             <div className="text-2xl md:text-3xl font-bold text-white">
               {stats.todayVehicles > 0 ? formatStatNumber(stats.todayVehicles) : "0"}
             </div>
             <div className="text-sm text-andino-200">Nuevos hoy</div>
           </div>
-          <div className="text-center">
+          <div className="text-center animate-slide-up animation-delay-500 hover:scale-105 transition-transform cursor-default">
             <div className="text-2xl md:text-3xl font-bold text-white">
               {stats.regionsWithVehicles > 0 ? stats.regionsWithVehicles : "16"}
             </div>

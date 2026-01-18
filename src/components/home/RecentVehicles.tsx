@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Container } from "@/components/layout";
-import { VehicleCard } from "@/components/vehicles/VehicleCard";
+import { AnimatedVehicleGrid } from "./AnimatedVehicleGrid";
 import { Button } from "@/components/ui";
 import { ArrowRight, Clock } from "lucide-react";
 import prisma from "@/lib/prisma";
@@ -110,11 +110,7 @@ export async function RecentVehicles() {
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {vehicles.map((vehicle) => (
-            <VehicleCard key={vehicle.id} vehicle={vehicle} />
-          ))}
-        </div>
+        <AnimatedVehicleGrid vehicles={vehicles} />
       </Container>
     </section>
   );
