@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { Copy, Clock } from "lucide-react";
 import { Button } from "./Button";
 
@@ -71,22 +70,14 @@ export function BusinessHoursEditor({
   value,
   onChange,
 }: BusinessHoursEditorProps) {
-  const [schedule, setSchedule] = useState<WeekSchedule>(
-    value || DEFAULT_SCHEDULE
-  );
-
-  useEffect(() => {
-    if (value) {
-      setSchedule(value);
-    }
-  }, [value]);
+  // Use value directly if provided, otherwise use internal state
+  const schedule = value || DEFAULT_SCHEDULE;
 
   const updateDay = (day: keyof WeekSchedule, updates: Partial<DaySchedule>) => {
     const newSchedule = {
       ...schedule,
       [day]: { ...schedule[day], ...updates },
     };
-    setSchedule(newSchedule);
     onChange(newSchedule);
   };
 
@@ -96,7 +87,6 @@ export function BusinessHoursEditor({
     WEEKDAYS.forEach((day) => {
       newSchedule[day] = { ...monday };
     });
-    setSchedule(newSchedule);
     onChange(newSchedule);
   };
 
@@ -106,7 +96,6 @@ export function BusinessHoursEditor({
     DAYS.forEach(({ key }) => {
       newSchedule[key] = { ...monday };
     });
-    setSchedule(newSchedule);
     onChange(newSchedule);
   };
 

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Clock } from "lucide-react";
+import { useState, useEffect, useMemo } from "react";
 import type { WeekSchedule } from "./BusinessHoursEditor";
 
 export interface BusinessHoursDisplayProps {
@@ -59,25 +58,27 @@ export function BusinessHoursDisplay({
   showStatus = true,
   compact = false,
 }: BusinessHoursDisplayProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [currentDay, setCurrentDay] = useState<keyof WeekSchedule>("lunes");
+  // Tick state to trigger recalculation every minute
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    if (schedule) {
-      setIsOpen(isCurrentlyOpen(schedule));
-      setCurrentDay(getCurrentChileTime().dayKey);
-    }
-
-    // Update every minute
     const interval = setInterval(() => {
-      if (schedule) {
-        setIsOpen(isCurrentlyOpen(schedule));
-        setCurrentDay(getCurrentChileTime().dayKey);
-      }
+      setTick((t) => t + 1);
     }, 60000);
 
     return () => clearInterval(interval);
-  }, [schedule]);
+  }, []);
+
+  // Compute values based on schedule and tick (tick triggers recalculation)
+  const isOpen = useMemo(() => {
+    void tick; // Reference tick to ensure recalculation
+    return schedule ? isCurrentlyOpen(schedule) : false;
+  }, [schedule, tick]);
+
+  const currentDay = useMemo(() => {
+    void tick; // Reference tick to ensure recalculation
+    return getCurrentChileTime().dayKey;
+  }, [tick]);
 
   if (!schedule) {
     return (
