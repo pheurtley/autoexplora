@@ -6,13 +6,13 @@ import { ArrowRight, Star } from "lucide-react";
 import prisma from "@/lib/prisma";
 import type { VehicleCard as VehicleCardType } from "@/types";
 
-async function getFeaturedVehicles(): Promise<VehicleCardType[]> {
+async function getFeaturedVehicles(limit: number = 8): Promise<VehicleCardType[]> {
   const vehicles = await prisma.vehicle.findMany({
     where: {
       featured: true,
       status: "ACTIVE",
     },
-    take: 8,
+    take: limit,
     orderBy: [{ publishedAt: "desc" }],
     select: {
       id: true,
@@ -61,8 +61,12 @@ async function getFeaturedVehicles(): Promise<VehicleCardType[]> {
   return vehicles;
 }
 
-export async function FeaturedVehicles() {
-  const vehicles = await getFeaturedVehicles();
+interface FeaturedVehiclesProps {
+  limit?: number;
+}
+
+export async function FeaturedVehicles({ limit = 8 }: FeaturedVehiclesProps) {
+  const vehicles = await getFeaturedVehicles(limit);
 
   if (vehicles.length === 0) {
     return (

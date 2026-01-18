@@ -13,7 +13,7 @@ interface PopularBrand {
   vehicleCount: number;
 }
 
-async function getPopularBrands(): Promise<PopularBrand[]> {
+async function getPopularBrands(limit: number = 12): Promise<PopularBrand[]> {
   const brands = await prisma.brand.findMany({
     where: {
       vehicles: {
@@ -42,7 +42,7 @@ async function getPopularBrands(): Promise<PopularBrand[]> {
         _count: "desc",
       },
     },
-    take: 12,
+    take: limit,
   });
 
   return brands.map((brand) => ({
@@ -54,8 +54,12 @@ async function getPopularBrands(): Promise<PopularBrand[]> {
   }));
 }
 
-export async function PopularBrands() {
-  const brands = await getPopularBrands();
+interface PopularBrandsProps {
+  limit?: number;
+}
+
+export async function PopularBrands({ limit = 12 }: PopularBrandsProps) {
+  const brands = await getPopularBrands(limit);
 
   if (brands.length === 0) {
     return null;

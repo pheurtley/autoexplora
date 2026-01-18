@@ -6,7 +6,17 @@ import { Button } from "@/components/ui";
 import { ArrowRight } from "lucide-react";
 import { useIntersectionObserver } from "@/hooks";
 
-export function CTASection() {
+interface CTASectionProps {
+  title?: string;
+  subtitle?: string;
+  buttonText?: string;
+}
+
+export function CTASection({
+  title = "¿Listo para vender tu vehículo?",
+  subtitle = "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
+  buttonText = "Publicar mi vehículo",
+}: CTASectionProps) {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.3 });
 
   return (
@@ -20,7 +30,7 @@ export function CTASection() {
                 : "opacity-0 translate-y-4"
             }`}
           >
-            ¿Listo para vender tu vehículo?
+            {title}
           </h2>
           <p
             className={`text-lg text-andino-100 mb-8 max-w-2xl mx-auto transition-all duration-700 ${
@@ -30,8 +40,7 @@ export function CTASection() {
             }`}
             style={{ transitionDelay: "100ms" }}
           >
-            Publica tu auto, moto o vehículo comercial en minutos y conecta con
-            compradores interesados.
+            {subtitle}
           </p>
           <div
             className={`transition-all duration-700 ${
@@ -47,7 +56,7 @@ export function CTASection() {
                 size="lg"
                 className="group bg-white text-andino-600 hover:bg-andino-50 hover:scale-105 active:scale-[0.98] transition-all shadow-lg hover:shadow-xl"
               >
-                Publicar mi vehículo
+                {buttonText}
                 <ArrowRight className="h-5 w-5 ml-2 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>

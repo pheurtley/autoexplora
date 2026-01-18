@@ -6,12 +6,12 @@ import { ArrowRight, Clock } from "lucide-react";
 import prisma from "@/lib/prisma";
 import type { VehicleCard as VehicleCardType } from "@/types";
 
-async function getRecentVehicles(): Promise<VehicleCardType[]> {
+async function getRecentVehicles(limit: number = 8): Promise<VehicleCardType[]> {
   const vehicles = await prisma.vehicle.findMany({
     where: {
       status: "ACTIVE",
     },
-    take: 8,
+    take: limit,
     orderBy: {
       publishedAt: "desc",
     },
@@ -62,8 +62,12 @@ async function getRecentVehicles(): Promise<VehicleCardType[]> {
   return vehicles;
 }
 
-export async function RecentVehicles() {
-  const vehicles = await getRecentVehicles();
+interface RecentVehiclesProps {
+  limit?: number;
+}
+
+export async function RecentVehicles({ limit = 8 }: RecentVehiclesProps) {
+  const vehicles = await getRecentVehicles(limit);
 
   if (vehicles.length === 0) {
     return (

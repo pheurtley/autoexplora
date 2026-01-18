@@ -25,7 +25,15 @@ const features = [
   },
 ];
 
-export function WhyChooseUs() {
+interface WhyChooseUsProps {
+  title?: string;
+  subtitle?: string;
+}
+
+export function WhyChooseUs({
+  title = "¿Por qué elegir AutoExplora.cl?",
+  subtitle = "Somos el marketplace de vehículos más confiable de Chile",
+}: WhyChooseUsProps) {
   const { ref, isVisible } = useIntersectionObserver({ threshold: 0.2 });
 
   return (
@@ -39,7 +47,7 @@ export function WhyChooseUs() {
                 : "opacity-0 translate-y-4"
             }`}
           >
-            ¿Por qué elegir AutoExplora.cl?
+            {title}
           </h2>
           <p
             className={`text-lg text-neutral-600 max-w-2xl mx-auto transition-all duration-700 delay-100 ${
@@ -49,7 +57,7 @@ export function WhyChooseUs() {
             }`}
             style={{ transitionDelay: "100ms" }}
           >
-            Somos el marketplace de vehículos más confiable de Chile
+            {subtitle}
           </p>
         </div>
 
