@@ -26,7 +26,7 @@ export function DealerCard({ dealer }: DealerCardProps) {
 
   return (
     <Card hover padding="none" className="overflow-hidden group">
-      <Link href={`/concesionario/${dealer.slug}`} className="block">
+      <Link href={`/automotora/${dealer.slug}`} className="block">
         {/* Logo Section */}
         <div className="relative aspect-[16/9] bg-neutral-100 overflow-hidden flex items-center justify-center">
           {dealer.logo ? (

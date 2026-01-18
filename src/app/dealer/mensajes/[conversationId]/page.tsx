@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const session = await auth();
 
   if (!session?.user?.id) {
-    return { title: "Chat | Panel Concesionario | AutoExplora.cl" };
+    return { title: "Chat | Panel Automotora | AutoExplora.cl" };
   }
 
   const conversation = await prisma.conversation.findUnique({
@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const otherUser = isBuyer ? conversation.seller : conversation.buyer;
 
   return {
-    title: `Chat con ${otherUser.name || "Usuario"} | Panel Concesionario | AutoExplora.cl`,
+    title: `Chat con ${otherUser.name || "Usuario"} | Panel Automotora | AutoExplora.cl`,
   };
 }
 

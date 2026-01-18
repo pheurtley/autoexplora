@@ -153,7 +153,7 @@ export default function DealerTeamPage() {
         <div>
           <h1 className="text-2xl font-bold text-neutral-900">Equipo</h1>
           <p className="text-neutral-600 mt-1">
-            Gestiona los usuarios de tu concesionario
+            Gestiona los usuarios de tu automotora
           </p>
         </div>
 

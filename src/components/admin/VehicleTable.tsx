@@ -233,7 +233,7 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                   <td className="px-4 py-3">
                     {vehicle.dealer ? (
                       <Link
-                        href={`/admin/concesionarios/${vehicle.dealer.id}`}
+                        href={`/admin/automotoras/${vehicle.dealer.id}`}
                         className="inline-flex items-center gap-1.5 text-sm text-andino-600 hover:text-andino-700"
                       >
                         <Building2 className="w-3.5 h-3.5" />

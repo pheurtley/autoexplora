@@ -47,7 +47,7 @@ export default function DealerStatsPage() {
       <div>
         <h1 className="text-2xl font-bold text-neutral-900">Estadísticas</h1>
         <p className="text-neutral-600 mt-1">
-          Analiza el rendimiento de tu concesionario
+          Analiza el rendimiento de tu automotora
         </p>
       </div>
 

@@ -48,7 +48,7 @@ export function DealerInfoCard({ dealer }: DealerInfoCardProps) {
         {/* Name and Badges */}
         <div className="flex-1 min-w-0">
           <Link
-            href={`/concesionario/${dealer.slug}`}
+            href={`/automotora/${dealer.slug}`}
             className="font-semibold text-neutral-900 hover:text-andino-600 transition-colors line-clamp-1"
           >
             {dealer.tradeName}
@@ -91,7 +91,7 @@ export function DealerInfoCard({ dealer }: DealerInfoCardProps) {
             </Button>
           </a>
         )}
-        <Link href={`/concesionario/${dealer.slug}`} className="block">
+        <Link href={`/automotora/${dealer.slug}`} className="block">
           <Button variant="outline" className="w-full">
             <ExternalLink className="w-4 h-4 mr-2" />
             Ver perfil completo
