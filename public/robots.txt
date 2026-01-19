@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+Disallow: /cuenta/
+Disallow: /dealer/
+
+Sitemap: https://autoexplora.cl/sitemap.xml
