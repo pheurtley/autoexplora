@@ -23,6 +23,13 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Estados de publicación (Activo, Pausado, Vendido, Expirado)
 - [x] Vehículos destacados
 - [x] Vehículos recientes
+- [x] Formulario de publicación mejorado:
+  - [x] Scroll automático a categorías en mobile
+  - [x] Validación obligatoria de kilometraje
+  - [x] Auto km=0 cuando condición es "Nuevo"
+  - [x] Paso de preview/resumen antes de publicar
+  - [x] Guardado de borrador en localStorage
+  - [x] Título auto-generado (AÑO MARCA MODELO COLOR)
 
 ### Usuario
 - [x] Panel de cuenta de usuario
