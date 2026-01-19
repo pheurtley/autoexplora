@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { Car, Bike, Truck } from "lucide-react";
 import type { PublishFormData } from "@/lib/validations";
 import { VEHICLE_CATEGORIES } from "@/lib/constants";
@@ -32,6 +33,18 @@ const VEHICLE_TYPES = [
 ];
 
 export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
+  const categorySectionRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to categories section on mobile when vehicle type is selected
+  const scrollToCategories = () => {
+    setTimeout(() => {
+      categorySectionRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  };
+
   // Filtrar categorías según tipo de vehículo
   const filteredCategories = Object.entries(VEHICLE_CATEGORIES).filter(
     ([key]) => {
@@ -83,6 +96,7 @@ export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
                 onClick={() => {
                   onChange("vehicleType", type.value);
                   onChange("category", ""); // Reset category
+                  scrollToCategories();
                 }}
                 className={`
                   p-6 rounded-xl border-2 text-left transition-all
@@ -119,7 +133,7 @@ export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
 
       {/* Categoría */}
       {data.vehicleType && (
-        <div>
+        <div ref={categorySectionRef} className="scroll-mt-4">
           <h3 className="text-lg font-semibold text-neutral-900 mb-4">
             Selecciona la categoría
           </h3>

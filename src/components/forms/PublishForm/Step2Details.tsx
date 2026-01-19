@@ -134,7 +134,14 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
         <Select
           label="Condición"
           value={data.condition}
-          onChange={(e) => onChange("condition", e.target.value)}
+          onChange={(e) => {
+            const newCondition = e.target.value;
+            onChange("condition", newCondition);
+            // Auto-set mileage to 0 when condition is "Nuevo"
+            if (newCondition === "NUEVO") {
+              onChange("mileage", 0);
+            }
+          }}
           options={CONDITIONS}
           error={errors.condition}
           required
@@ -147,8 +154,15 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
             inputMode="numeric"
             pattern="[0-9]*"
             label="Kilometraje"
-            value={data.mileage || ""}
-            onChange={(e) => onChange("mileage", parseInt(e.target.value) || 0)}
+            value={data.mileage !== undefined ? data.mileage : ""}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === "") {
+                onChange("mileage", undefined as unknown as number);
+              } else {
+                onChange("mileage", parseInt(value));
+              }
+            }}
             onKeyDown={(e) => {
               // Permitir: backspace, delete, tab, escape, enter, flechas
               if (['Backspace', 'Delete', 'Tab', 'Escape', 'Enter', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
@@ -161,8 +175,9 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
             }}
             placeholder="Ej: 50000"
             error={errors.mileage}
-            helperText="Ingresa 0 si el vehículo es nuevo"
+            helperText={data.condition === "NUEVO" ? "Se ha establecido en 0 automáticamente" : "Ingresa 0 si el vehículo es nuevo"}
             required
+            disabled={data.condition === "NUEVO"}
           />
         </div>
       </div>

@@ -1,16 +1,30 @@
 "use client";
 
-import { Input } from "@/components/ui";
+import { Input, Button } from "@/components/ui";
 import type { PublishFormData } from "@/lib/validations";
 import { formatPrice } from "@/lib/utils";
+import { Sparkles } from "lucide-react";
 
 interface Step5InfoProps {
   data: PublishFormData;
   onChange: (field: keyof PublishFormData, value: string | number | boolean) => void;
   errors: Record<string, string>;
+  brandName?: string;
+  modelName?: string;
 }
 
-export function Step5Info({ data, onChange, errors }: Step5InfoProps) {
+export function Step5Info({ data, onChange, errors, brandName, modelName }: Step5InfoProps) {
+  // Generate suggested title from brand, model, and year
+  const suggestedTitle = brandName && modelName && data.year
+    ? `${brandName} ${modelName} ${data.year}`
+    : "";
+
+  const applySuggestion = () => {
+    if (suggestedTitle) {
+      onChange("title", suggestedTitle);
+    }
+  };
+
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-neutral-900">
@@ -19,16 +33,37 @@ export function Step5Info({ data, onChange, errors }: Step5InfoProps) {
 
       {/* Título */}
       <div>
-        <Input
-          label="Título del anuncio"
-          value={data.title}
-          onChange={(e) => onChange("title", e.target.value)}
-          placeholder="Ej: Toyota Corolla 2020 1.8 Automático Full"
-          error={errors.title}
-          helperText={`${data.title.length}/100 caracteres`}
-          maxLength={100}
-          required
-        />
+        <div className="flex items-end gap-2">
+          <div className="flex-1">
+            <Input
+              label="Título del anuncio"
+              value={data.title}
+              onChange={(e) => onChange("title", e.target.value)}
+              placeholder="Ej: Toyota Corolla 2020 1.8 Automático Full"
+              error={errors.title}
+              helperText={`${data.title.length}/100 caracteres`}
+              maxLength={100}
+              required
+            />
+          </div>
+          {suggestedTitle && !data.title && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={applySuggestion}
+              className="mb-6 flex items-center gap-1.5 whitespace-nowrap"
+            >
+              <Sparkles className="w-4 h-4" />
+              Sugerir
+            </Button>
+          )}
+        </div>
+        {suggestedTitle && !data.title && (
+          <p className="text-sm text-neutral-500 mt-1">
+            Sugerencia: <button type="button" onClick={applySuggestion} className="text-andino-600 hover:underline">{suggestedTitle}</button>
+          </p>
+        )}
       </div>
 
       {/* Descripción */}

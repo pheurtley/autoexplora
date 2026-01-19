@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
 import { StepIndicator } from "./StepIndicator";
@@ -10,6 +10,7 @@ import { Step3Images } from "./Step3Images";
 import { Step4Specs } from "./Step4Specs";
 import { Step5Info } from "./Step5Info";
 import { Step6Contact } from "./Step6Contact";
+import { Step7Preview } from "./Step7Preview";
 import {
   initialFormData,
   step1Schema,
@@ -21,7 +22,7 @@ import {
   type PublishFormData,
   type PublishFormImage,
 } from "@/lib/validations";
-import { ArrowLeft, ArrowRight, Loader2, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2, CheckCircle, Eye } from "lucide-react";
 
 const STEPS = [
   { number: 1, title: "Tipo" },
@@ -30,7 +31,10 @@ const STEPS = [
   { number: 4, title: "Specs" },
   { number: 5, title: "Precio" },
   { number: 6, title: "Contacto" },
+  { number: 7, title: "Preview" },
 ];
+
+const DRAFT_STORAGE_KEY = "publishFormDraft";
 
 export function PublishForm() {
   const router = useRouter();
@@ -39,6 +43,117 @@ export function PublishForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [draftLoaded, setDraftLoaded] = useState(false);
+
+  // Preview data names
+  const [brandName, setBrandName] = useState("");
+  const [modelName, setModelName] = useState("");
+  const [regionName, setRegionName] = useState("");
+  const [comunaName, setComunaName] = useState("");
+
+  // Load draft from localStorage on mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+    if (savedDraft) {
+      try {
+        const parsed = JSON.parse(savedDraft);
+        // Don't restore images as they are uploaded to cloud
+        setFormData({ ...initialFormData, ...parsed, images: [] });
+      } catch (e) {
+        console.error("Error loading draft:", e);
+      }
+    }
+    setDraftLoaded(true);
+  }, []);
+
+  // Save draft to localStorage on formData change
+  useEffect(() => {
+    if (!draftLoaded) return;
+    // Don't save images (they're uploaded separately)
+    const { images, ...dataToSave } = formData;
+    localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(dataToSave));
+  }, [formData, draftLoaded]);
+
+  // Clear draft on successful submit
+  const clearDraft = useCallback(() => {
+    localStorage.removeItem(DRAFT_STORAGE_KEY);
+  }, []);
+
+  // Fetch brand name when brandId changes
+  useEffect(() => {
+    if (!formData.brandId) {
+      setBrandName("");
+      return;
+    }
+    async function fetchBrandName() {
+      try {
+        const response = await fetch("/api/marcas");
+        const json = await response.json();
+        const brand = json.brands?.find((b: { id: string; name: string }) => b.id === formData.brandId);
+        setBrandName(brand?.name || "");
+      } catch (e) {
+        console.error("Error fetching brand:", e);
+      }
+    }
+    fetchBrandName();
+  }, [formData.brandId]);
+
+  // Fetch model name when modelId changes
+  useEffect(() => {
+    if (!formData.modelId || !formData.brandId) {
+      setModelName("");
+      return;
+    }
+    async function fetchModelName() {
+      try {
+        const response = await fetch(`/api/marcas/${formData.brandId}/modelos`);
+        const json = await response.json();
+        const model = json.models?.find((m: { id: string; name: string }) => m.id === formData.modelId);
+        setModelName(model?.name || "");
+      } catch (e) {
+        console.error("Error fetching model:", e);
+      }
+    }
+    fetchModelName();
+  }, [formData.modelId, formData.brandId]);
+
+  // Fetch region name when regionId changes
+  useEffect(() => {
+    if (!formData.regionId) {
+      setRegionName("");
+      return;
+    }
+    async function fetchRegionName() {
+      try {
+        const response = await fetch("/api/regiones");
+        const json = await response.json();
+        const region = json.regions?.find((r: { id: string; name: string }) => r.id === formData.regionId);
+        setRegionName(region?.name || "");
+      } catch (e) {
+        console.error("Error fetching region:", e);
+      }
+    }
+    fetchRegionName();
+  }, [formData.regionId]);
+
+  // Fetch comuna name when comunaId changes
+  useEffect(() => {
+    if (!formData.comunaId || !formData.regionId) {
+      setComunaName("");
+      return;
+    }
+    async function fetchComunaName() {
+      try {
+        const response = await fetch(`/api/regiones/${formData.regionId}/comunas`);
+        const json = await response.json();
+        const comuna = json.comunas?.find((c: { id: string; name: string }) => c.id === formData.comunaId);
+        setComunaName(comuna?.name || "");
+      } catch (e) {
+        console.error("Error fetching comuna:", e);
+      }
+    }
+    fetchComunaName();
+  }, [formData.comunaId, formData.regionId]);
 
   const handleChange = (
     field: keyof PublishFormData,
@@ -137,7 +252,7 @@ export function PublishForm() {
 
   const handleNext = () => {
     if (validateStep(currentStep)) {
-      setCurrentStep((prev) => Math.min(prev + 1, 6));
+      setCurrentStep((prev) => Math.min(prev + 1, 7));
     }
   };
 
@@ -146,8 +261,6 @@ export function PublishForm() {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(6)) return;
-
     setIsSubmitting(true);
     setErrors({});
 
@@ -188,6 +301,8 @@ export function PublishForm() {
         return;
       }
 
+      // Clear draft on successful publish
+      clearDraft();
       setSubmitSuccess(true);
 
       // Redirect after success
@@ -238,10 +353,25 @@ export function PublishForm() {
           <Step4Specs data={formData} onChange={handleChange} errors={errors} />
         )}
         {currentStep === 5 && (
-          <Step5Info data={formData} onChange={handleChange} errors={errors} />
+          <Step5Info
+            data={formData}
+            onChange={handleChange}
+            errors={errors}
+            brandName={brandName}
+            modelName={modelName}
+          />
         )}
         {currentStep === 6 && (
           <Step6Contact data={formData} onChange={handleChange} errors={errors} />
+        )}
+        {currentStep === 7 && (
+          <Step7Preview
+            data={formData}
+            brandName={brandName}
+            modelName={modelName}
+            regionName={regionName}
+            comunaName={comunaName}
+          />
         )}
 
         {/* Error general */}
@@ -273,6 +403,16 @@ export function PublishForm() {
             >
               Siguiente
               <ArrowRight className="w-4 h-4" />
+            </Button>
+          ) : currentStep === 6 ? (
+            <Button
+              type="button"
+              onClick={handleNext}
+              disabled={isSubmitting}
+              className="flex items-center gap-2"
+            >
+              <Eye className="w-4 h-4" />
+              Vista previa
             </Button>
           ) : (
             <Button

@@ -80,7 +80,7 @@ export const step2Schema = z.object({
     .max(new Date().getFullYear() + 1, "Año inválido"),
   condition: vehicleConditionEnum,
   mileage: z
-    .number()
+    .number({ error: "Ingresa el kilometraje" })
     .min(0, "El kilometraje no puede ser negativo")
     .max(1000000, "Kilometraje inválido"),
 });
@@ -194,7 +194,7 @@ export interface PublishFormData {
   modelId: string;
   year: number;
   condition: string;
-  mileage: number;
+  mileage: number | undefined;
   // Paso 3 (Imágenes)
   images: PublishFormImage[];
   // Paso 4
@@ -223,7 +223,7 @@ export const initialFormData: PublishFormData = {
   modelId: "",
   year: new Date().getFullYear(),
   condition: "USADO",
-  mileage: 0,
+  mileage: undefined,
   images: [],
   fuelType: "BENCINA",
   transmission: "MANUAL",
