@@ -11,7 +11,8 @@ import { ShareButtons } from "@/components/vehicles/ShareButtons";
 import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
 import { Badge } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
-import { formatPrice, isCuid } from "@/lib/utils";
+import { formatPrice, formatKilometers, isCuid } from "@/lib/utils";
+import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import { Star, Eye, Calendar } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -20,18 +21,31 @@ interface PageProps {
 }
 
 // Helper to find vehicle by slug or ID (for backwards compatibility)
-async function findVehicle(param: string) {
+async function findVehicleForMetadata(param: string) {
+  const select = {
+    id: true,
+    slug: true,
+    title: true,
+    price: true,
+    year: true,
+    mileage: true,
+    condition: true,
+    brand: { select: { name: true } },
+    model: { select: { name: true } },
+    images: { select: { url: true }, orderBy: { order: "asc" as const }, take: 1 },
+  };
+
   // First try by slug
   let vehicle = await prisma.vehicle.findUnique({
     where: { slug: param },
-    select: { id: true, slug: true, title: true, price: true, brand: { select: { name: true } } },
+    select,
   });
 
   // If not found and looks like a CUID, try by ID
   if (!vehicle && isCuid(param)) {
     vehicle = await prisma.vehicle.findUnique({
       where: { id: param },
-      select: { id: true, slug: true, title: true, price: true, brand: { select: { name: true } } },
+      select,
     });
   }
 
@@ -41,17 +55,49 @@ async function findVehicle(param: string) {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug: param } = await params;
 
-  const vehicle = await findVehicle(param);
+  const vehicle = await findVehicleForMetadata(param);
 
   if (!vehicle) {
     return { title: "Vehículo no encontrado" };
   }
 
+  const title = `${vehicle.brand.name} ${vehicle.model.name} ${vehicle.year}`;
+  const conditionText = vehicle.condition === "NUEVO" ? "Nuevo" : "Usado";
+  const description = `${conditionText} · ${formatKilometers(vehicle.mileage)} · ${formatPrice(vehicle.price)}. Ver fotos, especificaciones y contactar al vendedor en ${SITE_NAME}.`;
+  const url = `${SITE_URL}/vehiculos/${vehicle.slug}`;
+  const imageUrl = vehicle.images[0]?.url;
+
   return {
-    title: `${vehicle.title} | AutoExplora.cl`,
-    description: `${vehicle.brand.name} - ${formatPrice(vehicle.price)}. Ver detalles y contactar al vendedor.`,
+    title: `${title} | ${SITE_NAME}`,
+    description,
     alternates: {
       canonical: `/vehiculos/${vehicle.slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: SITE_NAME,
+      type: "website",
+      locale: "es_CL",
+      ...(imageUrl && {
+        images: [
+          {
+            url: imageUrl,
+            width: 1200,
+            height: 630,
+            alt: title,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: imageUrl ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(imageUrl && {
+        images: [imageUrl],
+      }),
     },
   };
 }
