@@ -13,9 +13,31 @@ interface StepIndicatorProps {
 }
 
 export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
+  const currentStepData = steps.find((s) => s.number === currentStep);
+  const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
+
   return (
     <nav aria-label="Progreso" className="mb-8">
-      <ol className="flex items-center justify-center">
+      {/* Mobile: Simple progress bar with step counter */}
+      <div className="sm:hidden">
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm font-medium text-neutral-700">
+            Paso {currentStep} de {steps.length}
+          </span>
+          <span className="text-sm font-medium text-andino-600">
+            {currentStepData?.title}
+          </span>
+        </div>
+        <div className="h-2 bg-neutral-200 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-andino-600 rounded-full transition-all duration-300"
+            style={{ width: `${progressPercentage}%` }}
+          />
+        </div>
+      </div>
+
+      {/* Desktop: Full step indicator */}
+      <ol className="hidden sm:flex items-center justify-center">
         {steps.map((step, index) => {
           const isCompleted = currentStep > step.number;
           const isCurrent = currentStep === step.number;
@@ -44,7 +66,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
                 </div>
                 <span
                   className={`
-                    mt-2 text-xs font-medium hidden sm:block
+                    mt-2 text-xs font-medium
                     ${isCurrent ? "text-andino-600" : "text-neutral-500"}
                   `}
                 >
@@ -56,7 +78,7 @@ export function StepIndicator({ steps, currentStep }: StepIndicatorProps) {
               {index < steps.length - 1 && (
                 <div
                   className={`
-                    w-12 sm:w-20 h-0.5 mx-2 transition-colors
+                    w-20 h-0.5 mx-2 transition-colors
                     ${isCompleted ? "bg-andino-600" : "bg-neutral-300"}
                   `}
                 />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
 import { StepIndicator } from "./StepIndicator";
@@ -39,6 +39,7 @@ const DRAFT_STORAGE_KEY = "publishFormDraft";
 
 export function PublishForm() {
   const router = useRouter();
+  const formContainerRef = useRef<HTMLDivElement>(null);
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<PublishFormData>(initialFormData);
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -79,6 +80,21 @@ export function PublishForm() {
     const { images, ...dataToSave } = formData;
     localStorage.setItem(DRAFT_STORAGE_KEY, JSON.stringify(dataToSave));
   }, [formData, draftLoaded]);
+
+  // Scroll to form container on step change (mobile only)
+  useEffect(() => {
+    // Skip on initial render
+    if (currentStep === 1 && !draftLoaded) return;
+    // Only scroll on mobile
+    if (window.innerWidth >= 640) return;
+
+    setTimeout(() => {
+      formContainerRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }, 100);
+  }, [currentStep]);
 
   // Clear draft on successful submit
   const clearDraft = useCallback(() => {
@@ -345,7 +361,7 @@ export function PublishForm() {
       <StepIndicator steps={STEPS} currentStep={currentStep} />
 
       {/* Form Content */}
-      <div className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8">
+      <div ref={formContainerRef} className="bg-white rounded-xl shadow-sm border border-neutral-200 p-6 sm:p-8 scroll-mt-4">
         {currentStep === 1 && (
           <Step1Type data={formData} onChange={handleChange} errors={errors} />
         )}

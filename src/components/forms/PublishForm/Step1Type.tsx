@@ -43,7 +43,7 @@ export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
     setTimeout(() => {
       categorySectionRef.current?.scrollIntoView({
         behavior: "smooth",
-        block: "start",
+        block: "center",
       });
     }, 100);
   };
