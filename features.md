@@ -30,6 +30,9 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
   - [x] Paso de preview/resumen antes de publicar
   - [x] Guardado de borrador en localStorage
   - [x] Título auto-generado (AÑO MARCA MODELO COLOR)
+  - [x] UX mobile: barra de progreso en lugar de círculos
+  - [x] UX mobile: scroll centrado al seleccionar tipo
+  - [x] UX mobile: scroll al inicio del formulario al cambiar paso
 
 ### Usuario
 - [x] Panel de cuenta de usuario
