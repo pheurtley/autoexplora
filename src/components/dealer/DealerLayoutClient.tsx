@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { Menu, Building2 } from "lucide-react";
 import { DealerSidebar } from "./DealerSidebar";
 
@@ -42,9 +43,11 @@ export function DealerLayoutClient({
           </button>
           <div className="w-8 h-8 rounded-lg bg-andino-100 flex items-center justify-center overflow-hidden">
             {dealer.logo ? (
-              <img
+              <Image
                 src={dealer.logo}
                 alt={dealer.tradeName}
+                width={32}
+                height={32}
                 className="w-full h-full object-contain"
               />
             ) : (

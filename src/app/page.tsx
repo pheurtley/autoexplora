@@ -8,15 +8,41 @@ import {
   WhyChooseUs,
   CTASection,
 } from "@/components/home";
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { Suspense } from "react";
 import { Container } from "@/components/layout";
 import { getSiteConfig } from "@/lib/config";
+import { SITE_URL } from "@/lib/constants";
+
+// Revalidate home page every 60 seconds
+export const revalidate = 60;
 
 export default async function HomePage() {
   const config = await getSiteConfig();
 
   return (
     <>
+      {/* Structured Data */}
+      <OrganizationJsonLd
+        name={config.siteName}
+        url={SITE_URL}
+        logo={config.logo}
+        description={config.metaDescription || config.siteTagline}
+        contactEmail={config.contactEmail}
+        contactPhone={config.contactPhone}
+        socialLinks={{
+          facebook: config.facebook,
+          instagram: config.instagram,
+          twitter: config.twitter,
+          youtube: config.youtube,
+        }}
+      />
+      <WebSiteJsonLd
+        name={config.siteName}
+        url={SITE_URL}
+        searchUrl={`${SITE_URL}/vehiculos`}
+      />
+
       {/* Hero Section */}
       <Suspense fallback={<HeroBannerSkeleton />}>
         <HeroBanner />

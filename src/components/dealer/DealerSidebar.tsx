@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -80,9 +81,11 @@ export function DealerSidebar({
             >
               <div className="w-10 h-10 rounded-lg bg-andino-100 flex items-center justify-center overflow-hidden">
                 {dealer.logo ? (
-                  <img
+                  <Image
                     src={dealer.logo}
                     alt={dealer.tradeName}
+                    width={40}
+                    height={40}
                     className="w-full h-full object-contain"
                   />
                 ) : (

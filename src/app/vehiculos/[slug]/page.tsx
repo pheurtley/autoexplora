@@ -9,6 +9,7 @@ import { DealerInfoCard } from "@/components/vehicles/DealerInfoCard";
 import { FavoriteButton } from "@/components/vehicles/FavoriteButton";
 import { ShareButtons } from "@/components/vehicles/ShareButtons";
 import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
+import { VehicleJsonLd, BreadcrumbJsonLd } from "@/components/seo";
 import { Badge } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, formatKilometers, isCuid } from "@/lib/utils";
@@ -174,18 +175,51 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     day: "numeric",
   });
 
+  const vehicleUrl = `${SITE_URL}/vehiculos/${vehicle.slug}`;
+
   return (
-    <main className="min-h-screen bg-neutral-50 pb-12">
-      <Container>
-        <div className="py-6">
-          {/* Breadcrumb */}
-          <nav className="text-sm text-neutral-500 mb-4">
-            <span>Vehículos</span>
-            <span className="mx-2">/</span>
-            <span>{vehicle.brand.name}</span>
-            <span className="mx-2">/</span>
-            <span className="text-neutral-900">{vehicle.model.name}</span>
-          </nav>
+    <>
+      {/* Structured Data */}
+      <VehicleJsonLd
+        name={vehicle.title}
+        description={vehicle.description}
+        brand={vehicle.brand.name}
+        model={vehicle.model.name}
+        year={vehicle.year}
+        mileage={vehicle.mileage}
+        fuelType={vehicle.fuelType}
+        transmission={vehicle.transmission}
+        condition={vehicle.condition}
+        price={vehicle.price}
+        image={vehicle.images[0]?.url}
+        url={vehicleUrl}
+        seller={{
+          type: vehicle.dealer ? "AutoDealer" : "Person",
+          name: vehicle.dealer?.tradeName || vehicle.user.name || "Vendedor",
+        }}
+        color={vehicle.color}
+        vehicleType={vehicle.vehicleType}
+      />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Inicio", url: SITE_URL },
+          { name: "Vehículos", url: `${SITE_URL}/vehiculos` },
+          { name: vehicle.brand.name, url: `${SITE_URL}/vehiculos?brand=${vehicle.brand.slug}` },
+          { name: vehicle.model.name },
+        ]}
+      />
+
+      <main className="min-h-screen bg-neutral-50 pb-12">
+        <Container>
+          <div className="py-6">
+            {/* Breadcrumb */}
+            <nav className="text-sm text-neutral-500 mb-4">
+              <span>Vehículos</span>
+              <span className="mx-2">/</span>
+              <span>{vehicle.brand.name}</span>
+              <span className="mx-2">/</span>
+              <span className="text-neutral-900">{vehicle.model.name}</span>
+            </nav>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Images and Details */}
@@ -349,13 +383,14 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         </div>
       </Container>
 
-      {/* Related Vehicles */}
-      <RelatedVehicles
-        currentVehicleId={vehicle.id}
-        brandId={vehicle.brandId}
-        price={vehicle.price}
-        vehicleType={vehicle.vehicleType}
-      />
-    </main>
+        {/* Related Vehicles */}
+        <RelatedVehicles
+          currentVehicleId={vehicle.id}
+          brandId={vehicle.brandId}
+          price={vehicle.price}
+          vehicleType={vehicle.vehicleType}
+        />
+      </main>
+    </>
   );
 }

@@ -73,6 +73,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es-CL" className={inter.variable}>
+      <head>
+        {/* Preconnect to Cloudinary for faster image loading */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+      </head>
       <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
         <SessionProvider>
           <SiteConfigProvider>

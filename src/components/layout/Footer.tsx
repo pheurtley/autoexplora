@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "./Container";
 import { Facebook, Instagram, Youtube, Twitter, Search } from "lucide-react";
 import { useSiteConfig, LogoSize } from "@/components/providers/SiteConfigProvider";
@@ -85,7 +86,13 @@ export function Footer() {
             <div className="col-span-2 md:col-span-1">
               <Link href="/" className="flex items-center gap-2 mb-4">
                 {logoSrc ? (
-                  <img src={logoSrc} alt={config.siteName} className={`${logoSizeClass} rounded-full object-cover`} />
+                  <Image
+                    src={logoSrc}
+                    alt={config.siteName}
+                    width={48}
+                    height={48}
+                    className={`${logoSizeClass} rounded-full object-cover`}
+                  />
                 ) : (
                   <Search className="h-8 w-8 text-white" />
                 )}

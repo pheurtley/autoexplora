@@ -115,9 +115,11 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
             onClick={(e) => e.stopPropagation()}
           >
             {vehicle.dealer.logo ? (
-              <img
+              <Image
                 src={vehicle.dealer.logo}
                 alt={vehicle.dealer.tradeName}
+                width={20}
+                height={20}
                 className="w-5 h-5 rounded object-contain"
               />
             ) : (

@@ -1,3 +1,4 @@
+import { unstable_cache } from "next/cache";
 import prisma from "./prisma";
 
 export type LogoSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl" | "4xl" | "5xl" | "6xl" | "7xl";
@@ -111,10 +112,9 @@ const DEFAULT_CONFIG: SiteConfig = {
 };
 
 /**
- * Get site configuration
- * Creates default config if it doesn't exist
+ * Internal function to fetch site configuration
  */
-export async function getSiteConfig(): Promise<SiteConfig> {
+async function fetchSiteConfig(): Promise<SiteConfig> {
   let config = await prisma.siteConfig.findUnique({
     where: { id: "default" },
   });
@@ -141,7 +141,18 @@ export async function getSiteConfig(): Promise<SiteConfig> {
 }
 
 /**
+ * Get site configuration (cached for 5 minutes)
+ * Creates default config if it doesn't exist
+ */
+export const getSiteConfig = unstable_cache(
+  fetchSiteConfig,
+  ["site-config"],
+  { revalidate: 300, tags: ["site-config"] } // 5 minutes, tagged for revalidation
+);
+
+/**
  * Update site configuration
+ * Note: Cache will automatically revalidate after 5 minutes
  */
 export async function updateSiteConfig(
   data: Partial<Omit<SiteConfig, "id" | "updatedAt">>

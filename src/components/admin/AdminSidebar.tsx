@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -134,7 +135,7 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
             >
               <div className="h-8 w-8 rounded-full bg-white p-0.5 flex items-center justify-center">
                 {logoSrc ? (
-                  <img src={logoSrc} alt={config.siteName} width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
+                  <Image src={logoSrc} alt={config.siteName} width={28} height={28} className="h-7 w-7 rounded-full object-cover" />
                 ) : (
                   <Search className="h-5 w-5 text-andino-600" />
                 )}
