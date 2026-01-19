@@ -64,6 +64,7 @@ export default async function EditVehiclePage({ params }: PageProps) {
     color: vehicle.color || "",
     doors: vehicle.doors || undefined,
     engineSize: vehicle.engineSize || "",
+    traction: (vehicle as unknown as { traction?: string }).traction || "",
     title: vehicle.title,
     description: vehicle.description || "",
     price: vehicle.price,

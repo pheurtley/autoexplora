@@ -1,8 +1,9 @@
 "use client";
 
 import { ImageUpload, type UploadedImage } from "./ImageUpload";
-import { Camera } from "lucide-react";
+import { Camera, ImageIcon } from "lucide-react";
 import type { PublishFormData, PublishFormImage } from "@/lib/validations";
+import { MIN_IMAGES_PER_VEHICLE, MAX_IMAGES_PER_VEHICLE } from "@/lib/constants";
 
 interface Step3ImagesProps {
   data: PublishFormData;
@@ -47,6 +48,27 @@ export function Step3Images({ data, onChange, errors }: Step3ImagesProps) {
           </h2>
           <p className="text-sm text-neutral-600">
             Sube fotos de buena calidad para atraer más compradores
+          </p>
+        </div>
+      </div>
+
+      {/* Photo counter */}
+      <div className={`flex items-center gap-3 p-4 rounded-lg border mb-6 ${
+        data.images.length >= MIN_IMAGES_PER_VEHICLE
+          ? "bg-green-50 border-green-200"
+          : "bg-neutral-50 border-neutral-200"
+      }`}>
+        <ImageIcon className={`w-5 h-5 ${
+          data.images.length >= MIN_IMAGES_PER_VEHICLE ? "text-green-600" : "text-neutral-400"
+        }`} />
+        <div>
+          <p className={`font-medium ${
+            data.images.length >= MIN_IMAGES_PER_VEHICLE ? "text-green-700" : "text-neutral-700"
+          }`}>
+            {data.images.length} de {MAX_IMAGES_PER_VEHICLE} fotos
+          </p>
+          <p className="text-sm text-neutral-500">
+            Mínimo {MIN_IMAGES_PER_VEHICLE} fotos requeridas
           </p>
         </div>
       </div>

@@ -92,10 +92,11 @@ export function Step6Contact({ data, onChange, errors }: Step6ContactProps) {
           <div>
             <Input
               type="tel"
+              inputMode="tel"
               label="Teléfono de contacto"
               value={data.contactPhone}
               onChange={(e) => onChange("contactPhone", e.target.value)}
-              placeholder="Ej: +56 9 1234 5678"
+              placeholder="+56 9 1234 5678"
               error={errors.contactPhone}
               leftIcon={<Phone className="w-4 h-4" />}
               required
@@ -105,10 +106,11 @@ export function Step6Contact({ data, onChange, errors }: Step6ContactProps) {
           <div>
             <Input
               type="tel"
+              inputMode="tel"
               label="WhatsApp (opcional)"
               value={data.contactWhatsApp}
               onChange={(e) => onChange("contactWhatsApp", e.target.value)}
-              placeholder="Ej: +56 9 1234 5678"
+              placeholder="+56 9 1234 5678"
               error={errors.contactWhatsApp}
               leftIcon={<MessageCircle className="w-4 h-4" />}
               helperText="Si es diferente al teléfono de contacto"

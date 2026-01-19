@@ -42,8 +42,9 @@ export const fuelTypeEnum = z.enum([
 export const transmissionEnum = z.enum([
   "MANUAL",
   "AUTOMATICA",
-  "SEMIAUTOMATICA",
 ]);
+
+export const tractionEnum = z.enum(["2WD", "4WD", "AWD"]);
 
 // ==================== Image Schema ====================
 
@@ -89,9 +90,10 @@ export const step2Schema = z.object({
 export const step3Schema = z.object({
   fuelType: fuelTypeEnum,
   transmission: transmissionEnum,
-  color: z.string().optional(),
+  color: z.string().min(1, "Selecciona un color"),
   doors: z.number().min(2).max(6).optional(),
   engineSize: z.string().optional(),
+  traction: z.union([tractionEnum, z.literal("")]).optional(),
 });
 
 // Paso 4: Precio y Descripción
@@ -109,16 +111,19 @@ export const step4Schema = z.object({
 });
 
 // Paso 5: Contacto y Ubicación
+// Chilean phone regex: +56 9 XXXX XXXX or 9 XXXX XXXX or similar formats
+const chileanPhoneRegex = /^(\+?56)?[\s-]?9[\s-]?\d{4}[\s-]?\d{4}$/;
+
 export const step5Schema = z.object({
   regionId: z.string().min(1, "Selecciona una región"),
   comunaId: z.string().optional(),
   contactPhone: z
     .string()
     .min(9, "El teléfono debe tener al menos 9 dígitos")
-    .regex(/^[\d\s+()-]+$/, "Formato de teléfono inválido"),
+    .regex(chileanPhoneRegex, "Formato inválido. Ej: +56 9 1234 5678"),
   contactWhatsApp: z
     .string()
-    .regex(/^[\d\s+()-]*$/, "Formato de WhatsApp inválido")
+    .regex(/^((\+?56)?[\s-]?9[\s-]?\d{4}[\s-]?\d{4})?$/, "Formato inválido. Ej: +56 9 1234 5678")
     .optional()
     .or(z.literal("")),
   showPhone: z.boolean().default(true),
@@ -152,9 +157,10 @@ export const publishVehicleSchema = z.object({
   // Paso 4
   fuelType: fuelTypeEnum,
   transmission: transmissionEnum,
-  color: z.string().optional(),
+  color: z.string().min(1),
   doors: z.number().min(2).max(6).optional(),
   engineSize: z.string().optional(),
+  traction: z.union([tractionEnum, z.literal("")]).optional(),
   // Paso 5
   title: z.string().min(10).max(100),
   description: z.string().max(2000).optional(),
@@ -203,6 +209,7 @@ export interface PublishFormData {
   color: string;
   doors: number | undefined;
   engineSize: string;
+  traction: string;
   // Paso 5
   title: string;
   description: string;
@@ -230,6 +237,7 @@ export const initialFormData: PublishFormData = {
   color: "",
   doors: undefined,
   engineSize: "",
+  traction: "",
   title: "",
   description: "",
   price: 0,

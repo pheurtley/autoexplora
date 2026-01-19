@@ -50,7 +50,12 @@ export const FUEL_TYPES = {
 export const TRANSMISSIONS = {
   MANUAL: { label: "Manual" },
   AUTOMATICA: { label: "Automática" },
-  SEMIAUTOMATICA: { label: "Semiautomática" },
+} as const;
+
+export const TRACTIONS = {
+  "2WD": { label: "2WD (Tracción simple)" },
+  "4WD": { label: "4WD (Tracción 4x4)" },
+  AWD: { label: "AWD (Tracción integral)" },
 } as const;
 
 export const CONDITIONS = {

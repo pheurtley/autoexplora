@@ -2,7 +2,7 @@
 
 import { Select, Input } from "@/components/ui";
 import type { PublishFormData } from "@/lib/validations";
-import { FUEL_TYPES, TRANSMISSIONS, COLORS } from "@/lib/constants";
+import { FUEL_TYPES, TRANSMISSIONS, COLORS, TRACTIONS } from "@/lib/constants";
 
 interface Step4SpecsProps {
   data: PublishFormData;
@@ -27,6 +27,11 @@ const colorOptions = Object.entries(COLORS).map(([value, { label }]) => ({
   label,
 }));
 
+const tractionOptions = Object.entries(TRACTIONS).map(([value, { label }]) => ({
+  value,
+  label,
+}));
+
 const DOORS = [
   { value: "2", label: "2 puertas" },
   { value: "3", label: "3 puertas" },
@@ -34,7 +39,13 @@ const DOORS = [
   { value: "5", label: "5 puertas" },
 ];
 
+// Categories that should show traction field
+const TRACTION_CATEGORIES = ["SUV", "PICKUP", "CAMION", "FURGON"];
+
 export function Step4Specs({ data, onChange, errors }: Step4SpecsProps) {
+  const isMoto = data.vehicleType === "MOTO";
+  const showTraction = !isMoto && (TRACTION_CATEGORIES.includes(data.category) || data.vehicleType === "COMERCIAL");
+
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-neutral-900">
@@ -64,33 +75,48 @@ export function Step4Specs({ data, onChange, errors }: Step4SpecsProps) {
 
         {/* Color */}
         <Select
-          label="Color (opcional)"
+          label="Color"
           value={data.color}
           onChange={(e) => onChange("color", e.target.value)}
           options={colorOptions}
           placeholder="Selecciona un color"
           error={errors.color}
+          required
         />
 
-        {/* Puertas */}
-        <Select
-          label="Puertas (opcional)"
-          value={data.doors ? String(data.doors) : ""}
-          onChange={(e) =>
-            onChange("doors", e.target.value ? parseInt(e.target.value) : undefined)
-          }
-          options={DOORS}
-          placeholder="Selecciona cantidad"
-          error={errors.doors}
-        />
+        {/* Puertas - solo para autos y comerciales, no motos */}
+        {!isMoto && (
+          <Select
+            label="Puertas (opcional)"
+            value={data.doors ? String(data.doors) : ""}
+            onChange={(e) =>
+              onChange("doors", e.target.value ? parseInt(e.target.value) : undefined)
+            }
+            options={DOORS}
+            placeholder="Selecciona cantidad"
+            error={errors.doors}
+          />
+        )}
 
-        {/* Motor */}
+        {/* Tracción - solo para SUV, Pickup y Comerciales */}
+        {showTraction && (
+          <Select
+            label="Tracción (opcional)"
+            value={data.traction}
+            onChange={(e) => onChange("traction", e.target.value)}
+            options={tractionOptions}
+            placeholder="Selecciona tipo de tracción"
+            error={errors.traction}
+          />
+        )}
+
+        {/* Cilindrada / Motor */}
         <div className="sm:col-span-2">
           <Input
             label="Cilindrada / Motor (opcional)"
             value={data.engineSize}
             onChange={(e) => onChange("engineSize", e.target.value)}
-            placeholder="Ej: 2.0L, 1600cc, etc."
+            placeholder="Ej: 2.0L, 1600cc, 150cc, etc."
             error={errors.engineSize}
           />
         </div>
