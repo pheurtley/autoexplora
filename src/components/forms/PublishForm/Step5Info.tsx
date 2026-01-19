@@ -1,9 +1,9 @@
 "use client";
 
-import { Input, Button } from "@/components/ui";
+import { useEffect } from "react";
+import { Input } from "@/components/ui";
 import type { PublishFormData } from "@/lib/validations";
 import { formatPrice } from "@/lib/utils";
-import { Sparkles } from "lucide-react";
 
 interface Step5InfoProps {
   data: PublishFormData;
@@ -11,19 +11,24 @@ interface Step5InfoProps {
   errors: Record<string, string>;
   brandName?: string;
   modelName?: string;
+  colorName?: string;
 }
 
-export function Step5Info({ data, onChange, errors, brandName, modelName }: Step5InfoProps) {
-  // Generate suggested title from brand, model, and year
-  const suggestedTitle = brandName && modelName && data.year
-    ? `${brandName} ${modelName} ${data.year}`
-    : "";
+export function Step5Info({ data, onChange, errors, brandName, modelName, colorName }: Step5InfoProps) {
+  // Generate auto title: AÑO MARCA MODELO COLOR
+  const autoTitle = [
+    data.year,
+    brandName,
+    modelName,
+    colorName,
+  ].filter(Boolean).join(" ");
 
-  const applySuggestion = () => {
-    if (suggestedTitle) {
-      onChange("title", suggestedTitle);
+  // Auto-update title when values change
+  useEffect(() => {
+    if (autoTitle && autoTitle !== data.title) {
+      onChange("title", autoTitle);
     }
-  };
+  }, [autoTitle]);
 
   return (
     <div className="space-y-6">
@@ -31,39 +36,17 @@ export function Step5Info({ data, onChange, errors, brandName, modelName }: Step
         Información del anuncio
       </h3>
 
-      {/* Título */}
+      {/* Título (auto-generado) */}
       <div>
-        <div className="flex items-end gap-2">
-          <div className="flex-1">
-            <Input
-              label="Título del anuncio"
-              value={data.title}
-              onChange={(e) => onChange("title", e.target.value)}
-              placeholder="Ej: Toyota Corolla 2020 1.8 Automático Full"
-              error={errors.title}
-              helperText={`${data.title.length}/100 caracteres`}
-              maxLength={100}
-              required
-            />
-          </div>
-          {suggestedTitle && !data.title && (
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={applySuggestion}
-              className="mb-6 flex items-center gap-1.5 whitespace-nowrap"
-            >
-              <Sparkles className="w-4 h-4" />
-              Sugerir
-            </Button>
-          )}
+        <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+          Título del anuncio
+        </label>
+        <div className="px-4 py-3 rounded-lg border border-neutral-200 bg-neutral-50 text-neutral-900">
+          {autoTitle || <span className="text-neutral-400">Se generará automáticamente</span>}
         </div>
-        {suggestedTitle && !data.title && (
-          <p className="text-sm text-neutral-500 mt-1">
-            Sugerencia: <button type="button" onClick={applySuggestion} className="text-andino-600 hover:underline">{suggestedTitle}</button>
-          </p>
-        )}
+        <p className="text-sm text-neutral-500 mt-1">
+          El título se genera automáticamente con el año, marca, modelo y color
+        </p>
       </div>
 
       {/* Descripción */}

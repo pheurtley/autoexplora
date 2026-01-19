@@ -22,6 +22,7 @@ import {
   type PublishFormData,
   type PublishFormImage,
 } from "@/lib/validations";
+import { COLORS } from "@/lib/constants";
 import { ArrowLeft, ArrowRight, Loader2, CheckCircle, Eye } from "lucide-react";
 
 const STEPS = [
@@ -50,6 +51,11 @@ export function PublishForm() {
   const [modelName, setModelName] = useState("");
   const [regionName, setRegionName] = useState("");
   const [comunaName, setComunaName] = useState("");
+
+  // Compute color name from COLORS constant
+  const colorName = formData.color
+    ? COLORS[formData.color as keyof typeof COLORS]?.label || ""
+    : "";
 
   // Load draft from localStorage on mount
   useEffect(() => {
@@ -359,6 +365,7 @@ export function PublishForm() {
             errors={errors}
             brandName={brandName}
             modelName={modelName}
+            colorName={colorName}
           />
         )}
         {currentStep === 6 && (
