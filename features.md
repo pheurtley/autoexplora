@@ -33,6 +33,13 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
   - [x] UX mobile: barra de progreso en lugar de círculos
   - [x] UX mobile: scroll centrado al seleccionar tipo
   - [x] UX mobile: scroll al inicio del formulario al cambiar paso
+  - [x] Campo puertas oculto para motos
+  - [x] Color obligatorio (usado en título auto-generado)
+  - [x] Teclado numérico en campos de teléfono (inputMode tel)
+  - [x] Contador de fotos con indicador de mínimo (3/15)
+  - [x] Campo tracción (2WD/4WD/AWD) para SUV, Pickup y Comerciales
+  - [x] Validación formato teléfono chileno (+56 9 XXXX XXXX)
+  - [x] Transmisión simplificada a Manual/Automática
 
 ### Usuario
 - [x] Panel de cuenta de usuario
