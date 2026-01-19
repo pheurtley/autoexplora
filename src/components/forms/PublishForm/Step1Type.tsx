@@ -35,8 +35,11 @@ const VEHICLE_TYPES = [
 export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
   const categorySectionRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to categories section on mobile when vehicle type is selected
+  // Scroll to categories section on mobile only when vehicle type is selected
   const scrollToCategories = () => {
+    // Only scroll on mobile (< 640px, sm breakpoint)
+    if (window.innerWidth >= 640) return;
+
     setTimeout(() => {
       categorySectionRef.current?.scrollIntoView({
         behavior: "smooth",
