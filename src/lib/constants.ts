@@ -6,6 +6,33 @@ export const SITE_DESCRIPTION =
 export const SITE_URL =
   process.env.NEXT_PUBLIC_APP_URL || "https://autoexplora.cl";
 
+// ==================== Utility Types & Functions ====================
+
+/**
+ * Represents a select option with value and label for dropdown components
+ */
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
+/**
+ * Converts a constants object to an array of select options.
+ * Use this instead of repeating Object.entries().map() in every component.
+ *
+ * @example
+ * const fuelOptions = toSelectOptions(FUEL_TYPES);
+ * // Returns: [{ value: "BENCINA", label: "Bencina" }, ...]
+ */
+export function toSelectOptions<T extends Record<string, { label: string }>>(
+  constants: T
+): SelectOption[] {
+  return Object.entries(constants).map(([value, { label }]) => ({
+    value,
+    label,
+  }));
+}
+
 // ==================== Vehicle Constants ====================
 
 export const VEHICLE_TYPES = {
@@ -57,6 +84,12 @@ export const TRACTIONS = {
   "4WD": { label: "4WD (Tracción 4x4)" },
   AWD: { label: "AWD (Tracción integral)" },
 } as const;
+
+/**
+ * Vehicle categories that should display the traction field.
+ * These are typically vehicles where 4WD/AWD is a relevant feature.
+ */
+export const TRACTION_CATEGORIES = ["SUV", "PICKUP", "CAMION", "FURGON"] as const;
 
 export const CONDITIONS = {
   NUEVO: { label: "Nuevo" },
@@ -153,3 +186,30 @@ export const DEALER_SORT_OPTIONS = [
   { value: "name", label: "Nombre A-Z" },
   { value: "vehicles", label: "Más vehículos" },
 ] as const;
+
+// ==================== Type Exports ====================
+// Use these types instead of loose strings for better type safety
+
+/** Valid vehicle type keys: "AUTO" | "MOTO" | "COMERCIAL" */
+export type VehicleTypeKey = keyof typeof VEHICLE_TYPES;
+
+/** Valid vehicle category keys: "SEDAN" | "HATCHBACK" | "SUV" | ... */
+export type VehicleCategoryKey = keyof typeof VEHICLE_CATEGORIES;
+
+/** Valid fuel type keys: "BENCINA" | "DIESEL" | "HIBRIDO" | ... */
+export type FuelTypeKey = keyof typeof FUEL_TYPES;
+
+/** Valid transmission keys: "MANUAL" | "AUTOMATICA" */
+export type TransmissionKey = keyof typeof TRANSMISSIONS;
+
+/** Valid traction keys: "2WD" | "4WD" | "AWD" */
+export type TractionKey = keyof typeof TRACTIONS;
+
+/** Valid condition keys: "NUEVO" | "USADO" */
+export type ConditionKey = keyof typeof CONDITIONS;
+
+/** Valid color keys: "BLANCO" | "NEGRO" | "GRIS" | ... */
+export type ColorKey = keyof typeof COLORS;
+
+/** Valid listing status keys: "DRAFT" | "ACTIVE" | "PAUSED" | ... */
+export type ListingStatusKey = keyof typeof LISTING_STATUS;

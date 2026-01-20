@@ -1,5 +1,22 @@
 import { z } from "zod";
 
+/**
+ * Validation schemas for the vehicle publishing form.
+ *
+ * FORM STEPS TO SCHEMA MAPPING:
+ * ============================
+ * - UI Step 1 (Type)     → step1Schema (vehicleType, category)
+ * - UI Step 2 (Details)  → step2Schema (brand, model, year, condition, mileage)
+ * - UI Step 3 (Photos)   → imagesSchema (3-15 images required)
+ * - UI Step 4 (Specs)    → step3Schema (fuel, transmission, color, doors, traction)
+ * - UI Step 5 (Price)    → step4Schema (title, description, price)
+ * - UI Step 6 (Contact)  → step5Schema (region, phone, whatsapp)
+ * - UI Step 7 (Preview)  → No validation (read-only preview)
+ *
+ * Note: Schema numbers don't match UI step numbers because images
+ * were added as a separate step after the original schema design.
+ */
+
 // ==================== Enums ====================
 
 export const vehicleTypeEnum = z.enum(["AUTO", "MOTO", "COMERCIAL"]);
@@ -111,7 +128,11 @@ export const step4Schema = z.object({
 });
 
 // Paso 5: Contacto y Ubicación
-// Chilean phone regex: +56 9 XXXX XXXX or 9 XXXX XXXX or similar formats
+/**
+ * Chilean mobile phone number regex.
+ * Accepts formats: +56 9 1234 5678, 56 9 1234 5678, 9 1234 5678, 912345678
+ * All Chilean mobile numbers start with 9 after the country code.
+ */
 const chileanPhoneRegex = /^(\+?56)?[\s-]?9[\s-]?\d{4}[\s-]?\d{4}$/;
 
 export const step5Schema = z.object({

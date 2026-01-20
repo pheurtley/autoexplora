@@ -2,7 +2,14 @@
 
 import { Select, Input } from "@/components/ui";
 import type { PublishFormData } from "@/lib/validations";
-import { FUEL_TYPES, TRANSMISSIONS, COLORS, TRACTIONS } from "@/lib/constants";
+import {
+  FUEL_TYPES,
+  TRANSMISSIONS,
+  COLORS,
+  TRACTIONS,
+  TRACTION_CATEGORIES,
+  toSelectOptions,
+} from "@/lib/constants";
 
 interface Step4SpecsProps {
   data: PublishFormData;
@@ -10,27 +17,11 @@ interface Step4SpecsProps {
   errors: Record<string, string>;
 }
 
-const fuelOptions = Object.entries(FUEL_TYPES).map(([value, { label }]) => ({
-  value,
-  label,
-}));
-
-const transmissionOptions = Object.entries(TRANSMISSIONS).map(
-  ([value, { label }]) => ({
-    value,
-    label,
-  })
-);
-
-const colorOptions = Object.entries(COLORS).map(([value, { label }]) => ({
-  value,
-  label,
-}));
-
-const tractionOptions = Object.entries(TRACTIONS).map(([value, { label }]) => ({
-  value,
-  label,
-}));
+// Use the utility function to convert constants to select options
+const fuelOptions = toSelectOptions(FUEL_TYPES);
+const transmissionOptions = toSelectOptions(TRANSMISSIONS);
+const colorOptions = toSelectOptions(COLORS);
+const tractionOptions = toSelectOptions(TRACTIONS);
 
 const DOORS = [
   { value: "2", label: "2 puertas" },
@@ -39,12 +30,13 @@ const DOORS = [
   { value: "5", label: "5 puertas" },
 ];
 
-// Categories that should show traction field
-const TRACTION_CATEGORIES = ["SUV", "PICKUP", "CAMION", "FURGON"];
-
 export function Step4Specs({ data, onChange, errors }: Step4SpecsProps) {
   const isMoto = data.vehicleType === "MOTO";
-  const showTraction = !isMoto && (TRACTION_CATEGORIES.includes(data.category) || data.vehicleType === "COMERCIAL");
+  // Show traction for SUV, Pickup, and commercial vehicles (trucks, vans)
+  const showTraction = !isMoto && (
+    TRACTION_CATEGORIES.includes(data.category as typeof TRACTION_CATEGORIES[number]) ||
+    data.vehicleType === "COMERCIAL"
+  );
 
   return (
     <div className="space-y-6">
