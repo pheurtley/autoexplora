@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState, useRef, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
 import { Container } from "./Container";
 import { SearchBar, SearchModal } from "./SearchBar";
@@ -48,12 +49,18 @@ const navigation = [
 ];
 
 export function Header() {
+  const pathname = usePathname();
   const { data: session, status } = useSession();
   const { config } = useSiteConfig();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchModalOpen, setSearchModalOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
+
+  // Hide header on admin routes
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
 
   const isLoading = status === "loading";
   const isLoggedIn = !!session?.user;
