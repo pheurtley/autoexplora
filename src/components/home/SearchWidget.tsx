@@ -3,7 +3,21 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
-import { Search, Car, Bike, Truck, ChevronDown, ChevronUp, MapPin, Calendar, DollarSign, Tag } from "lucide-react";
+import {
+  Search,
+  Car,
+  Bike,
+  Truck,
+  Tag,
+  Layers,
+  DollarSign,
+  Calendar,
+  Gauge,
+  MapPin,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { VEHICLE_CATEGORIES } from "@/lib/constants";
 
 const vehicleTypes = [
   { id: "AUTO", label: "Autos", icon: Car },
@@ -11,9 +25,32 @@ const vehicleTypes = [
   { id: "COMERCIAL", label: "Comerciales", icon: Truck },
 ];
 
-// Generate year options from current year to 2000
 const currentYear = new Date().getFullYear();
-const yearOptions = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear - i);
+const yearOptions = Array.from({ length: currentYear - 1999 }, (_, i) => currentYear + 1 - i);
+
+const mileageOptions = [
+  { value: "10000", label: "10.000 km" },
+  { value: "30000", label: "30.000 km" },
+  { value: "50000", label: "50.000 km" },
+  { value: "80000", label: "80.000 km" },
+  { value: "100000", label: "100.000 km" },
+  { value: "150000", label: "150.000 km" },
+  { value: "200000", label: "200.000 km" },
+];
+
+interface Brand {
+  id: string;
+  name: string;
+  slug: string;
+  _count: { vehicles: number };
+}
+
+interface Model {
+  id: string;
+  name: string;
+  slug: string;
+  _count: { vehicles: number };
+}
 
 interface Region {
   id: string;
@@ -24,45 +61,91 @@ interface Region {
 export function SearchWidget() {
   const router = useRouter();
   const [selectedType, setSelectedType] = useState("AUTO");
-  const [brand, setBrand] = useState("");
+  const [brandId, setBrandId] = useState("");
+  const [modelId, setModelId] = useState("");
+  const [category, setCategory] = useState("");
+  const [condition, setCondition] = useState("");
   const [priceMax, setPriceMax] = useState("");
   const [yearMin, setYearMin] = useState("");
-  const [region, setRegion] = useState("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [regions, setRegions] = useState<Region[]>([]);
-  const [loadingRegions, setLoadingRegions] = useState(false);
+  const [maxMileage, setMaxMileage] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [showMore, setShowMore] = useState(false);
 
-  // Fetch regions when advanced filters are shown
+  const [brands, setBrands] = useState<Brand[]>([]);
+  const [models, setModels] = useState<Model[]>([]);
+  const [regions, setRegions] = useState<Region[]>([]);
+  const [loadingBrands, setLoadingBrands] = useState(true);
+  const [loadingModels, setLoadingModels] = useState(false);
+
+  // Fetch brands on mount
   useEffect(() => {
-    if (showAdvanced && regions.length === 0) {
-      setLoadingRegions(true);
+    fetch("/api/marcas")
+      .then((res) => res.json())
+      .then((data) => setBrands(data.brands || []))
+      .catch(console.error)
+      .finally(() => setLoadingBrands(false));
+  }, []);
+
+  // Fetch models when brand changes
+  useEffect(() => {
+    if (!brandId) {
+      setModels([]);
+      setModelId("");
+      return;
+    }
+    setLoadingModels(true);
+    setModelId("");
+    fetch(`/api/marcas/${brandId}/modelos`)
+      .then((res) => res.json())
+      .then((data) => setModels(data.models || []))
+      .catch(console.error)
+      .finally(() => setLoadingModels(false));
+  }, [brandId]);
+
+  // Fetch regions when "more filters" is shown
+  useEffect(() => {
+    if (showMore && regions.length === 0) {
       fetch("/api/regiones")
         .then((res) => res.json())
-        .then((data) => {
-          setRegions(data.regions || []);
-        })
-        .catch(console.error)
-        .finally(() => setLoadingRegions(false));
+        .then((data) => setRegions(data.regions || []))
+        .catch(console.error);
     }
-  }, [showAdvanced, regions.length]);
+  }, [showMore, regions.length]);
+
+  // Reset category when vehicle type changes
+  useEffect(() => {
+    setCategory("");
+  }, [selectedType]);
+
+  // Get categories for current vehicle type
+  const categoriesForType = Object.entries(VEHICLE_CATEGORIES).filter(
+    ([, value]) => value.type === selectedType
+  );
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     params.set("vehicleType", selectedType);
-    if (brand) params.set("brand", brand);
-    if (priceMax) params.set("priceMax", priceMax);
-    if (yearMin) params.set("yearMin", yearMin);
-    if (region) params.set("region", region);
+    if (brandId) params.set("brandId", brandId);
+    if (modelId) params.set("modelId", modelId);
+    if (category) params.set("category", category);
+    if (condition) params.set("condition", condition);
+    if (priceMax) params.set("maxPrice", priceMax);
+    if (yearMin) params.set("minYear", yearMin);
+    if (maxMileage) params.set("maxMileage", maxMileage);
+    if (regionId) params.set("regionId", regionId);
     router.push(`/vehiculos?${params.toString()}`);
   };
 
-  const hasAdvancedFilters = yearMin || region;
+  const moreFiltersCount = [condition, category, maxMileage, regionId].filter(Boolean).length;
+
+  const selectClass =
+    "w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400 text-sm";
 
   return (
     <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 max-w-4xl mx-auto animate-scale-in animation-delay-100 overflow-hidden">
       {/* Vehicle Type Tabs */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-5">
         {vehicleTypes.map((type) => (
           <button
             key={type.id}
@@ -81,41 +164,62 @@ export function SearchWidget() {
 
       {/* Search Form */}
       <form onSubmit={handleSearch}>
-        {/* Main Filters */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-              <Tag className="h-3.5 w-3.5 inline mr-1.5 text-neutral-400" />
+        {/* Row 1: Brand, Model, Price, Year */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {/* Brand */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
+              <Tag className="h-3 w-3 inline mr-1 text-neutral-400" />
               Marca
             </label>
             <select
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
+              value={brandId}
+              onChange={(e) => setBrandId(e.target.value)}
+              className={selectClass}
+              disabled={loadingBrands}
             >
               <option value="">Todas las marcas</option>
-              <option value="toyota">Toyota</option>
-              <option value="chevrolet">Chevrolet</option>
-              <option value="hyundai">Hyundai</option>
-              <option value="kia">Kia</option>
-              <option value="nissan">Nissan</option>
-              <option value="suzuki">Suzuki</option>
-              <option value="mazda">Mazda</option>
-              <option value="ford">Ford</option>
-              <option value="volkswagen">Volkswagen</option>
-              <option value="honda">Honda</option>
+              {brands.map((b) => (
+                <option key={b.id} value={b.id}>
+                  {b.name}
+                </option>
+              ))}
             </select>
           </div>
 
+          {/* Model */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-              <DollarSign className="h-3.5 w-3.5 inline mr-1.5 text-neutral-400" />
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
+              <Layers className="h-3 w-3 inline mr-1 text-neutral-400" />
+              Modelo
+            </label>
+            <select
+              value={modelId}
+              onChange={(e) => setModelId(e.target.value)}
+              className={selectClass}
+              disabled={!brandId || loadingModels}
+            >
+              <option value="">
+                {!brandId ? "Selecciona marca" : loadingModels ? "Cargando..." : "Todos los modelos"}
+              </option>
+              {models.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Max Price */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
+              <DollarSign className="h-3 w-3 inline mr-1 text-neutral-400" />
               Precio máximo
             </label>
             <select
               value={priceMax}
               onChange={(e) => setPriceMax(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
+              className={selectClass}
             >
               <option value="">Sin límite</option>
               <option value="5000000">$5.000.000</option>
@@ -127,15 +231,16 @@ export function SearchWidget() {
             </select>
           </div>
 
-          <div className="hidden lg:block">
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-              <Calendar className="h-3.5 w-3.5 inline mr-1.5 text-neutral-400" />
+          {/* Year */}
+          <div>
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
+              <Calendar className="h-3 w-3 inline mr-1 text-neutral-400" />
               Año desde
             </label>
             <select
               value={yearMin}
               onChange={(e) => setYearMin(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
+              className={selectClass}
             >
               <option value="">Cualquier año</option>
               {yearOptions.map((year) => (
@@ -145,86 +250,120 @@ export function SearchWidget() {
               ))}
             </select>
           </div>
-
-          <div className="flex items-end">
-            <Button
-              type="submit"
-              fullWidth
-              size="lg"
-              className="hover:shadow-lg hover:shadow-andino-600/25 active:scale-[0.98] transition-all"
-            >
-              <Search className="h-5 w-5 mr-2" />
-              Buscar
-            </Button>
-          </div>
         </div>
 
-        {/* Advanced Filters Toggle - Only on mobile/tablet */}
-        <div className="mt-4 lg:hidden">
+        {/* More Filters Toggle */}
+        <div className="mt-3">
           <button
             type="button"
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="flex items-center justify-center gap-2 w-full py-2 text-sm font-medium text-neutral-600 hover:text-andino-600 transition-colors"
+            onClick={() => setShowMore(!showMore)}
+            className="flex items-center gap-1.5 text-sm font-medium text-neutral-500 hover:text-andino-600 transition-colors"
           >
-            {showAdvanced ? (
-              <>
-                <ChevronUp className="h-4 w-4" />
-                Menos filtros
-              </>
+            {showMore ? (
+              <ChevronUp className="h-4 w-4" />
             ) : (
-              <>
-                <ChevronDown className="h-4 w-4" />
-                Más filtros
-                {hasAdvancedFilters && (
-                  <span className="ml-1 px-1.5 py-0.5 bg-andino-100 text-andino-700 text-xs rounded-full">
-                    {[yearMin, region].filter(Boolean).length}
-                  </span>
-                )}
-              </>
+              <ChevronDown className="h-4 w-4" />
+            )}
+            Más filtros
+            {moreFiltersCount > 0 && (
+              <span className="ml-1 px-1.5 py-0.5 bg-andino-100 text-andino-700 text-xs rounded-full">
+                {moreFiltersCount}
+              </span>
             )}
           </button>
         </div>
 
-        {/* Advanced Filters - Expandable on mobile, always visible on desktop */}
-        <div className={`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4 ${showAdvanced ? "block lg:hidden" : "hidden lg:hidden"}`}>
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-              <Calendar className="h-3.5 w-3.5 inline mr-1.5 text-neutral-400" />
-              Año desde
-            </label>
-            <select
-              value={yearMin}
-              onChange={(e) => setYearMin(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
-            >
-              <option value="">Cualquier año</option>
-              {yearOptions.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Row 2: Condition, Category, Mileage, Region */}
+        {showMore && (
+          <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Condition */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                Condición
+              </label>
+              <select
+                value={condition}
+                onChange={(e) => setCondition(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todas</option>
+                <option value="NUEVO">Nuevo</option>
+                <option value="USADO">Usado</option>
+              </select>
+            </div>
 
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-1.5">
-              <MapPin className="h-3.5 w-3.5 inline mr-1.5 text-neutral-400" />
-              Región
-            </label>
-            <select
-              value={region}
-              onChange={(e) => setRegion(e.target.value)}
-              className="w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400"
-              disabled={loadingRegions}
-            >
-              <option value="">Todas las regiones</option>
-              {regions.map((r) => (
-                <option key={r.id} value={r.slug}>
-                  {r.name}
-                </option>
-              ))}
-            </select>
+            {/* Category */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                Categoría
+              </label>
+              <select
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todas</option>
+                {categoriesForType.map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Max Mileage */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                <Gauge className="h-3 w-3 inline mr-1 text-neutral-400" />
+                Km máximo
+              </label>
+              <select
+                value={maxMileage}
+                onChange={(e) => setMaxMileage(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Sin límite</option>
+                {mileageOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Region */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                <MapPin className="h-3 w-3 inline mr-1 text-neutral-400" />
+                Región
+              </label>
+              <select
+                value={regionId}
+                onChange={(e) => setRegionId(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todas las regiones</option>
+                {regions.map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.name}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
+        )}
+
+        {/* Search Button */}
+        <div className="mt-4">
+          <Button
+            type="submit"
+            fullWidth
+            size="lg"
+            className="hover:shadow-lg hover:shadow-andino-600/25 active:scale-[0.98] transition-all"
+          >
+            <Search className="h-5 w-5 mr-2" />
+            Buscar
+          </Button>
         </div>
       </form>
     </div>
