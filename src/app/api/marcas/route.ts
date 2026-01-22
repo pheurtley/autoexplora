@@ -1,10 +1,19 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { VehicleType } from "@prisma/client";
 
-// GET /api/marcas - Obtener todas las marcas
-export async function GET() {
+// GET /api/marcas - Obtener marcas, opcionalmente filtradas por tipo de vehículo
+export async function GET(request: NextRequest) {
   try {
+    const vehicleType = request.nextUrl.searchParams.get("vehicleType");
+    const validTypes = Object.values(VehicleType);
+
+    const where = vehicleType && validTypes.includes(vehicleType as VehicleType)
+      ? { vehicles: { some: { vehicleType: vehicleType as VehicleType, status: "ACTIVE" as const } } }
+      : undefined;
+
     const brands = await prisma.brand.findMany({
+      where,
       orderBy: { name: "asc" },
       select: {
         id: true,

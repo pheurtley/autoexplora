@@ -77,14 +77,17 @@ export function SearchWidget() {
   const [loadingBrands, setLoadingBrands] = useState(true);
   const [loadingModels, setLoadingModels] = useState(false);
 
-  // Fetch brands on mount
+  // Fetch brands when vehicle type changes
   useEffect(() => {
-    fetch("/api/marcas")
+    setLoadingBrands(true);
+    setBrandId("");
+    setModelId("");
+    fetch(`/api/marcas?vehicleType=${selectedType}`)
       .then((res) => res.json())
       .then((data) => setBrands(data.brands || []))
       .catch(console.error)
       .finally(() => setLoadingBrands(false));
-  }, []);
+  }, [selectedType]);
 
   // Fetch models when brand changes
   useEffect(() => {
