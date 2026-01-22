@@ -28,6 +28,7 @@ export default async function EditVehiclePage({ params }: PageProps) {
     include: {
       brand: true,
       model: true,
+      version: true,
       region: true,
       comuna: true,
       images: { orderBy: { order: "asc" } },
@@ -49,6 +50,7 @@ export default async function EditVehiclePage({ params }: PageProps) {
     category: vehicle.category,
     brandId: vehicle.brandId,
     modelId: vehicle.modelId,
+    versionId: vehicle.versionId || "",
     year: vehicle.year,
     condition: vehicle.condition,
     mileage: vehicle.mileage,

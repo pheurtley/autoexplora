@@ -17,6 +17,9 @@ import {
   Building2,
   X,
   Search,
+  Layers,
+  Tags,
+  Database,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -70,9 +73,24 @@ const catalogNavigation: NavGroup = {
   name: "Catálogos",
   items: [
     {
+      name: "Dashboard",
+      href: "/admin/catalogo",
+      icon: Database,
+    },
+    {
       name: "Marcas",
       href: "/admin/marcas",
       icon: Tag,
+    },
+    {
+      name: "Modelos",
+      href: "/admin/modelos",
+      icon: Layers,
+    },
+    {
+      name: "Versiones",
+      href: "/admin/versiones",
+      icon: Tags,
     },
     {
       name: "Regiones",
@@ -94,7 +112,11 @@ export function AdminSidebar({ isOpen = false, onClose }: AdminSidebarProps) {
   const pathname = usePathname();
   const { config } = useSiteConfig();
   const [catalogOpen, setCatalogOpen] = useState(
-    pathname.startsWith("/admin/marcas") || pathname.startsWith("/admin/regiones")
+    pathname.startsWith("/admin/catalogo") ||
+    pathname.startsWith("/admin/marcas") ||
+    pathname.startsWith("/admin/modelos") ||
+    pathname.startsWith("/admin/versiones") ||
+    pathname.startsWith("/admin/regiones")
   );
 
   const logoSrc = config.logo; // Use configured logo, no fallback

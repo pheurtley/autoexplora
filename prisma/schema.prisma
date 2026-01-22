@@ -1,6 +1,3 @@
-// Prisma Schema for AutoExplora.cl
-// Marketplace de vehículos en Chile
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,23 +8,20 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ==================== AUTENTICACIÓN (NextAuth) ====================
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -51,78 +45,35 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ==================== USUARIOS ====================
-
-enum Role {
-  USER
-  MODERATOR
-  ADMIN
-}
-
-// ==================== DEALERS ====================
-
-enum DealerType {
-  AUTOMOTORA // Vende vehículos nuevos y usados
-  RENT_A_CAR // Arrienda y vende
-}
-
-enum DealerStatus {
-  PENDING // Esperando aprobación
-  ACTIVE // Aprobado
-  SUSPENDED // Suspendido
-  REJECTED // Rechazado
-}
-
-enum DealerRole {
-  OWNER // Dueño/Admin del dealer
-  MANAGER // Gerente
-  SALES // Vendedor
-}
-
 model Dealer {
-  id   String @id @default(cuid())
-  slug String @unique
-
-  // Información del negocio
-  businessName String // Razón social
-  tradeName    String // Nombre de fantasía
-  rut          String     @unique
-  type         DealerType
-
-  // Contacto
-  email    String
-  phone    String
-  whatsapp String?
-  website  String?
-
-  // Ubicación
-  address  String
-  regionId String
-  region   Region  @relation(fields: [regionId], references: [id])
-  comunaId String?
-  comuna   Comuna? @relation(fields: [comunaId], references: [id])
-
-  // Branding
-  logo           String?
-  logoPublicId   String?
-  banner         String?
-  bannerPublicId String?
-  description    String? @db.Text
-
-  // Horarios (JSON)
-  schedule Json?
-
-  // Estado y verificación
+  id              String       @id @default(cuid())
+  slug            String       @unique
+  businessName    String
+  tradeName       String
+  rut             String       @unique
+  type            DealerType
+  email           String
+  phone           String
+  whatsapp        String?
+  website         String?
+  address         String
+  regionId        String
+  comunaId        String?
+  logo            String?
+  logoPublicId    String?
+  banner          String?
+  bannerPublicId  String?
+  description     String?
+  schedule        Json?
   status          DealerStatus @default(PENDING)
   verifiedAt      DateTime?
   rejectionReason String?
-
-  // Relaciones
-  users    User[]
-  vehicles Vehicle[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  comuna          Comuna?      @relation(fields: [comunaId], references: [id])
+  region          Region       @relation(fields: [regionId], references: [id])
+  users           User[]
+  vehicles        Vehicle[]
 
   @@index([status])
   @@index([type])
@@ -131,119 +82,96 @@ model Dealer {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  password      String?
-  phone         String?
-  role          Role      @default(USER)
-
-  // Ban/Suspension fields
-  bannedAt       DateTime?
-  banReason      String?
-  suspendedUntil DateTime?
-
-  // Dealer relationship
-  dealerId   String?
-  dealer     Dealer?     @relation(fields: [dealerId], references: [id])
-  dealerRole DealerRole?
-
-  accounts  Account[]
-  sessions  Session[]
-  vehicles  Vehicle[]
-  favorites Favorite[]
-
-  // Admin relations
-  moderatedVehicles Vehicle[] @relation("ModeratedBy")
-  reportsMade       Report[]  @relation("ReportedBy")
-  reportsResolved   Report[]  @relation("ResolvedBy")
-
-  // Chat relations
+  id                  String         @id @default(cuid())
+  name                String?
+  email               String?        @unique
+  emailVerified       DateTime?
+  image               String?
+  password            String?
+  phone               String?
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+  banReason           String?
+  bannedAt            DateTime?
+  role                Role           @default(USER)
+  suspendedUntil      DateTime?
+  dealerId            String?
+  dealerRole          DealerRole?
+  accounts            Account[]
   buyerConversations  Conversation[] @relation("BuyerConversations")
   sellerConversations Conversation[] @relation("SellerConversations")
+  favorites           Favorite[]
   messages            Message[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  reportsMade         Report[]       @relation("ReportedBy")
+  reportsResolved     Report[]       @relation("ResolvedBy")
+  sessions            Session[]
+  dealer              Dealer?        @relation(fields: [dealerId], references: [id])
+  moderatedVehicles   Vehicle[]      @relation("ModeratedBy")
+  vehicles            Vehicle[]
 
   @@index([email])
   @@index([role])
   @@index([dealerId])
 }
 
-// ==================== VEHÍCULOS ====================
-
 model Vehicle {
-  id          String  @id @default(cuid())
-  title       String
-  slug        String  @unique
-  description String? @db.Text
-  price       Int
-  currency    String  @default("CLP")
-  negotiable  Boolean @default(false)
-
-  vehicleType VehicleType
-  category    VehicleCategory
-  condition   VehicleCondition
-
-  brandId String
-  brand   Brand  @relation(fields: [brandId], references: [id])
-  modelId String
-  model   Model  @relation(fields: [modelId], references: [id])
-
-  year         Int
-  mileage      Int
-  fuelType     FuelType
-  transmission Transmission
-  engineSize   String?
-  color        String?
-  doors        Int?
-  seats        Int?
-
+  id              String           @id @default(cuid())
+  title           String
+  slug            String           @unique
+  description     String?
+  price           Int
+  currency        String           @default("CLP")
+  negotiable      Boolean          @default(false)
+  vehicleType     VehicleType
+  category        VehicleCategory
+  condition       VehicleCondition
+  brandId         String
+  modelId         String
+  year            Int
+  mileage         Int
+  fuelType        FuelType
+  transmission    Transmission
+  engineSize      String?
+  color           String?
+  doors           Int?
+  seats           Int?
   plateEnding     String?
   technicalReview DateTime?
-
-  regionId String
-  region   Region  @relation(fields: [regionId], references: [id])
-  comunaId String?
-  comuna   Comuna? @relation(fields: [comunaId], references: [id])
-
+  regionId        String
+  comunaId        String?
   contactPhone    String
   contactWhatsApp String?
-  showPhone       Boolean @default(true)
-
-  status   ListingStatus @default(ACTIVE)
-  featured Boolean       @default(false)
-  views    Int           @default(0)
-
-  userId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  // Dealer relationship (if published by dealer)
-  dealerId String?
-  dealer   Dealer? @relation(fields: [dealerId], references: [id])
-
-  // Moderation fields
-  moderatedById   String?
-  moderatedBy     User?     @relation("ModeratedBy", fields: [moderatedById], references: [id])
+  showPhone       Boolean          @default(true)
+  status          ListingStatus    @default(ACTIVE)
+  featured        Boolean          @default(false)
+  views           Int              @default(0)
+  userId          String
+  publishedAt     DateTime         @default(now())
+  expiresAt       DateTime?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
   moderatedAt     DateTime?
+  moderatedById   String?
   rejectionReason String?
-
-  images        VehicleImage[]
-  favorites     Favorite[]
-  reports       Report[]
-  conversations Conversation[]
-
-  publishedAt DateTime  @default(now())
-  expiresAt   DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  dealerId        String?
+  versionId       String?
+  conversations   Conversation[]
+  favorites       Favorite[]
+  reports         Report[]
+  brand           Brand            @relation(fields: [brandId], references: [id])
+  comuna          Comuna?          @relation(fields: [comunaId], references: [id])
+  dealer          Dealer?          @relation(fields: [dealerId], references: [id])
+  model           Model            @relation(fields: [modelId], references: [id])
+  moderatedBy     User?            @relation("ModeratedBy", fields: [moderatedById], references: [id])
+  region          Region           @relation(fields: [regionId], references: [id])
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  version         Version?         @relation(fields: [versionId], references: [id])
+  images          VehicleImage[]
 
   @@index([userId])
   @@index([brandId])
   @@index([modelId])
+  @@index([versionId])
   @@index([regionId])
   @@index([vehicleType])
   @@index([status])
@@ -255,28 +183,23 @@ model Vehicle {
 }
 
 model VehicleImage {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   url       String
   publicId  String
-  isPrimary Boolean @default(false)
-  order     Int     @default(0)
-
+  isPrimary Boolean  @default(false)
+  order     Int      @default(0)
   vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
   @@index([vehicleId])
 }
 
-// ==================== CATÁLOGO ====================
-
 model Brand {
-  id   String  @id @default(cuid())
-  name String  @unique
-  slug String  @unique
-  logo String?
-
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  logo     String?
   models   Model[]
   vehicles Vehicle[]
 
@@ -284,65 +207,203 @@ model Brand {
 }
 
 model Model {
-  id   String @id @default(cuid())
-  name String
-  slug String
-
+  id       String    @id @default(cuid())
+  name     String
+  slug     String
   brandId  String
   brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
   vehicles Vehicle[]
+  versions Version[]
 
   @@unique([brandId, slug])
   @@index([brandId])
 }
 
-// ==================== GEOGRAFÍA CHILE ====================
+model Version {
+  id           String    @id @default(cuid())
+  name         String
+  slug         String
+  engineSize   String?
+  horsePower   Int?
+  transmission String?
+  drivetrain   String?
+  trimLevel    String?
+  modelId      String
+  vehicles     Vehicle[]
+  model        Model     @relation(fields: [modelId], references: [id], onDelete: Cascade)
+
+  @@unique([modelId, slug])
+  @@index([modelId])
+}
 
 model Region {
-  id    String @id @default(cuid())
-  name  String @unique
-  slug  String @unique
-  order Int
-
+  id       String    @id @default(cuid())
+  name     String    @unique
+  slug     String    @unique
+  order    Int
   comunas  Comuna[]
-  vehicles Vehicle[]
   dealers  Dealer[]
+  vehicles Vehicle[]
 
   @@index([slug])
 }
 
 model Comuna {
-  id   String @id @default(cuid())
-  name String
-  slug String
-
+  id       String    @id @default(cuid())
+  name     String
+  slug     String
   regionId String
   region   Region    @relation(fields: [regionId], references: [id], onDelete: Cascade)
-  vehicles Vehicle[]
   dealers  Dealer[]
+  vehicles Vehicle[]
 
   @@unique([regionId, slug])
   @@index([regionId])
 }
 
-// ==================== FAVORITOS ====================
-
 model Favorite {
-  id String @id @default(cuid())
-
+  id        String   @id @default(cuid())
   userId    String
-  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
   createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, vehicleId])
   @@index([userId])
   @@index([vehicleId])
 }
 
-// ==================== ENUMS ====================
+model Conversation {
+  id                 String    @id @default(cuid())
+  vehicleId          String
+  buyerId            String
+  sellerId           String
+  lastMessageAt      DateTime  @default(now())
+  buyerUnreadCount   Int       @default(0)
+  sellerUnreadCount  Int       @default(0)
+  isArchivedByBuyer  Boolean   @default(false)
+  isArchivedBySeller Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  buyer              User      @relation("BuyerConversations", fields: [buyerId], references: [id], onDelete: Cascade)
+  seller             User      @relation("SellerConversations", fields: [sellerId], references: [id], onDelete: Cascade)
+  vehicle            Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  messages           Message[]
+
+  @@unique([buyerId, vehicleId])
+  @@index([buyerId])
+  @@index([sellerId])
+  @@index([lastMessageAt])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  senderId       String
+  content        String
+  isRead         Boolean      @default(false)
+  readAt         DateTime?
+  createdAt      DateTime     @default(now())
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([conversationId])
+  @@index([createdAt])
+}
+
+model Report {
+  id           String       @id @default(cuid())
+  vehicleId    String
+  reporterId   String
+  reason       ReportReason
+  description  String?
+  status       ReportStatus @default(PENDING)
+  resolvedById String?
+  resolvedAt   DateTime?
+  resolution   String?
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+  reporter     User         @relation("ReportedBy", fields: [reporterId], references: [id])
+  resolvedBy   User?        @relation("ResolvedBy", fields: [resolvedById], references: [id])
+  vehicle      Vehicle      @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+
+  @@index([vehicleId])
+  @@index([reporterId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SiteConfig {
+  id                    String   @id @default("default")
+  siteName              String   @default("AutoExplora.cl")
+  siteTagline           String?
+  logo                  String?
+  favicon               String?
+  contactEmail          String?
+  contactPhone          String?
+  whatsapp              String?
+  address               String?
+  facebook              String?
+  instagram             String?
+  twitter               String?
+  youtube               String?
+  heroTitle             String?
+  heroSubtitle          String?
+  footerText            String?
+  updatedAt             DateTime @updatedAt
+  accentColor           String   @default("#f97316")
+  footerLogoSize        String   @default("md")
+  googleAnalyticsId     String?
+  headerLogoSize        String   @default("md")
+  maintenanceMessage    String?
+  maintenanceMode       Boolean  @default(false)
+  maxImagesPerVehicle   Int      @default(10)
+  metaDescription       String?
+  primaryColor          String   @default("#2563eb")
+  showSiteNameInFooter  Boolean  @default(true)
+  showSiteNameInHeader  Boolean  @default(true)
+  showWhatsAppButton    Boolean  @default(true)
+  ctaButtonText         String   @default("Publicar mi vehículo")
+  ctaSubtitle           String   @default("Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.")
+  ctaTitle              String   @default("¿Listo para vender tu vehículo?")
+  featuredVehiclesLimit Int      @default(8)
+  popularBrandsLimit    Int      @default(12)
+  recentVehiclesLimit   Int      @default(8)
+  showCTASection        Boolean  @default(true)
+  showFeaturedVehicles  Boolean  @default(true)
+  showPopularBrands     Boolean  @default(true)
+  showRecentVehicles    Boolean  @default(true)
+  showTopDealers        Boolean  @default(true)
+  showWhyChooseUs       Boolean  @default(true)
+  topDealersLimit       Int      @default(6)
+  whyChooseUsSubtitle   String   @default("Somos el marketplace de vehículos más confiable de Chile")
+  whyChooseUsTitle      String   @default("¿Por qué elegir AutoExplora.cl?")
+}
+
+enum Role {
+  USER
+  MODERATOR
+  ADMIN
+}
+
+enum DealerType {
+  AUTOMOTORA
+  RENT_A_CAR
+}
+
+enum DealerStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  REJECTED
+}
+
+enum DealerRole {
+  OWNER
+  MANAGER
+  SALES
+}
 
 enum VehicleType {
   AUTO
@@ -351,7 +412,6 @@ enum VehicleType {
 }
 
 enum VehicleCategory {
-  // Autos
   SEDAN
   HATCHBACK
   SUV
@@ -360,14 +420,12 @@ enum VehicleCategory {
   DEPORTIVO
   VAN
   PICKUP
-  // Motos
   MOTO_CALLE
   MOTO_TOURING
   MOTO_DEPORTIVA
   MOTO_CROSS
   SCOOTER
   CUATRIMOTO
-  // Comerciales
   CAMION
   FURGON
   BUS
@@ -403,48 +461,6 @@ enum ListingStatus {
   REJECTED
 }
 
-// ==================== CHAT/MENSAJERÍA ====================
-
-model Conversation {
-  id                 String    @id @default(cuid())
-  vehicleId          String
-  vehicle            Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-  buyerId            String
-  buyer              User      @relation("BuyerConversations", fields: [buyerId], references: [id], onDelete: Cascade)
-  sellerId           String
-  seller             User      @relation("SellerConversations", fields: [sellerId], references: [id], onDelete: Cascade)
-  lastMessageAt      DateTime  @default(now())
-  buyerUnreadCount   Int       @default(0)
-  sellerUnreadCount  Int       @default(0)
-  isArchivedByBuyer  Boolean   @default(false)
-  isArchivedBySeller Boolean   @default(false)
-  messages           Message[]
-  createdAt          DateTime  @default(now())
-  updatedAt          DateTime  @updatedAt
-
-  @@unique([buyerId, vehicleId])
-  @@index([buyerId])
-  @@index([sellerId])
-  @@index([lastMessageAt])
-}
-
-model Message {
-  id             String       @id @default(cuid())
-  conversationId String
-  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  senderId       String
-  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
-  content        String       @db.Text
-  isRead         Boolean      @default(false)
-  readAt         DateTime?
-  createdAt      DateTime     @default(now())
-
-  @@index([conversationId])
-  @@index([createdAt])
-}
-
-// ==================== REPORTES ====================
-
 enum ReportReason {
   FRAUD
   INAPPROPRIATE
@@ -459,103 +475,4 @@ enum ReportStatus {
   UNDER_REVIEW
   RESOLVED
   DISMISSED
-}
-
-model Report {
-  id String @id @default(cuid())
-
-  vehicleId String
-  vehicle   Vehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
-
-  reporterId String
-  reporter   User   @relation("ReportedBy", fields: [reporterId], references: [id])
-
-  reason      ReportReason
-  description String?      @db.Text
-  status      ReportStatus @default(PENDING)
-
-  resolvedById String?
-  resolvedBy   User?     @relation("ResolvedBy", fields: [resolvedById], references: [id])
-  resolvedAt   DateTime?
-  resolution   String?   @db.Text
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@index([vehicleId])
-  @@index([reporterId])
-  @@index([status])
-  @@index([createdAt])
-}
-
-// ==================== CONFIGURACIÓN DEL SITIO ====================
-
-model SiteConfig {
-  id String @id @default("default")
-
-  // Identidad
-  siteName    String  @default("AutoExplora.cl")
-  siteTagline String?
-  logo        String?
-  favicon     String?
-
-  // Apariencia del Logo
-  headerLogoSize       String @default("md") // sm, md, lg, xl
-  footerLogoSize       String @default("md") // sm, md, lg, xl
-  showSiteNameInHeader Boolean @default(true)
-  showSiteNameInFooter Boolean @default(true)
-
-  // Colores del tema
-  primaryColor String @default("#2563eb") // Azul por defecto
-  accentColor  String @default("#f97316") // Naranja por defecto
-
-  // Contacto
-  contactEmail String?
-  contactPhone String?
-  whatsapp     String?
-  address      String?
-
-  // Redes Sociales
-  facebook  String?
-  instagram String?
-  twitter   String?
-  youtube   String?
-
-  // Textos Personalizables - Hero
-  heroTitle    String?
-  heroSubtitle String?
-  footerText   String?
-
-  // Textos Personalizables - Home Sections
-  whyChooseUsTitle    String @default("¿Por qué elegir AutoExplora.cl?")
-  whyChooseUsSubtitle String @default("Somos el marketplace de vehículos más confiable de Chile")
-  ctaTitle            String @default("¿Listo para vender tu vehículo?")
-  ctaSubtitle         String @default("Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.")
-  ctaButtonText       String @default("Publicar mi vehículo")
-
-  // Visibilidad de secciones del Home
-  showFeaturedVehicles Boolean @default(true)
-  showRecentVehicles   Boolean @default(true)
-  showPopularBrands    Boolean @default(true)
-  showWhyChooseUs      Boolean @default(true)
-  showCTASection       Boolean @default(true)
-  showTopDealers       Boolean @default(true)
-
-  // Límites de items en el Home
-  featuredVehiclesLimit Int @default(8)
-  recentVehiclesLimit   Int @default(8)
-  popularBrandsLimit    Int @default(12)
-  topDealersLimit       Int @default(6)
-
-  // SEO y Analytics
-  metaDescription   String?
-  googleAnalyticsId String?
-
-  // Opciones de funcionalidad
-  maxImagesPerVehicle Int     @default(10)
-  showWhatsAppButton  Boolean @default(true)
-  maintenanceMode     Boolean @default(false)
-  maintenanceMessage  String?
-
-  updatedAt DateTime @updatedAt
 }

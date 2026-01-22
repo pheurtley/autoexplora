@@ -75,6 +75,7 @@ export const step1Schema = z.object({
 export const step2Schema = z.object({
   brandId: z.string().min(1, "Selecciona una marca"),
   modelId: z.string().min(1, "Selecciona un modelo"),
+  versionId: z.string().optional(), // Opcional: versión del modelo
   year: z
     .number()
     .min(1990, "El año debe ser 1990 o posterior")
@@ -138,6 +139,7 @@ export const publishVehicleSchema = z.object({
   // Paso 2
   brandId: z.string().min(1),
   modelId: z.string().min(1),
+  versionId: z.string().optional(),
   year: z.number().min(1990).max(new Date().getFullYear() + 1),
   condition: vehicleConditionEnum,
   mileage: z.number().min(0).max(1000000),
@@ -198,6 +200,7 @@ export interface PublishFormData {
   // Paso 2
   brandId: string;
   modelId: string;
+  versionId: string;
   year: number;
   condition: string;
   mileage: number | undefined;
@@ -228,6 +231,7 @@ export const initialFormData: PublishFormData = {
   category: "",
   brandId: "",
   modelId: "",
+  versionId: "",
   year: new Date().getFullYear(),
   condition: "USADO",
   mileage: undefined,

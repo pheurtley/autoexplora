@@ -8,7 +8,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-// GET: Get single brand with models
+// GET: Fetch single version
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -16,44 +16,35 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    const brand = await prisma.brand.findUnique({
+    const version = await prisma.version.findUnique({
       where: { id },
       include: {
-        models: {
-          orderBy: { name: "asc" },
-          include: {
-            versions: {
-              orderBy: { name: "asc" },
-              include: {
-                _count: {
-                  select: { vehicles: true },
-                },
-              },
-            },
-            _count: {
-              select: { vehicles: true, versions: true },
+        model: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            brand: {
+              select: { id: true, name: true, slug: true },
             },
           },
         },
         _count: {
-          select: {
-            models: true,
-            vehicles: true,
-          },
+          select: { vehicles: true },
         },
       },
     });
 
-    if (!brand) {
+    if (!version) {
       return NextResponse.json(
-        { error: "Marca no encontrada" },
+        { error: "Versión no encontrada" },
         { status: 404 }
       );
     }
 
-    return NextResponse.json(brand);
+    return NextResponse.json(version);
   } catch (error) {
-    console.error("Error fetching brand:", error);
+    console.error("Error fetching version:", error);
     if (error instanceof Error) {
       if (
         error.name === "UnauthorizedError" ||
@@ -63,13 +54,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       }
     }
     return NextResponse.json(
-      { error: "Error al obtener la marca" },
+      { error: "Error al obtener la versión" },
       { status: 500 }
     );
   }
 }
 
-// PATCH: Update brand
+// PATCH: Update version
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -77,16 +68,16 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
     const body = await request.json();
-    const { name, logo } = body;
+    const { name, engineSize, horsePower, transmission, drivetrain, trimLevel } = body;
 
-    // Check if brand exists
-    const existingBrand = await prisma.brand.findUnique({
+    // Check if version exists
+    const existing = await prisma.version.findUnique({
       where: { id },
     });
 
-    if (!existingBrand) {
+    if (!existing) {
       return NextResponse.json(
-        { error: "Marca no encontrada" },
+        { error: "Versión no encontrada" },
         { status: 404 }
       );
     }
@@ -103,24 +94,18 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
       const newSlug = slugify(name.trim());
 
-      // Check if another brand has this name or slug
-      const duplicate = await prisma.brand.findFirst({
+      // Check if another version with same slug exists for this model
+      const duplicate = await prisma.version.findFirst({
         where: {
-          AND: [
-            { id: { not: id } },
-            {
-              OR: [
-                { name: { equals: name.trim(), mode: "insensitive" } },
-                { slug: newSlug },
-              ],
-            },
-          ],
+          modelId: existing.modelId,
+          slug: newSlug,
+          NOT: { id },
         },
       });
 
       if (duplicate) {
         return NextResponse.json(
-          { error: "Ya existe otra marca con este nombre" },
+          { error: "Ya existe otra versión con este nombre para este modelo" },
           { status: 400 }
         );
       }
@@ -129,26 +114,49 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       updateData.slug = newSlug;
     }
 
-    if (logo !== undefined) {
-      updateData.logo = logo || null;
+    if (engineSize !== undefined) {
+      updateData.engineSize = engineSize?.trim() || null;
     }
 
-    const brand = await prisma.brand.update({
+    if (horsePower !== undefined) {
+      updateData.horsePower = horsePower ? parseInt(horsePower) : null;
+    }
+
+    if (transmission !== undefined) {
+      updateData.transmission = transmission?.trim() || null;
+    }
+
+    if (drivetrain !== undefined) {
+      updateData.drivetrain = drivetrain?.trim() || null;
+    }
+
+    if (trimLevel !== undefined) {
+      updateData.trimLevel = trimLevel?.trim() || null;
+    }
+
+    const version = await prisma.version.update({
       where: { id },
       data: updateData,
       include: {
-        _count: {
+        model: {
           select: {
-            models: true,
-            vehicles: true,
+            id: true,
+            name: true,
+            slug: true,
+            brand: {
+              select: { id: true, name: true, slug: true },
+            },
           },
+        },
+        _count: {
+          select: { vehicles: true },
         },
       },
     });
 
-    return NextResponse.json(brand);
+    return NextResponse.json(version);
   } catch (error) {
-    console.error("Error updating brand:", error);
+    console.error("Error updating version:", error);
     if (error instanceof Error) {
       if (
         error.name === "UnauthorizedError" ||
@@ -158,13 +166,13 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       }
     }
     return NextResponse.json(
-      { error: "Error al actualizar la marca" },
+      { error: "Error al actualizar la versión" },
       { status: 500 }
     );
   }
 }
 
-// DELETE: Delete brand (only if no vehicles)
+// DELETE: Delete version
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -172,8 +180,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     const { id } = await params;
 
-    // Check if brand exists and has vehicles
-    const brand = await prisma.brand.findUnique({
+    // Check if version exists and has vehicles
+    const version = await prisma.version.findUnique({
       where: { id },
       include: {
         _count: {
@@ -182,30 +190,29 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       },
     });
 
-    if (!brand) {
+    if (!version) {
       return NextResponse.json(
-        { error: "Marca no encontrada" },
+        { error: "Versión no encontrada" },
         { status: 404 }
       );
     }
 
-    if (brand._count.vehicles > 0) {
+    if (version._count.vehicles > 0) {
       return NextResponse.json(
         {
-          error: `No se puede eliminar la marca porque tiene ${brand._count.vehicles} vehículo(s) asociado(s)`,
+          error: `No se puede eliminar la versión porque tiene ${version._count.vehicles} vehículo(s) asociado(s)`,
         },
         { status: 400 }
       );
     }
 
-    // Delete the brand (models will be cascade deleted)
-    await prisma.brand.delete({
+    await prisma.version.delete({
       where: { id },
     });
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting brand:", error);
+    console.error("Error deleting version:", error);
     if (error instanceof Error) {
       if (
         error.name === "UnauthorizedError" ||
@@ -215,7 +222,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       }
     }
     return NextResponse.json(
-      { error: "Error al eliminar la marca" },
+      { error: "Error al eliminar la versión" },
       { status: 500 }
     );
   }

@@ -113,6 +113,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     include: {
       brand: true,
       model: true,
+      version: true,
       region: true,
       comuna: true,
       images: { orderBy: { order: "asc" } },

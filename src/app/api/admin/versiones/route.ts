@@ -4,7 +4,7 @@ import { requireAdmin } from "@/lib/admin";
 import prisma from "@/lib/prisma";
 import { slugify } from "@/lib/utils";
 
-// GET: List models with optional brand filter
+// GET: List versions with optional model filter
 export async function GET(request: NextRequest) {
   try {
     const session = await auth();
@@ -13,15 +13,15 @@ export async function GET(request: NextRequest) {
     const searchParams = request.nextUrl.searchParams;
     const page = parseInt(searchParams.get("page") || "1");
     const limit = parseInt(searchParams.get("limit") || "50");
-    const brandId = searchParams.get("brandId");
+    const modelId = searchParams.get("modelId");
     const search = searchParams.get("search");
 
     const skip = (page - 1) * limit;
 
     const where: Record<string, unknown> = {};
 
-    if (brandId) {
-      where.brandId = brandId;
+    if (modelId) {
+      where.modelId = modelId;
     }
 
     if (search) {
@@ -31,32 +31,39 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    const [models, total] = await Promise.all([
-      prisma.model.findMany({
+    const [versions, total] = await Promise.all([
+      prisma.version.findMany({
         where,
         skip,
         take: limit,
-        orderBy: [{ brand: { name: "asc" } }, { name: "asc" }],
+        orderBy: { name: "asc" },
         include: {
-          brand: {
-            select: { id: true, name: true, slug: true },
+          model: {
+            select: {
+              id: true,
+              name: true,
+              slug: true,
+              brand: {
+                select: { id: true, name: true, slug: true },
+              },
+            },
           },
           _count: {
-            select: { vehicles: true, versions: true },
+            select: { vehicles: true },
           },
         },
       }),
-      prisma.model.count({ where }),
+      prisma.version.count({ where }),
     ]);
 
     return NextResponse.json({
-      models,
+      versions,
       total,
       page,
       totalPages: Math.ceil(total / limit),
     });
   } catch (error) {
-    console.error("Error fetching models:", error);
+    console.error("Error fetching versions:", error);
     if (error instanceof Error) {
       if (
         error.name === "UnauthorizedError" ||
@@ -66,20 +73,20 @@ export async function GET(request: NextRequest) {
       }
     }
     return NextResponse.json(
-      { error: "Error al obtener modelos" },
+      { error: "Error al obtener versiones" },
       { status: 500 }
     );
   }
 }
 
-// POST: Create new model
+// POST: Create new version
 export async function POST(request: NextRequest) {
   try {
     const session = await auth();
     await requireAdmin(session);
 
     const body = await request.json();
-    const { name, brandId } = body;
+    const { name, modelId, engineSize, horsePower, transmission, drivetrain, trimLevel } = body;
 
     if (!name || typeof name !== "string" || name.trim().length === 0) {
       return NextResponse.json(
@@ -88,32 +95,33 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!brandId || typeof brandId !== "string") {
+    if (!modelId || typeof modelId !== "string") {
       return NextResponse.json(
-        { error: "La marca es requerida" },
+        { error: "El modelo es requerido" },
         { status: 400 }
       );
     }
 
-    // Check if brand exists
-    const brand = await prisma.brand.findUnique({
-      where: { id: brandId },
+    // Check if model exists
+    const model = await prisma.model.findUnique({
+      where: { id: modelId },
+      include: { brand: { select: { id: true, name: true } } },
     });
 
-    if (!brand) {
+    if (!model) {
       return NextResponse.json(
-        { error: "La marca no existe" },
+        { error: "El modelo no existe" },
         { status: 400 }
       );
     }
 
     const slug = slugify(name.trim());
 
-    // Check if model with same slug already exists for this brand
-    const existing = await prisma.model.findUnique({
+    // Check if version with same slug already exists for this model
+    const existing = await prisma.version.findUnique({
       where: {
-        brandId_slug: {
-          brandId,
+        modelId_slug: {
+          modelId,
           slug,
         },
       },
@@ -121,20 +129,32 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(
-        { error: "Ya existe un modelo con este nombre para esta marca" },
+        { error: "Ya existe una versión con este nombre para este modelo" },
         { status: 400 }
       );
     }
 
-    const model = await prisma.model.create({
+    const version = await prisma.version.create({
       data: {
         name: name.trim(),
         slug,
-        brandId,
+        modelId,
+        engineSize: engineSize?.trim() || null,
+        horsePower: horsePower ? parseInt(horsePower) : null,
+        transmission: transmission?.trim() || null,
+        drivetrain: drivetrain?.trim() || null,
+        trimLevel: trimLevel?.trim() || null,
       },
       include: {
-        brand: {
-          select: { id: true, name: true, slug: true },
+        model: {
+          select: {
+            id: true,
+            name: true,
+            slug: true,
+            brand: {
+              select: { id: true, name: true, slug: true },
+            },
+          },
         },
         _count: {
           select: { vehicles: true },
@@ -142,9 +162,9 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json(model, { status: 201 });
+    return NextResponse.json(version, { status: 201 });
   } catch (error) {
-    console.error("Error creating model:", error);
+    console.error("Error creating version:", error);
     if (error instanceof Error) {
       if (
         error.name === "UnauthorizedError" ||
@@ -154,7 +174,7 @@ export async function POST(request: NextRequest) {
       }
     }
     return NextResponse.json(
-      { error: "Error al crear el modelo" },
+      { error: "Error al crear la versión" },
       { status: 500 }
     );
   }

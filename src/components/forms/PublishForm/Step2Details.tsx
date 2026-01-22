@@ -16,6 +16,12 @@ interface Model {
   slug: string;
 }
 
+interface Version {
+  id: string;
+  name: string;
+  slug: string;
+}
+
 interface Step2DetailsProps {
   data: PublishFormData;
   onChange: (field: keyof PublishFormData, value: string | number) => void;
@@ -36,8 +42,10 @@ const YEARS = Array.from({ length: currentYear - 1989 }, (_, i) => ({
 export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
   const [brands, setBrands] = useState<Brand[]>([]);
   const [models, setModels] = useState<Model[]>([]);
+  const [versions, setVersions] = useState<Version[]>([]);
   const [loadingBrands, setLoadingBrands] = useState(true);
   const [loadingModels, setLoadingModels] = useState(false);
+  const [loadingVersions, setLoadingVersions] = useState(false);
 
   // Cargar marcas
   useEffect(() => {
@@ -59,6 +67,7 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
   useEffect(() => {
     if (!data.brandId) {
       setModels([]);
+      setVersions([]);
       return;
     }
 
@@ -77,8 +86,31 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
     fetchModels();
   }, [data.brandId]);
 
+  // Cargar versiones cuando cambia el modelo
+  useEffect(() => {
+    if (!data.brandId || !data.modelId) {
+      setVersions([]);
+      return;
+    }
+
+    async function fetchVersions() {
+      setLoadingVersions(true);
+      try {
+        const response = await fetch(`/api/marcas/${data.brandId}/modelos/${data.modelId}/versiones`);
+        const json = await response.json();
+        setVersions(json.versions || []);
+      } catch (error) {
+        console.error("Error fetching versions:", error);
+      } finally {
+        setLoadingVersions(false);
+      }
+    }
+    fetchVersions();
+  }, [data.brandId, data.modelId]);
+
   const brandOptions = brands.map((b) => ({ value: b.id, label: b.name }));
   const modelOptions = models.map((m) => ({ value: m.id, label: m.name }));
+  const versionOptions = versions.map((v) => ({ value: v.id, label: v.name }));
 
   return (
     <div className="space-y-6">
@@ -94,6 +126,7 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
           onChange={(e) => {
             onChange("brandId", e.target.value);
             onChange("modelId", ""); // Reset model
+            onChange("versionId", ""); // Reset version
           }}
           options={brandOptions}
           placeholder={loadingBrands ? "Cargando..." : "Selecciona una marca"}
@@ -106,7 +139,10 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
         <Select
           label="Modelo"
           value={data.modelId}
-          onChange={(e) => onChange("modelId", e.target.value)}
+          onChange={(e) => {
+            onChange("modelId", e.target.value);
+            onChange("versionId", ""); // Reset version
+          }}
           options={modelOptions}
           placeholder={
             loadingModels
@@ -119,6 +155,23 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
           error={errors.modelId}
           required
         />
+
+        {/* Versión (opcional) */}
+        {data.modelId && versions.length > 0 && (
+          <Select
+            label="Versión"
+            value={data.versionId}
+            onChange={(e) => onChange("versionId", e.target.value)}
+            options={versionOptions}
+            placeholder={
+              loadingVersions
+                ? "Cargando..."
+                : "Selecciona una versión (opcional)"
+            }
+            disabled={!data.modelId || loadingVersions}
+            error={errors.versionId}
+          />
+        )}
 
         {/* Año */}
         <Select

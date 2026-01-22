@@ -158,6 +158,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Verificar versión si se proporciona
+    if (data.versionId) {
+      const version = await prisma.version.findFirst({
+        where: {
+          id: data.versionId,
+          modelId: data.modelId,
+        },
+      });
+
+      if (!version) {
+        return NextResponse.json(
+          { error: "Versión no válida para este modelo" },
+          { status: 400 }
+        );
+      }
+    }
+
     // Verificar que la región existe
     const region = await prisma.region.findUnique({
       where: { id: data.regionId },
@@ -208,6 +225,7 @@ export async function POST(request: NextRequest) {
           condition: data.condition as VehicleCondition,
           brandId: data.brandId,
           modelId: data.modelId,
+          versionId: data.versionId || null,
           year: data.year,
           mileage: data.mileage,
           fuelType: data.fuelType as FuelType,
@@ -257,6 +275,7 @@ export async function POST(request: NextRequest) {
         include: {
           brand: { select: { name: true, slug: true } },
           model: { select: { name: true, slug: true } },
+          version: { select: { name: true, slug: true } },
           region: { select: { name: true } },
           images: {
             select: { id: true, url: true, isPrimary: true, order: true },

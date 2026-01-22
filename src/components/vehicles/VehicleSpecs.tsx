@@ -16,6 +16,7 @@ import {
   Hash,
   DoorOpen,
   Users,
+  Tag,
 } from "lucide-react";
 
 interface VehicleSpecsProps {
@@ -30,6 +31,7 @@ interface VehicleSpecsProps {
     doors: number | null;
     seats: number | null;
     plateEnding: string | null;
+    version?: { name: string } | null;
   };
 }
 
@@ -83,6 +85,15 @@ export function VehicleSpecs({ vehicle }: VehicleSpecsProps) {
             icon: Car,
             label: "Categoría",
             value: categoryLabel,
+          },
+        ]
+      : []),
+    ...(vehicle.version
+      ? [
+          {
+            icon: Tag,
+            label: "Versión",
+            value: vehicle.version.name,
           },
         ]
       : []),
