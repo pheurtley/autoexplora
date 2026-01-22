@@ -87,7 +87,7 @@ export function Header() {
       <Container>
         <nav className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 flex-shrink-0">
+          <Link href="/" className="flex items-center gap-3 flex-shrink-0 mr-6">
             {logoSrc ? (
               <Image
                 src={logoSrc}
