@@ -19,6 +19,15 @@ import {
   Trash2,
   RefreshCw,
   X,
+  Pencil,
+  ArrowUp,
+  ArrowDown,
+  Type,
+  Image as ImageIcon,
+  Video,
+  Link2,
+  List,
+  Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 
@@ -32,6 +41,18 @@ interface DealerDomain {
   lastCheckedAt: string | null;
 }
 
+interface ContentBlock {
+  type: "heading" | "paragraph" | "image" | "video" | "cta" | "divider" | "list";
+  text?: string;
+  level?: 2 | 3;
+  url?: string;
+  alt?: string;
+  caption?: string;
+  variant?: "primary" | "outline";
+  style?: "bullet" | "numbered";
+  items?: string[];
+}
+
 interface DealerPage {
   id: string;
   title: string;
@@ -39,6 +60,7 @@ interface DealerPage {
   isPublished: boolean;
   showInNav: boolean;
   order: number;
+  content: ContentBlock[];
 }
 
 interface SiteConfig {
@@ -118,6 +140,14 @@ export default function AdminDealerMicrositePage({
   const [pageTitle, setPageTitle] = useState("");
   const [pageSlug, setPageSlug] = useState("");
   const [pageCreating, setPageCreating] = useState(false);
+
+  // Page editor state
+  const [editingPage, setEditingPage] = useState<DealerPage | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editSlug, setEditSlug] = useState("");
+  const [editShowInNav, setEditShowInNav] = useState(true);
+  const [editBlocks, setEditBlocks] = useState<ContentBlock[]>([]);
+  const [pageSaving, setPageSaving] = useState(false);
 
   // Domains state
   const [showDomainForm, setShowDomainForm] = useState(false);
@@ -261,6 +291,95 @@ export default function AdminDealerMicrositePage({
     } catch (err) {
       console.error("Error toggling page:", err);
     }
+  };
+
+  const handleEditPage = (page: DealerPage) => {
+    setEditingPage(page);
+    setEditTitle(page.title);
+    setEditSlug(page.slug);
+    setEditShowInNav(page.showInNav);
+    setEditBlocks(page.content || []);
+  };
+
+  const handleSavePage = async () => {
+    if (!editingPage) return;
+    setPageSaving(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${apiBase}/pages/${editingPage.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle,
+          slug: editSlug,
+          showInNav: editShowInNav,
+          content: editBlocks,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al guardar página");
+      }
+
+      setEditingPage(null);
+      setSuccessMessage("Página guardada correctamente");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al guardar");
+    } finally {
+      setPageSaving(false);
+    }
+  };
+
+  const addBlock = (type: ContentBlock["type"]) => {
+    const newBlock: ContentBlock = { type };
+    switch (type) {
+      case "heading":
+        newBlock.level = 2;
+        newBlock.text = "";
+        break;
+      case "paragraph":
+        newBlock.text = "";
+        break;
+      case "image":
+        newBlock.url = "";
+        newBlock.alt = "";
+        break;
+      case "video":
+        newBlock.url = "";
+        break;
+      case "cta":
+        newBlock.text = "";
+        newBlock.url = "";
+        newBlock.variant = "primary";
+        break;
+      case "list":
+        newBlock.style = "bullet";
+        newBlock.items = [""];
+        break;
+    }
+    setEditBlocks([...editBlocks, newBlock]);
+  };
+
+  const updateBlock = (index: number, updates: Partial<ContentBlock>) => {
+    const blocks = [...editBlocks];
+    blocks[index] = { ...blocks[index], ...updates };
+    setEditBlocks(blocks);
+  };
+
+  const removeBlock = (index: number) => {
+    setEditBlocks(editBlocks.filter((_, i) => i !== index));
+  };
+
+  const moveBlock = (index: number, direction: "up" | "down") => {
+    const blocks = [...editBlocks];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= blocks.length) return;
+    [blocks[index], blocks[target]] = [blocks[target], blocks[index]];
+    setEditBlocks(blocks);
   };
 
   const handleAddDomain = async () => {
@@ -732,47 +851,42 @@ export default function AdminDealerMicrositePage({
 
         {activeTab === "pages" && (
           <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-neutral-900">Páginas Personalizadas</h3>
-              <Button
-                onClick={() => setShowPageForm(!showPageForm)}
-                size="sm"
-                variant={showPageForm ? "outline" : "primary"}
-              >
-                {showPageForm ? (
-                  <>
-                    <X className="h-4 w-4 mr-1" /> Cancelar
-                  </>
-                ) : (
-                  <>
-                    <Plus className="h-4 w-4 mr-1" /> Nueva Página
-                  </>
-                )}
-              </Button>
-            </div>
+            {editingPage ? (
+              /* Page Editor */
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-neutral-900">
+                    Editando: {editingPage.title}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      onClick={() => setEditingPage(null)}
+                      size="sm"
+                      variant="outline"
+                    >
+                      <X className="h-4 w-4 mr-1" /> Cancelar
+                    </Button>
+                    <Button
+                      onClick={handleSavePage}
+                      disabled={pageSaving || !editTitle || !editSlug}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      {pageSaving ? "Guardando..." : "Guardar Página"}
+                    </Button>
+                  </div>
+                </div>
 
-            {showPageForm && (
-              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Page metadata */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-neutral-700 mb-1">
                       Título
                     </label>
                     <input
                       type="text"
-                      value={pageTitle}
-                      onChange={(e) => {
-                        setPageTitle(e.target.value);
-                        setPageSlug(
-                          e.target.value
-                            .toLowerCase()
-                            .normalize("NFD")
-                            .replace(/[\u0300-\u036f]/g, "")
-                            .replace(/[^a-z0-9]+/g, "-")
-                            .replace(/^-|-$/g, "")
-                        );
-                      }}
-                      placeholder="Nosotros"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
                       className={inputClass}
                     />
                   </div>
@@ -782,58 +896,399 @@ export default function AdminDealerMicrositePage({
                     </label>
                     <input
                       type="text"
-                      value={pageSlug}
-                      onChange={(e) => setPageSlug(e.target.value)}
-                      placeholder="nosotros"
+                      value={editSlug}
+                      onChange={(e) => setEditSlug(e.target.value)}
                       className={inputClass}
                     />
                   </div>
                 </div>
-                <Button onClick={handleCreatePage} disabled={pageCreating || !pageTitle || !pageSlug} size="sm">
-                  {pageCreating ? "Creando..." : "Crear Página"}
-                </Button>
-              </div>
-            )}
 
-            {config?.pages && config.pages.length > 0 ? (
-              <div className="space-y-2">
-                {config.pages.map((page) => (
-                  <div
-                    key={page.id}
-                    className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <FileText className="h-4 w-4 text-neutral-400" />
-                      <div>
-                        <p className="font-medium text-neutral-900 text-sm">{page.title}</p>
-                        <p className="text-xs text-neutral-500">/{page.slug}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => handleTogglePagePublish(page)}
-                        className={`text-xs px-2 py-1 rounded ${
-                          page.isPublished
-                            ? "bg-green-100 text-green-700"
-                            : "bg-neutral-200 text-neutral-600"
-                        }`}
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editShowInNav}
+                    onChange={(e) => setEditShowInNav(e.target.checked)}
+                    className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  />
+                  <span className="text-sm text-neutral-700">
+                    Mostrar en la navegación del sitio
+                  </span>
+                </label>
+
+                <hr className="border-neutral-200" />
+
+                {/* Content Blocks */}
+                <div>
+                  <h4 className="font-medium text-neutral-900 mb-3">Contenido</h4>
+
+                  {editBlocks.length === 0 && (
+                    <p className="text-sm text-neutral-500 text-center py-6 bg-neutral-50 rounded-lg border border-dashed border-neutral-300">
+                      Sin contenido. Agregá bloques usando los botones de abajo.
+                    </p>
+                  )}
+
+                  <div className="space-y-3">
+                    {editBlocks.map((block, idx) => (
+                      <div
+                        key={idx}
+                        className="p-4 bg-neutral-50 rounded-lg border border-neutral-200"
                       >
-                        {page.isPublished ? "Publicada" : "Borrador"}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-medium text-neutral-500 uppercase">
+                            {block.type === "heading" && "Título"}
+                            {block.type === "paragraph" && "Párrafo"}
+                            {block.type === "image" && "Imagen"}
+                            {block.type === "video" && "Video"}
+                            {block.type === "cta" && "Botón CTA"}
+                            {block.type === "divider" && "Separador"}
+                            {block.type === "list" && "Lista"}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => moveBlock(idx, "up")}
+                              disabled={idx === 0}
+                              className="p-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30"
+                            >
+                              <ArrowUp className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => moveBlock(idx, "down")}
+                              disabled={idx === editBlocks.length - 1}
+                              className="p-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30"
+                            >
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            </button>
+                            <button
+                              onClick={() => removeBlock(idx)}
+                              className="p-1 text-neutral-400 hover:text-red-600"
+                            >
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Block-specific fields */}
+                        {block.type === "heading" && (
+                          <div className="space-y-2">
+                            <select
+                              value={block.level || 2}
+                              onChange={(e) => updateBlock(idx, { level: parseInt(e.target.value) as 2 | 3 })}
+                              className={`${inputClass} !w-auto`}
+                            >
+                              <option value={2}>H2 - Grande</option>
+                              <option value={3}>H3 - Mediano</option>
+                            </select>
+                            <input
+                              type="text"
+                              value={block.text || ""}
+                              onChange={(e) => updateBlock(idx, { text: e.target.value })}
+                              placeholder="Texto del título"
+                              className={inputClass}
+                            />
+                          </div>
+                        )}
+
+                        {block.type === "paragraph" && (
+                          <textarea
+                            value={block.text || ""}
+                            onChange={(e) => updateBlock(idx, { text: e.target.value })}
+                            placeholder="Texto del párrafo..."
+                            rows={3}
+                            className={`${inputClass} resize-none`}
+                          />
+                        )}
+
+                        {block.type === "image" && (
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              value={block.url || ""}
+                              onChange={(e) => updateBlock(idx, { url: e.target.value })}
+                              placeholder="URL de la imagen"
+                              className={inputClass}
+                            />
+                            <input
+                              type="text"
+                              value={block.alt || ""}
+                              onChange={(e) => updateBlock(idx, { alt: e.target.value })}
+                              placeholder="Texto alternativo"
+                              className={inputClass}
+                            />
+                            <input
+                              type="text"
+                              value={block.caption || ""}
+                              onChange={(e) => updateBlock(idx, { caption: e.target.value })}
+                              placeholder="Pie de imagen (opcional)"
+                              className={inputClass}
+                            />
+                          </div>
+                        )}
+
+                        {block.type === "video" && (
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              value={block.url || ""}
+                              onChange={(e) => updateBlock(idx, { url: e.target.value })}
+                              placeholder="URL de YouTube o Vimeo"
+                              className={inputClass}
+                            />
+                            <input
+                              type="text"
+                              value={block.caption || ""}
+                              onChange={(e) => updateBlock(idx, { caption: e.target.value })}
+                              placeholder="Descripción (opcional)"
+                              className={inputClass}
+                            />
+                          </div>
+                        )}
+
+                        {block.type === "cta" && (
+                          <div className="space-y-2">
+                            <input
+                              type="text"
+                              value={block.text || ""}
+                              onChange={(e) => updateBlock(idx, { text: e.target.value })}
+                              placeholder="Texto del botón"
+                              className={inputClass}
+                            />
+                            <input
+                              type="text"
+                              value={block.url || ""}
+                              onChange={(e) => updateBlock(idx, { url: e.target.value })}
+                              placeholder="URL de destino"
+                              className={inputClass}
+                            />
+                            <select
+                              value={block.variant || "primary"}
+                              onChange={(e) => updateBlock(idx, { variant: e.target.value as "primary" | "outline" })}
+                              className={`${inputClass} !w-auto`}
+                            >
+                              <option value="primary">Primario (relleno)</option>
+                              <option value="outline">Outline (borde)</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {block.type === "list" && (
+                          <div className="space-y-2">
+                            <select
+                              value={block.style || "bullet"}
+                              onChange={(e) => updateBlock(idx, { style: e.target.value as "bullet" | "numbered" })}
+                              className={`${inputClass} !w-auto`}
+                            >
+                              <option value="bullet">Viñetas</option>
+                              <option value="numbered">Numerada</option>
+                            </select>
+                            {(block.items || []).map((item, itemIdx) => (
+                              <div key={itemIdx} className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={item}
+                                  onChange={(e) => {
+                                    const items = [...(block.items || [])];
+                                    items[itemIdx] = e.target.value;
+                                    updateBlock(idx, { items });
+                                  }}
+                                  placeholder={`Elemento ${itemIdx + 1}`}
+                                  className={`${inputClass} flex-1`}
+                                />
+                                <button
+                                  onClick={() => {
+                                    const items = (block.items || []).filter((_, i) => i !== itemIdx);
+                                    updateBlock(idx, { items });
+                                  }}
+                                  className="p-1 text-neutral-400 hover:text-red-600"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ))}
+                            <button
+                              onClick={() => {
+                                const items = [...(block.items || []), ""];
+                                updateBlock(idx, { items });
+                              }}
+                              className="text-xs text-andino-600 hover:text-andino-700 font-medium"
+                            >
+                              + Agregar elemento
+                            </button>
+                          </div>
+                        )}
+
+                        {block.type === "divider" && (
+                          <p className="text-xs text-neutral-400 italic">
+                            Línea separadora horizontal
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add block buttons */}
+                  <div className="mt-4 pt-4 border-t border-neutral-200">
+                    <p className="text-xs font-medium text-neutral-500 mb-2">Agregar bloque:</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button
+                        onClick={() => addBlock("heading")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <Type className="h-3.5 w-3.5" /> Título
                       </button>
                       <button
-                        onClick={() => handleDeletePage(page.id)}
-                        className="p-1 text-neutral-400 hover:text-red-600 transition-colors"
+                        onClick={() => addBlock("paragraph")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <FileText className="h-3.5 w-3.5" /> Párrafo
+                      </button>
+                      <button
+                        onClick={() => addBlock("image")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <ImageIcon className="h-3.5 w-3.5" /> Imagen
+                      </button>
+                      <button
+                        onClick={() => addBlock("video")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <Video className="h-3.5 w-3.5" /> Video
+                      </button>
+                      <button
+                        onClick={() => addBlock("cta")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <Link2 className="h-3.5 w-3.5" /> Botón
+                      </button>
+                      <button
+                        onClick={() => addBlock("list")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <List className="h-3.5 w-3.5" /> Lista
+                      </button>
+                      <button
+                        onClick={() => addBlock("divider")}
+                        className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors"
+                      >
+                        <Minus className="h-3.5 w-3.5" /> Separador
                       </button>
                     </div>
                   </div>
-                ))}
+                </div>
               </div>
             ) : (
-              <p className="text-sm text-neutral-500 text-center py-8">
-                No hay páginas personalizadas aún.
-              </p>
+              /* Page List */
+              <>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-neutral-900">Páginas Personalizadas</h3>
+                  <Button
+                    onClick={() => setShowPageForm(!showPageForm)}
+                    size="sm"
+                    variant={showPageForm ? "outline" : "primary"}
+                  >
+                    {showPageForm ? (
+                      <>
+                        <X className="h-4 w-4 mr-1" /> Cancelar
+                      </>
+                    ) : (
+                      <>
+                        <Plus className="h-4 w-4 mr-1" /> Nueva Página
+                      </>
+                    )}
+                  </Button>
+                </div>
+
+                {showPageForm && (
+                  <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                          Título
+                        </label>
+                        <input
+                          type="text"
+                          value={pageTitle}
+                          onChange={(e) => {
+                            setPageTitle(e.target.value);
+                            setPageSlug(
+                              e.target.value
+                                .toLowerCase()
+                                .normalize("NFD")
+                                .replace(/[\u0300-\u036f]/g, "")
+                                .replace(/[^a-z0-9]+/g, "-")
+                                .replace(/^-|-$/g, "")
+                            );
+                          }}
+                          placeholder="Nosotros"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">
+                          Slug (URL)
+                        </label>
+                        <input
+                          type="text"
+                          value={pageSlug}
+                          onChange={(e) => setPageSlug(e.target.value)}
+                          placeholder="nosotros"
+                          className={inputClass}
+                        />
+                      </div>
+                    </div>
+                    <Button onClick={handleCreatePage} disabled={pageCreating || !pageTitle || !pageSlug} size="sm">
+                      {pageCreating ? "Creando..." : "Crear Página"}
+                    </Button>
+                  </div>
+                )}
+
+                {config?.pages && config.pages.length > 0 ? (
+                  <div className="space-y-2">
+                    {config.pages.map((page) => (
+                      <div
+                        key={page.id}
+                        className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-4 w-4 text-neutral-400" />
+                          <div>
+                            <p className="font-medium text-neutral-900 text-sm">{page.title}</p>
+                            <p className="text-xs text-neutral-500">/{page.slug}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleEditPage(page)}
+                            className="p-1 text-neutral-400 hover:text-andino-600 transition-colors"
+                            title="Editar página"
+                          >
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleTogglePagePublish(page)}
+                            className={`text-xs px-2 py-1 rounded ${
+                              page.isPublished
+                                ? "bg-green-100 text-green-700"
+                                : "bg-neutral-200 text-neutral-600"
+                            }`}
+                          >
+                            {page.isPublished ? "Publicada" : "Borrador"}
+                          </button>
+                          <button
+                            onClick={() => handleDeletePage(page.id)}
+                            className="p-1 text-neutral-400 hover:text-red-600 transition-colors"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-neutral-500 text-center py-8">
+                    No hay páginas personalizadas aún.
+                  </p>
+                )}
+              </>
             )}
           </div>
         )}
