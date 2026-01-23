@@ -427,6 +427,18 @@ export default function AdminDealerDetailPage({
             )}
           </div>
 
+          {/* Microsite Management */}
+          <div className="bg-white rounded-xl border border-neutral-200 p-6">
+            <h3 className="font-medium text-neutral-900 mb-3">Micrositio</h3>
+            <Link
+              href={`/admin/automotoras/${dealer.id}/microsite`}
+              className="inline-flex items-center gap-2 px-3 py-2 bg-andino-50 text-andino-700 hover:bg-andino-100 rounded-lg text-sm font-medium transition-colors w-full justify-center"
+            >
+              <Globe className="w-4 h-4" />
+              Configurar Micrositio
+            </Link>
+          </div>
+
           {/* Public Link */}
           {dealer.status === "ACTIVE" && (
             <div className="bg-white rounded-xl border border-neutral-200 p-6">
