@@ -34,6 +34,9 @@ export async function generateMetadata({
       template: `%s | ${config.dealer.tradeName}`,
     },
     description,
+    icons: config.favicon
+      ? { icon: [{ url: config.favicon }], apple: config.favicon }
+      : undefined,
     openGraph: {
       type: "website",
       siteName: config.dealer.tradeName,
