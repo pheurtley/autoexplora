@@ -10,19 +10,10 @@ const MAIN_DOMAINS = [
 
 const SUBDOMAIN_PATTERN = /^(.+)\.autoexplora\.cl$/;
 
-// Paths that should never be rewritten to microsite
-const PROTECTED_PATHS = [
-  "/api",
-  "/admin",
-  "/dealer",
-  "/cuenta",
-  "/login",
-  "/registro",
-  "/publicar",
-  "/automotora",
-  "/automotoras",
-  "/vehiculos",
+// Paths that should not be rewritten even on dealer domains
+const INTERNAL_PATHS = [
   "/_next",
+  "/api",
   "/favicon.ico",
 ];
 
@@ -31,8 +22,8 @@ export function middleware(request: NextRequest) {
   const hostname = request.headers.get("host") || "";
   const path = url.pathname;
 
-  // Skip static files and protected paths
-  if (PROTECTED_PATHS.some((p) => path.startsWith(p))) {
+  // Skip internal paths (static files, API routes)
+  if (INTERNAL_PATHS.some((p) => path.startsWith(p))) {
     return NextResponse.next();
   }
 
