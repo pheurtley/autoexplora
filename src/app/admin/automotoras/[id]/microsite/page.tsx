@@ -30,6 +30,7 @@ import {
   Minus,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import { SingleImageUpload } from "@/components/ui/SingleImageUpload";
 
 interface DealerDomain {
   id: string;
@@ -134,6 +135,10 @@ export default function AdminDealerMicrositePage({
   const [metaDescription, setMetaDescription] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [metaPixelId, setMetaPixelId] = useState("");
+  const [logo, setLogo] = useState("");
+  const [logoPublicId, setLogoPublicId] = useState("");
+  const [favicon, setFavicon] = useState("");
+  const [faviconPublicId, setFaviconPublicId] = useState("");
 
   // Pages state
   const [showPageForm, setShowPageForm] = useState(false);
@@ -184,6 +189,10 @@ export default function AdminDealerMicrositePage({
         setMetaDescription(c.metaDescription || "");
         setGoogleAnalyticsId(c.googleAnalyticsId || "");
         setMetaPixelId(c.metaPixelId || "");
+        setLogo(c.logo || "");
+        setLogoPublicId(c.logoPublicId || "");
+        setFavicon(c.favicon || "");
+        setFaviconPublicId(c.faviconPublicId || "");
       }
     } catch (error) {
       console.error("Error fetching config:", error);
@@ -218,6 +227,10 @@ export default function AdminDealerMicrositePage({
           metaDescription: metaDescription || null,
           googleAnalyticsId: googleAnalyticsId || null,
           metaPixelId: metaPixelId || null,
+          logo: logo || null,
+          logoPublicId: logoPublicId || null,
+          favicon: favicon || null,
+          faviconPublicId: faviconPublicId || null,
         }),
       });
 
@@ -649,6 +662,61 @@ export default function AdminDealerMicrositePage({
 
         {activeTab === "branding" && (
           <div className="space-y-6">
+            {/* Logo & Favicon */}
+            <div>
+              <h3 className="font-semibold text-neutral-900 mb-4">Logo y Favicon</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Logo
+                  </label>
+                  <SingleImageUpload
+                    value={logo}
+                    publicId={logoPublicId}
+                    onChange={(url, pubId) => {
+                      setLogo(url);
+                      setLogoPublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setLogo("");
+                      setLogoPublicId("");
+                    }}
+                    folder="microsites/logos"
+                    aspectRatio="banner"
+                    placeholder="Subir logo del sitio"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Se muestra en el header del micrositio. Recomendado: PNG transparente.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Favicon
+                  </label>
+                  <SingleImageUpload
+                    value={favicon}
+                    publicId={faviconPublicId}
+                    onChange={(url, pubId) => {
+                      setFavicon(url);
+                      setFaviconPublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setFavicon("");
+                      setFaviconPublicId("");
+                    }}
+                    folder="microsites/favicons"
+                    aspectRatio="square"
+                    placeholder="Subir favicon"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Ícono que aparece en la pestaña del navegador. Recomendado: 32x32 o 64x64px.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-neutral-200" />
+
             <div>
               <h3 className="font-semibold text-neutral-900 mb-4">Colores</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
