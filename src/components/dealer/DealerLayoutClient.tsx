@@ -13,12 +13,14 @@ interface DealerLayoutClientProps {
     status: string;
   };
   userRole?: string | null;
+  micrositeActive?: boolean;
   children: React.ReactNode;
 }
 
 export function DealerLayoutClient({
   dealer,
   userRole,
+  micrositeActive,
   children,
 }: DealerLayoutClientProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -28,6 +30,7 @@ export function DealerLayoutClient({
       <DealerSidebar
         dealer={dealer}
         userRole={userRole}
+        micrositeActive={micrositeActive}
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />

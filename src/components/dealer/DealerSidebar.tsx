@@ -7,6 +7,7 @@ import {
   LayoutDashboard,
   Car,
   MessageCircle,
+  MessageSquare,
   BarChart3,
   Users,
   Settings,
@@ -26,6 +27,7 @@ interface DealerSidebarProps {
     status: string;
   };
   userRole?: string | null;
+  micrositeActive?: boolean;
   isOpen?: boolean;
   onClose?: () => void;
 }
@@ -34,6 +36,7 @@ const navItems = [
   { href: "/dealer", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dealer/vehiculos", label: "Vehículos", icon: Car },
   { href: "/dealer/mensajes", label: "Mensajes", icon: MessageCircle },
+  { href: "/dealer/leads", label: "Leads", icon: MessageSquare, micrositeOnly: true },
   { href: "/dealer/estadisticas", label: "Estadísticas", icon: BarChart3 },
   { href: "/dealer/microsite", label: "Mi Sitio Web", icon: Globe },
   { href: "/dealer/equipo", label: "Equipo", icon: Users, ownerOnly: true },
@@ -43,6 +46,7 @@ const navItems = [
 export function DealerSidebar({
   dealer,
   userRole,
+  micrositeActive = false,
   isOpen = false,
   onClose,
 }: DealerSidebarProps) {
@@ -127,6 +131,8 @@ export function DealerSidebar({
             {navItems.map((item) => {
               // Skip owner-only items for non-owners
               if (item.ownerOnly && !isOwner) return null;
+              // Skip microsite-only items when microsite is inactive
+              if (item.micrositeOnly && !micrositeActive) return null;
 
               const isActive =
                 pathname === item.href ||

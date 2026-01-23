@@ -34,6 +34,9 @@ export default async function DealerLayout({
           tradeName: true,
           logo: true,
           status: true,
+          siteConfig: {
+            select: { isActive: true },
+          },
         },
       },
     },
@@ -45,7 +48,11 @@ export default async function DealerLayout({
   }
 
   return (
-    <DealerLayoutClient dealer={user.dealer} userRole={user.dealerRole}>
+    <DealerLayoutClient
+      dealer={user.dealer}
+      userRole={user.dealerRole}
+      micrositeActive={user.dealer.siteConfig?.isActive ?? false}
+    >
       {children}
     </DealerLayoutClient>
   );

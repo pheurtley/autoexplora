@@ -25,9 +25,6 @@ import {
   Link2,
   List,
   Minus,
-  MessageSquare,
-  Mail,
-  Clock,
   RefreshCw,
   Copy,
   Check,
@@ -67,20 +64,6 @@ interface DealerPage {
   content: ContentBlock[];
 }
 
-interface DealerLead {
-  id: string;
-  name: string;
-  email: string;
-  phone: string | null;
-  message: string;
-  source: string;
-  status: string;
-  readAt: string | null;
-  respondedAt: string | null;
-  createdAt: string;
-  vehicle: { title: string; slug: string } | null;
-}
-
 interface SiteConfig {
   id: string;
   dealerId: string;
@@ -114,7 +97,7 @@ interface SiteConfig {
   pages: DealerPage[];
 }
 
-type Tab = "general" | "branding" | "contact" | "analytics" | "pages" | "domains" | "leads";
+type Tab = "general" | "branding" | "contact" | "analytics" | "pages" | "domains";
 
 const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "general", label: "General", icon: Globe },
@@ -123,7 +106,6 @@ const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "analytics", label: "SEO & Analytics", icon: BarChart3 },
   { id: "pages", label: "Páginas", icon: FileText },
   { id: "domains", label: "Dominios", icon: Globe },
-  { id: "leads", label: "Leads", icon: MessageSquare },
 ];
 
 const CNAME_TARGET = "autoexplora.cl";
@@ -185,22 +167,11 @@ export default function DealerMicrositePage() {
   const [verifyingDomainId, setVerifyingDomainId] = useState<string | null>(null);
   const [copiedCname, setCopiedCname] = useState(false);
 
-  // Leads state
-  const [leads, setLeads] = useState<DealerLead[]>([]);
-  const [leadsLoading, setLeadsLoading] = useState(false);
-  const [leadsLoaded, setLeadsLoaded] = useState(false);
-
   const apiBase = "/api/dealer/microsite";
 
   useEffect(() => {
     fetchConfig();
   }, []);
-
-  useEffect(() => {
-    if (activeTab === "leads" && !leadsLoaded) {
-      fetchLeads();
-    }
-  }, [activeTab, leadsLoaded]);
 
   const fetchConfig = async () => {
     try {
@@ -241,22 +212,6 @@ export default function DealerMicrositePage() {
       setErrorMessage("Error al cargar la configuración");
     } finally {
       setLoading(false);
-    }
-  };
-
-  const fetchLeads = async () => {
-    setLeadsLoading(true);
-    try {
-      const res = await fetch(`${apiBase}/leads`);
-      if (res.ok) {
-        const data = await res.json();
-        setLeads(data.leads || []);
-        setLeadsLoaded(true);
-      }
-    } catch (error) {
-      console.error("Error fetching leads:", error);
-    } finally {
-      setLeadsLoading(false);
     }
   };
 
@@ -532,25 +487,6 @@ export default function DealerMicrositePage() {
     }
   };
 
-  const handleMarkLeadRead = async (leadId: string) => {
-    try {
-      const res = await fetch(`${apiBase}/leads/${leadId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "CONTACTED" }),
-      });
-      if (res.ok) {
-        setLeads((prev) =>
-          prev.map((l) =>
-            l.id === leadId ? { ...l, status: "CONTACTED", readAt: new Date().toISOString() } : l
-          )
-        );
-      }
-    } catch {
-      // silent
-    }
-  };
-
   const copyCnameTarget = () => {
     navigator.clipboard.writeText(CNAME_TARGET);
     setCopiedCname(true);
@@ -665,11 +601,6 @@ export default function DealerMicrositePage() {
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}
-            {tab.id === "leads" && leads.filter((l) => l.status === "NEW").length > 0 && (
-              <span className="ml-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                {leads.filter((l) => l.status === "NEW").length}
-              </span>
-            )}
           </button>
         ))}
       </div>
@@ -1465,83 +1396,6 @@ export default function DealerMicrositePage() {
           </div>
         )}
 
-        {activeTab === "leads" && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="font-semibold text-neutral-900">Consultas Recibidas</h3>
-                <p className="text-sm text-neutral-500 mt-1">
-                  Leads generados desde el formulario de contacto de tu micrositio.
-                </p>
-              </div>
-              <Button onClick={() => { setLeadsLoaded(false); fetchLeads(); }} size="sm" variant="outline">
-                <RefreshCw className="h-4 w-4 mr-1" /> Actualizar
-              </Button>
-            </div>
-
-            {leadsLoading ? (
-              <div className="flex items-center justify-center py-12">
-                <div className="animate-spin h-6 w-6 border-2 border-andino-600 border-t-transparent rounded-full" />
-              </div>
-            ) : leads.length === 0 ? (
-              <div className="text-center py-12">
-                <MessageSquare className="h-12 w-12 text-neutral-300 mx-auto mb-4" />
-                <h4 className="text-lg font-semibold text-neutral-900 mb-2">Sin consultas</h4>
-                <p className="text-sm text-neutral-500">
-                  Cuando un visitante complete el formulario de contacto en tu micrositio, las consultas aparecerán aquí.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                {leads.map((lead) => (
-                  <div
-                    key={lead.id}
-                    className={`p-4 rounded-lg border ${lead.status === "NEW" ? "bg-blue-50 border-blue-200" : "bg-neutral-50 border-neutral-200"}`}
-                  >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <p className="font-medium text-neutral-900 text-sm">{lead.name}</p>
-                          {lead.status === "NEW" && (
-                            <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Nuevo</span>
-                          )}
-                        </div>
-                        <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 mb-2">
-                          <a href={`mailto:${lead.email}`} className="flex items-center gap-1 hover:text-andino-600">
-                            <Mail className="h-3 w-3" /> {lead.email}
-                          </a>
-                          {lead.phone && (
-                            <a href={`tel:${lead.phone}`} className="flex items-center gap-1 hover:text-andino-600">
-                              <Phone className="h-3 w-3" /> {lead.phone}
-                            </a>
-                          )}
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-3 w-3" />
-                            {new Date(lead.createdAt).toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
-                          </span>
-                        </div>
-                        {lead.vehicle && (
-                          <p className="text-xs text-andino-600 mb-2">
-                            Vehículo: {lead.vehicle.title}
-                          </p>
-                        )}
-                        <p className="text-sm text-neutral-700 whitespace-pre-line">{lead.message}</p>
-                      </div>
-                      {lead.status === "NEW" && (
-                        <button
-                          onClick={() => handleMarkLeadRead(lead.id)}
-                          className="text-xs px-2 py-1 bg-neutral-200 hover:bg-neutral-300 text-neutral-700 rounded transition-colors shrink-0"
-                        >
-                          Marcar leído
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </div>
   );
