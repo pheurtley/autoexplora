@@ -44,6 +44,7 @@ interface PageProps {
     maxMileage?: string;
     color?: string;
     doors?: string;
+    sellerType?: string;
   }>;
 }
 
@@ -139,6 +140,12 @@ export default async function VehiculosPage({ searchParams }: PageProps) {
 
   if (params.doors) {
     where.doors = parseInt(params.doors);
+  }
+
+  if (params.sellerType === "dealer") {
+    where.dealerId = { not: null };
+  } else if (params.sellerType === "particular") {
+    where.dealerId = null;
   }
 
   if (params.search) {

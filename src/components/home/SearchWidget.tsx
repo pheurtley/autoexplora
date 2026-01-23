@@ -14,10 +14,12 @@ import {
   Calendar,
   Gauge,
   MapPin,
+  Fuel,
+  User,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
-import { VEHICLE_CATEGORIES } from "@/lib/constants";
+import { VEHICLE_CATEGORIES, FUEL_TYPES, TRANSMISSIONS } from "@/lib/constants";
 
 const vehicleTypes = [
   { id: "AUTO", label: "Autos", icon: Car },
@@ -68,6 +70,9 @@ export function SearchWidget() {
   const [priceMax, setPriceMax] = useState("");
   const [yearMin, setYearMin] = useState("");
   const [maxMileage, setMaxMileage] = useState("");
+  const [fuelType, setFuelType] = useState("");
+  const [transmission, setTransmission] = useState("");
+  const [sellerType, setSellerType] = useState("");
   const [regionId, setRegionId] = useState("");
   const [showMore, setShowMore] = useState(false);
 
@@ -136,11 +141,14 @@ export function SearchWidget() {
     if (priceMax) params.set("maxPrice", priceMax);
     if (yearMin) params.set("minYear", yearMin);
     if (maxMileage) params.set("maxMileage", maxMileage);
+    if (fuelType) params.set("fuelType", fuelType);
+    if (transmission) params.set("transmission", transmission);
+    if (sellerType) params.set("sellerType", sellerType);
     if (regionId) params.set("regionId", regionId);
     router.push(`/vehiculos?${params.toString()}`);
   };
 
-  const moreFiltersCount = [condition, category, maxMileage, regionId].filter(Boolean).length;
+  const moreFiltersCount = [condition, category, maxMileage, fuelType, transmission, sellerType, regionId].filter(Boolean).length;
 
   const selectClass =
     "w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-neutral-900 focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all hover:border-neutral-400 text-sm";
@@ -276,7 +284,7 @@ export function SearchWidget() {
           </button>
         </div>
 
-        {/* Row 2: Condition, Category, Mileage, Region */}
+        {/* More Filters */}
         {showMore && (
           <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             {/* Condition */}
@@ -314,6 +322,45 @@ export function SearchWidget() {
               </select>
             </div>
 
+            {/* Fuel Type */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                <Fuel className="h-3 w-3 inline mr-1 text-neutral-400" />
+                Combustible
+              </label>
+              <select
+                value={fuelType}
+                onChange={(e) => setFuelType(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todos</option>
+                {Object.entries(FUEL_TYPES).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Transmission */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                Transmisión
+              </label>
+              <select
+                value={transmission}
+                onChange={(e) => setTransmission(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todas</option>
+                {Object.entries(TRANSMISSIONS).map(([key, value]) => (
+                  <option key={key} value={key}>
+                    {value.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             {/* Max Mileage */}
             <div>
               <label className="block text-xs font-medium text-neutral-600 mb-1">
@@ -331,6 +378,23 @@ export function SearchWidget() {
                     {opt.label}
                   </option>
                 ))}
+              </select>
+            </div>
+
+            {/* Seller Type */}
+            <div>
+              <label className="block text-xs font-medium text-neutral-600 mb-1">
+                <User className="h-3 w-3 inline mr-1 text-neutral-400" />
+                Vendedor
+              </label>
+              <select
+                value={sellerType}
+                onChange={(e) => setSellerType(e.target.value)}
+                className={selectClass}
+              >
+                <option value="">Todos</option>
+                <option value="particular">Particular</option>
+                <option value="dealer">Automotora</option>
               </select>
             </div>
 
