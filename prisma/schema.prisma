@@ -74,6 +74,8 @@ model Dealer {
   region          Region       @relation(fields: [regionId], references: [id])
   users           User[]
   vehicles        Vehicle[]
+  siteConfig      DealerSiteConfig?
+  leads           DealerLead[]
 
   @@index([status])
   @@index([type])
@@ -167,6 +169,7 @@ model Vehicle {
   user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
   version         Version?         @relation(fields: [versionId], references: [id])
   images          VehicleImage[]
+  dealerLeads     DealerLead[]
 
   @@index([userId])
   @@index([brandId])
@@ -475,4 +478,144 @@ enum ReportStatus {
   UNDER_REVIEW
   RESOLVED
   DISMISSED
+}
+
+// ==========================================
+// Dealer Microsites
+// ==========================================
+
+model DealerSiteConfig {
+  id                String    @id @default(cuid())
+  dealerId          String    @unique
+  isActive          Boolean   @default(false)
+  activatedAt       DateTime?
+
+  // Branding
+  primaryColor      String    @default("#2563eb")
+  accentColor       String    @default("#f97316")
+  logo              String?
+  logoPublicId      String?
+  favicon           String?
+  faviconPublicId   String?
+
+  // Header/Footer
+  headerStyle       String    @default("default") // default, centered, minimal
+  footerStyle       String    @default("default") // default, minimal
+  showWhatsAppButton Boolean  @default(true)
+
+  // SEO
+  metaTitle         String?
+  metaDescription   String?
+  ogImage           String?
+  ogImagePublicId   String?
+
+  // Analytics
+  googleAnalyticsId String?
+  metaPixelId       String?
+
+  // Contact
+  contactEmail      String?
+  contactPhone      String?
+  contactWhatsApp   String?
+
+  // Home page
+  heroTitle         String?
+  heroSubtitle      String?
+  showFeaturedVehicles Boolean @default(true)
+  featuredVehiclesLimit Int    @default(8)
+
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  dealer            Dealer    @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  domains           DealerDomain[]
+  pages             DealerPage[]
+
+  @@index([dealerId])
+  @@index([isActive])
+}
+
+model DealerDomain {
+  id                String       @id @default(cuid())
+  siteConfigId      String
+  domain            String       @unique
+  isPrimary         Boolean      @default(false)
+  isCustom          Boolean      @default(false)
+  status            DomainStatus @default(PENDING)
+  verifiedAt        DateTime?
+  lastCheckedAt     DateTime?
+
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  siteConfig        DealerSiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade)
+
+  @@index([siteConfigId])
+  @@index([domain])
+  @@index([status])
+}
+
+model DealerPage {
+  id              String   @id @default(cuid())
+  siteConfigId    String
+  slug            String
+  title           String
+  content         Json     @default("[]")
+  isPublished     Boolean  @default(false)
+  order           Int      @default(0)
+  showInNav       Boolean  @default(true)
+
+  metaTitle       String?
+  metaDescription String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  siteConfig      DealerSiteConfig @relation(fields: [siteConfigId], references: [id], onDelete: Cascade)
+
+  @@unique([siteConfigId, slug])
+  @@index([siteConfigId])
+  @@index([isPublished])
+}
+
+model DealerLead {
+  id          String     @id @default(cuid())
+  dealerId    String
+  vehicleId   String?
+
+  name        String
+  email       String
+  phone       String?
+  message     String
+
+  source      String     @default("microsite")
+  status      LeadStatus @default(NEW)
+  readAt      DateTime?
+  respondedAt DateTime?
+  notes       String?
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  dealer      Dealer     @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  vehicle     Vehicle?   @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+
+  @@index([dealerId])
+  @@index([vehicleId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum DomainStatus {
+  PENDING
+  VERIFIED
+  FAILED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  QUALIFIED
+  CONVERTED
+  LOST
 }
