@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
 import { MicrositeHeader } from "@/components/microsite/MicrositeHeader";
 import { MicrositeFooter } from "@/components/microsite/MicrositeFooter";
+import { MicrositeWhatsAppButton } from "@/components/microsite/MicrositeWhatsAppButton";
 import Script from "next/script";
 
 interface LayoutProps {
@@ -64,6 +65,13 @@ export default async function MicrositeLayout({
       <MicrositeHeader config={config} />
       <main className="flex-1">{children}</main>
       <MicrositeFooter config={config} />
+
+      {config.showWhatsAppButton && config.contactWhatsApp && (
+        <MicrositeWhatsAppButton
+          phoneNumber={config.contactWhatsApp}
+          dealerName={config.dealer.tradeName}
+        />
+      )}
 
       {config.googleAnalyticsId && (
         <>
