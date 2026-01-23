@@ -24,8 +24,6 @@ const PROTECTED_PATHS = [
   "/vehiculos",
   "/_next",
   "/favicon.ico",
-  "/robots.txt",
-  "/sitemap.xml",
 ];
 
 export function middleware(request: NextRequest) {

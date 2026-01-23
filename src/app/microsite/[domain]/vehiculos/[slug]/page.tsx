@@ -5,6 +5,7 @@ import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
 import { VehicleSpecs } from "@/components/vehicles/VehicleSpecs";
+import { MicrositeVehicleJsonLd } from "@/components/microsite/MicrositeJsonLd";
 import { formatPrice, formatKilometers } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -94,8 +95,18 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
     `Hola, me interesa el ${vehicle.title} que vi en su sitio web.`
   );
 
+  const verifiedDomain = config.domains.find((d) => d.isPrimary && d.status === "VERIFIED");
+  const siteUrl = verifiedDomain
+    ? `https://${verifiedDomain.domain}`
+    : `https://${domain}.autoexplora.cl`;
+
   return (
     <div className="min-h-screen bg-neutral-50 pb-12">
+      <MicrositeVehicleJsonLd
+        vehicle={vehicle}
+        dealerName={dealer.tradeName}
+        url={`${siteUrl}/vehiculos/${vehicle.slug}`}
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {/* Back link */}
         <Link

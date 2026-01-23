@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Car, ArrowRight, MapPin } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
+import { MicrositeLocalBusinessJsonLd } from "@/components/microsite/MicrositeJsonLd";
 
 interface PageProps {
   params: Promise<{ domain: string }>;
@@ -46,8 +47,15 @@ export default async function MicrositeHomePage({ params }: PageProps) {
     config.heroSubtitle ||
     "Encuentra el vehículo perfecto para ti. Calidad y confianza garantizada.";
 
+  const verifiedDomain = config.domains.find((d) => d.isPrimary && d.status === "VERIFIED");
+  const siteUrl = verifiedDomain
+    ? `https://${verifiedDomain.domain}`
+    : `https://${domain}.autoexplora.cl`;
+
   return (
     <div>
+      <MicrositeLocalBusinessJsonLd config={config} url={siteUrl} />
+
       {/* Hero Section */}
       <section
         className="relative py-20 sm:py-28"
