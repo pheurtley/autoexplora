@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import {
   Globe,
   Palette,
@@ -14,8 +13,73 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
+  Plus,
+  Trash2,
+  X,
+  Pencil,
+  ArrowUp,
+  ArrowDown,
+  Type,
+  Image as ImageIcon,
+  Video,
+  Link2,
+  List,
+  Minus,
+  MessageSquare,
+  Mail,
+  Clock,
+  RefreshCw,
+  Copy,
+  Check,
 } from "lucide-react";
 import { Button } from "@/components/ui";
+import { SingleImageUpload } from "@/components/ui/SingleImageUpload";
+
+interface DealerDomain {
+  id: string;
+  domain: string;
+  isCustom: boolean;
+  isPrimary: boolean;
+  status: string;
+  verifiedAt: string | null;
+  lastCheckedAt: string | null;
+}
+
+interface ContentBlock {
+  type: "heading" | "paragraph" | "image" | "video" | "cta" | "divider" | "list";
+  text?: string;
+  level?: 2 | 3;
+  url?: string;
+  alt?: string;
+  caption?: string;
+  variant?: "primary" | "outline";
+  style?: "bullet" | "numbered";
+  items?: string[];
+}
+
+interface DealerPage {
+  id: string;
+  title: string;
+  slug: string;
+  isPublished: boolean;
+  showInNav: boolean;
+  order: number;
+  content: ContentBlock[];
+}
+
+interface DealerLead {
+  id: string;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  source: string;
+  status: string;
+  readAt: string | null;
+  respondedAt: string | null;
+  createdAt: string;
+  vehicle: { title: string; slug: string } | null;
+}
 
 interface SiteConfig {
   id: string;
@@ -24,8 +88,11 @@ interface SiteConfig {
   primaryColor: string;
   accentColor: string;
   logo: string | null;
+  logoPublicId: string | null;
   favicon: string | null;
+  faviconPublicId: string | null;
   showWhatsAppButton: boolean;
+  showPhoneInHeader: boolean;
   metaTitle: string | null;
   metaDescription: string | null;
   googleAnalyticsId: string | null;
@@ -35,19 +102,31 @@ interface SiteConfig {
   contactWhatsApp: string | null;
   heroTitle: string | null;
   heroSubtitle: string | null;
+  heroImage: string | null;
+  heroImagePublicId: string | null;
   showFeaturedVehicles: boolean;
   featuredVehiclesLimit: number;
-  pages: { id: string; title: string; slug: string; isPublished: boolean }[];
+  socialInstagram: string | null;
+  socialFacebook: string | null;
+  socialTiktok: string | null;
+  socialYoutube: string | null;
+  domains: DealerDomain[];
+  pages: DealerPage[];
 }
 
-type Tab = "general" | "branding" | "contact" | "analytics";
+type Tab = "general" | "branding" | "contact" | "analytics" | "pages" | "domains" | "leads";
 
 const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
   { id: "general", label: "General", icon: Globe },
   { id: "branding", label: "Apariencia", icon: Palette },
   { id: "contact", label: "Contacto", icon: Phone },
   { id: "analytics", label: "SEO & Analytics", icon: BarChart3 },
+  { id: "pages", label: "Páginas", icon: FileText },
+  { id: "domains", label: "Dominios", icon: Globe },
+  { id: "leads", label: "Leads", icon: MessageSquare },
 ];
+
+const CNAME_TARGET = "autoexplora.cl";
 
 export default function DealerMicrositePage() {
   const [config, setConfig] = useState<SiteConfig | null>(null);
@@ -57,15 +136,18 @@ export default function DealerMicrositePage() {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Form state
+  // Config form state
   const [isActive, setIsActive] = useState(false);
   const [primaryColor, setPrimaryColor] = useState("#2563eb");
   const [accentColor, setAccentColor] = useState("#f97316");
   const [heroTitle, setHeroTitle] = useState("");
   const [heroSubtitle, setHeroSubtitle] = useState("");
+  const [heroImage, setHeroImage] = useState("");
+  const [heroImagePublicId, setHeroImagePublicId] = useState("");
   const [showFeaturedVehicles, setShowFeaturedVehicles] = useState(true);
   const [featuredVehiclesLimit, setFeaturedVehiclesLimit] = useState(8);
   const [showWhatsAppButton, setShowWhatsAppButton] = useState(true);
+  const [showPhoneInHeader, setShowPhoneInHeader] = useState(true);
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
   const [contactWhatsApp, setContactWhatsApp] = useState("");
@@ -73,34 +155,110 @@ export default function DealerMicrositePage() {
   const [metaDescription, setMetaDescription] = useState("");
   const [googleAnalyticsId, setGoogleAnalyticsId] = useState("");
   const [metaPixelId, setMetaPixelId] = useState("");
+  const [logo, setLogo] = useState("");
+  const [logoPublicId, setLogoPublicId] = useState("");
+  const [favicon, setFavicon] = useState("");
+  const [faviconPublicId, setFaviconPublicId] = useState("");
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialYoutube, setSocialYoutube] = useState("");
+
+  // Pages state
+  const [showPageForm, setShowPageForm] = useState(false);
+  const [pageTitle, setPageTitle] = useState("");
+  const [pageSlug, setPageSlug] = useState("");
+  const [pageCreating, setPageCreating] = useState(false);
+
+  // Page editor state
+  const [editingPage, setEditingPage] = useState<DealerPage | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editSlug, setEditSlug] = useState("");
+  const [editShowInNav, setEditShowInNav] = useState(true);
+  const [editBlocks, setEditBlocks] = useState<ContentBlock[]>([]);
+  const [pageSaving, setPageSaving] = useState(false);
+
+  // Domains state
+  const [showDomainForm, setShowDomainForm] = useState(false);
+  const [newDomain, setNewDomain] = useState("");
+  const [domainAdding, setDomainAdding] = useState(false);
+  const [verifyingDomainId, setVerifyingDomainId] = useState<string | null>(null);
+  const [copiedCname, setCopiedCname] = useState(false);
+
+  // Leads state
+  const [leads, setLeads] = useState<DealerLead[]>([]);
+  const [leadsLoading, setLeadsLoading] = useState(false);
+  const [leadsLoaded, setLeadsLoaded] = useState(false);
+
+  const apiBase = "/api/dealer/microsite";
 
   useEffect(() => {
-    fetch("/api/dealer/microsite")
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.config) {
-          const c = data.config;
-          setConfig(c);
-          setIsActive(c.isActive);
-          setPrimaryColor(c.primaryColor);
-          setAccentColor(c.accentColor);
-          setHeroTitle(c.heroTitle || "");
-          setHeroSubtitle(c.heroSubtitle || "");
-          setShowFeaturedVehicles(c.showFeaturedVehicles);
-          setFeaturedVehiclesLimit(c.featuredVehiclesLimit);
-          setShowWhatsAppButton(c.showWhatsAppButton);
-          setContactEmail(c.contactEmail || "");
-          setContactPhone(c.contactPhone || "");
-          setContactWhatsApp(c.contactWhatsApp || "");
-          setMetaTitle(c.metaTitle || "");
-          setMetaDescription(c.metaDescription || "");
-          setGoogleAnalyticsId(c.googleAnalyticsId || "");
-          setMetaPixelId(c.metaPixelId || "");
-        }
-      })
-      .catch(console.error)
-      .finally(() => setLoading(false));
+    fetchConfig();
   }, []);
+
+  useEffect(() => {
+    if (activeTab === "leads" && !leadsLoaded) {
+      fetchLeads();
+    }
+  }, [activeTab, leadsLoaded]);
+
+  const fetchConfig = async () => {
+    try {
+      const res = await fetch(apiBase);
+      if (res.ok) {
+        const data = await res.json();
+        const c = data.config;
+        setConfig(c);
+        setIsActive(c.isActive);
+        setPrimaryColor(c.primaryColor);
+        setAccentColor(c.accentColor);
+        setHeroTitle(c.heroTitle || "");
+        setHeroSubtitle(c.heroSubtitle || "");
+        setHeroImage(c.heroImage || "");
+        setHeroImagePublicId(c.heroImagePublicId || "");
+        setShowFeaturedVehicles(c.showFeaturedVehicles);
+        setFeaturedVehiclesLimit(c.featuredVehiclesLimit);
+        setShowWhatsAppButton(c.showWhatsAppButton);
+        setShowPhoneInHeader(c.showPhoneInHeader ?? true);
+        setContactEmail(c.contactEmail || "");
+        setContactPhone(c.contactPhone || "");
+        setContactWhatsApp(c.contactWhatsApp || "");
+        setMetaTitle(c.metaTitle || "");
+        setMetaDescription(c.metaDescription || "");
+        setGoogleAnalyticsId(c.googleAnalyticsId || "");
+        setMetaPixelId(c.metaPixelId || "");
+        setLogo(c.logo || "");
+        setLogoPublicId(c.logoPublicId || "");
+        setFavicon(c.favicon || "");
+        setFaviconPublicId(c.faviconPublicId || "");
+        setSocialInstagram(c.socialInstagram || "");
+        setSocialFacebook(c.socialFacebook || "");
+        setSocialTiktok(c.socialTiktok || "");
+        setSocialYoutube(c.socialYoutube || "");
+      }
+    } catch (error) {
+      console.error("Error fetching config:", error);
+      setErrorMessage("Error al cargar la configuración");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchLeads = async () => {
+    setLeadsLoading(true);
+    try {
+      const res = await fetch(`${apiBase}/leads`);
+      if (res.ok) {
+        const data = await res.json();
+        setLeads(data.leads || []);
+        setLeadsLoaded(true);
+      }
+    } catch (error) {
+      console.error("Error fetching leads:", error);
+    } finally {
+      setLeadsLoading(false);
+    }
+  };
 
   const handleSave = async () => {
     setSaving(true);
@@ -108,7 +266,7 @@ export default function DealerMicrositePage() {
     setErrorMessage("");
 
     try {
-      const res = await fetch("/api/dealer/microsite", {
+      const res = await fetch(apiBase, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -117,9 +275,12 @@ export default function DealerMicrositePage() {
           accentColor,
           heroTitle: heroTitle || null,
           heroSubtitle: heroSubtitle || null,
+          heroImage: heroImage || null,
+          heroImagePublicId: heroImagePublicId || null,
           showFeaturedVehicles,
           featuredVehiclesLimit,
           showWhatsAppButton,
+          showPhoneInHeader,
           contactEmail: contactEmail || null,
           contactPhone: contactPhone || null,
           contactWhatsApp: contactWhatsApp || null,
@@ -127,6 +288,14 @@ export default function DealerMicrositePage() {
           metaDescription: metaDescription || null,
           googleAnalyticsId: googleAnalyticsId || null,
           metaPixelId: metaPixelId || null,
+          logo: logo || null,
+          logoPublicId: logoPublicId || null,
+          favicon: favicon || null,
+          faviconPublicId: faviconPublicId || null,
+          socialInstagram: socialInstagram || null,
+          socialFacebook: socialFacebook || null,
+          socialTiktok: socialTiktok || null,
+          socialYoutube: socialYoutube || null,
         }),
       });
 
@@ -135,6 +304,8 @@ export default function DealerMicrositePage() {
         throw new Error(data.error || "Error al guardar");
       }
 
+      const data = await res.json();
+      setConfig(data.config);
       setSuccessMessage("Cambios guardados correctamente");
       setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
@@ -142,6 +313,248 @@ export default function DealerMicrositePage() {
     } finally {
       setSaving(false);
     }
+  };
+
+  // Pages handlers
+  const handleCreatePage = async () => {
+    if (!pageTitle || !pageSlug) return;
+    setPageCreating(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${apiBase}/pages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: pageTitle, slug: pageSlug }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al crear página");
+      }
+
+      setPageTitle("");
+      setPageSlug("");
+      setShowPageForm(false);
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al crear página");
+    } finally {
+      setPageCreating(false);
+    }
+  };
+
+  const handleDeletePage = async (pageId: string) => {
+    if (!confirm("¿Eliminar esta página?")) return;
+
+    try {
+      const res = await fetch(`${apiBase}/pages/${pageId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al eliminar página");
+      }
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al eliminar");
+    }
+  };
+
+  const handleTogglePagePublish = async (page: DealerPage) => {
+    try {
+      const res = await fetch(`${apiBase}/pages/${page.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublished: !page.isPublished }),
+      });
+      if (res.ok) fetchConfig();
+    } catch (err) {
+      console.error("Error toggling page:", err);
+    }
+  };
+
+  const handleEditPage = (page: DealerPage) => {
+    setEditingPage(page);
+    setEditTitle(page.title);
+    setEditSlug(page.slug);
+    setEditShowInNav(page.showInNav);
+    setEditBlocks(page.content || []);
+  };
+
+  const handleSavePage = async () => {
+    if (!editingPage) return;
+    setPageSaving(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${apiBase}/pages/${editingPage.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: editTitle,
+          slug: editSlug,
+          showInNav: editShowInNav,
+          content: editBlocks,
+        }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al guardar página");
+      }
+
+      setEditingPage(null);
+      setSuccessMessage("Página guardada correctamente");
+      setTimeout(() => setSuccessMessage(""), 3000);
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al guardar");
+    } finally {
+      setPageSaving(false);
+    }
+  };
+
+  // Block handlers
+  const addBlock = (type: ContentBlock["type"]) => {
+    const newBlock: ContentBlock = { type };
+    switch (type) {
+      case "heading":
+        newBlock.level = 2;
+        newBlock.text = "";
+        break;
+      case "paragraph":
+        newBlock.text = "";
+        break;
+      case "image":
+        newBlock.url = "";
+        newBlock.alt = "";
+        break;
+      case "video":
+        newBlock.url = "";
+        break;
+      case "cta":
+        newBlock.text = "";
+        newBlock.url = "";
+        newBlock.variant = "primary";
+        break;
+      case "list":
+        newBlock.style = "bullet";
+        newBlock.items = [""];
+        break;
+    }
+    setEditBlocks([...editBlocks, newBlock]);
+  };
+
+  const updateBlock = (index: number, updates: Partial<ContentBlock>) => {
+    const blocks = [...editBlocks];
+    blocks[index] = { ...blocks[index], ...updates };
+    setEditBlocks(blocks);
+  };
+
+  const removeBlock = (index: number) => {
+    setEditBlocks(editBlocks.filter((_, i) => i !== index));
+  };
+
+  const moveBlock = (index: number, direction: "up" | "down") => {
+    const blocks = [...editBlocks];
+    const target = direction === "up" ? index - 1 : index + 1;
+    if (target < 0 || target >= blocks.length) return;
+    [blocks[index], blocks[target]] = [blocks[target], blocks[index]];
+    setEditBlocks(blocks);
+  };
+
+  // Domain handlers
+  const handleAddDomain = async () => {
+    if (!newDomain) return;
+    setDomainAdding(true);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${apiBase}/domains`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ domain: newDomain }),
+      });
+
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al agregar dominio");
+      }
+
+      setNewDomain("");
+      setShowDomainForm(false);
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al agregar dominio");
+    } finally {
+      setDomainAdding(false);
+    }
+  };
+
+  const handleDeleteDomain = async (domainId: string) => {
+    if (!confirm("¿Eliminar este dominio?")) return;
+
+    try {
+      const res = await fetch(`${apiBase}/domains/${domainId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error || "Error al eliminar dominio");
+      }
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al eliminar dominio");
+    }
+  };
+
+  const handleVerifyDomain = async (domainId: string) => {
+    setVerifyingDomainId(domainId);
+    setErrorMessage("");
+
+    try {
+      const res = await fetch(`${apiBase}/domains/${domainId}/verify`, { method: "POST" });
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Error al verificar");
+      }
+
+      if (data.verified) {
+        setSuccessMessage("Dominio verificado correctamente");
+        setTimeout(() => setSuccessMessage(""), 3000);
+      } else {
+        setErrorMessage(data.error || "No se pudo verificar el dominio. Asegúrate de que el CNAME esté configurado.");
+      }
+
+      fetchConfig();
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : "Error al verificar");
+    } finally {
+      setVerifyingDomainId(null);
+    }
+  };
+
+  const handleMarkLeadRead = async (leadId: string) => {
+    try {
+      const res = await fetch(`${apiBase}/leads/${leadId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "CONTACTED" }),
+      });
+      if (res.ok) {
+        setLeads((prev) =>
+          prev.map((l) =>
+            l.id === leadId ? { ...l, status: "CONTACTED", readAt: new Date().toISOString() } : l
+          )
+        );
+      }
+    } catch {
+      // silent
+    }
+  };
+
+  const copyCnameTarget = () => {
+    navigator.clipboard.writeText(CNAME_TARGET);
+    setCopiedCname(true);
+    setTimeout(() => setCopiedCname(false), 2000);
   };
 
   if (loading) {
@@ -155,6 +568,8 @@ export default function DealerMicrositePage() {
   const inputClass =
     "w-full rounded-lg border border-neutral-300 px-4 py-2.5 text-neutral-900 text-sm focus:border-andino-500 focus:outline-none focus:ring-2 focus:ring-andino-500/20 transition-all";
 
+  const dealerSlug = config?.dealerId || "";
+
   return (
     <div>
       {/* Header */}
@@ -165,26 +580,10 @@ export default function DealerMicrositePage() {
             Configura tu micrositio personalizado
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dealer/microsite/dominios"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
-          >
-            <Globe className="h-4 w-4" />
-            Dominios
-          </Link>
-          <Link
-            href="/dealer/microsite/paginas"
-            className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
-          >
-            <FileText className="h-4 w-4" />
-            Páginas
-          </Link>
-          <Button onClick={handleSave} disabled={saving}>
-            <Save className="h-4 w-4 mr-2" />
-            {saving ? "Guardando..." : "Guardar"}
-          </Button>
-        </div>
+        <Button onClick={handleSave} disabled={saving}>
+          <Save className="h-4 w-4 mr-2" />
+          {saving ? "Guardando..." : "Guardar"}
+        </Button>
       </div>
 
       {/* Status Messages */}
@@ -198,6 +597,9 @@ export default function DealerMicrositePage() {
         <div className="mb-4 flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-700">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {errorMessage}
+          <button onClick={() => setErrorMessage("")} className="ml-auto">
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
 
@@ -222,9 +624,9 @@ export default function DealerMicrositePage() {
             </div>
           </div>
           <div className="flex items-center gap-3">
-            {isActive && config && (
+            {isActive && (
               <a
-                href={`https://${config.dealerId}.autoexplora.cl`}
+                href={`https://${dealerSlug}.autoexplora.cl`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-sm text-andino-600 hover:text-andino-700 flex items-center gap-1"
@@ -263,6 +665,11 @@ export default function DealerMicrositePage() {
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}
+            {tab.id === "leads" && leads.filter((l) => l.status === "NEW").length > 0 && (
+              <span className="ml-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                {leads.filter((l) => l.status === "NEW").length}
+              </span>
+            )}
           </button>
         ))}
       </div>
@@ -272,9 +679,7 @@ export default function DealerMicrositePage() {
         {activeTab === "general" && (
           <div className="space-y-6">
             <div>
-              <h3 className="font-semibold text-neutral-900 mb-4">
-                Sección Hero
-              </h3>
+              <h3 className="font-semibold text-neutral-900 mb-4">Sección Hero</h3>
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-neutral-700 mb-1.5">
@@ -303,15 +708,36 @@ export default function DealerMicrositePage() {
                     className={inputClass}
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Imagen de fondo del hero
+                  </label>
+                  <SingleImageUpload
+                    value={heroImage}
+                    publicId={heroImagePublicId}
+                    onChange={(url, pubId) => {
+                      setHeroImage(url);
+                      setHeroImagePublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setHeroImage("");
+                      setHeroImagePublicId("");
+                    }}
+                    folder="microsites/heroes"
+                    aspectRatio="banner"
+                    placeholder="Subir imagen de fondo"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Si se configura, el hero mostrará esta imagen de fondo. Recomendado: 1920x600px mínimo.
+                  </p>
+                </div>
               </div>
             </div>
 
             <hr className="border-neutral-200" />
 
             <div>
-              <h3 className="font-semibold text-neutral-900 mb-4">
-                Vehículos Destacados
-              </h3>
+              <h3 className="font-semibold text-neutral-900 mb-4">Vehículos Destacados</h3>
               <div className="space-y-4">
                 <label className="flex items-center gap-3 cursor-pointer">
                   <input
@@ -331,9 +757,7 @@ export default function DealerMicrositePage() {
                     </label>
                     <select
                       value={featuredVehiclesLimit}
-                      onChange={(e) =>
-                        setFeaturedVehiclesLimit(parseInt(e.target.value))
-                      }
+                      onChange={(e) => setFeaturedVehiclesLimit(parseInt(e.target.value))}
                       className={inputClass}
                     >
                       <option value={4}>4</option>
@@ -349,6 +773,61 @@ export default function DealerMicrositePage() {
 
         {activeTab === "branding" && (
           <div className="space-y-6">
+            {/* Logo & Favicon */}
+            <div>
+              <h3 className="font-semibold text-neutral-900 mb-4">Logo y Favicon</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Logo
+                  </label>
+                  <SingleImageUpload
+                    value={logo}
+                    publicId={logoPublicId}
+                    onChange={(url, pubId) => {
+                      setLogo(url);
+                      setLogoPublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setLogo("");
+                      setLogoPublicId("");
+                    }}
+                    folder="microsites/logos"
+                    aspectRatio="banner"
+                    placeholder="Subir logo"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Se muestra en el header. Recomendado: PNG transparente.
+                  </p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Favicon
+                  </label>
+                  <SingleImageUpload
+                    value={favicon}
+                    publicId={faviconPublicId}
+                    onChange={(url, pubId) => {
+                      setFavicon(url);
+                      setFaviconPublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setFavicon("");
+                      setFaviconPublicId("");
+                    }}
+                    folder="microsites/favicons"
+                    aspectRatio="square"
+                    placeholder="Subir favicon"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Ícono de la pestaña del navegador. Recomendado: 32x32 o 64x64px.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-neutral-200" />
+
             <div>
               <h3 className="font-semibold text-neutral-900 mb-4">Colores</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -398,16 +877,10 @@ export default function DealerMicrositePage() {
 
             <hr className="border-neutral-200" />
 
-            {/* Color Preview */}
             <div>
-              <h3 className="font-semibold text-neutral-900 mb-4">
-                Vista previa
-              </h3>
+              <h3 className="font-semibold text-neutral-900 mb-4">Vista previa</h3>
               <div className="rounded-lg border border-neutral-200 overflow-hidden">
-                <div
-                  className="p-6 text-center"
-                  style={{ backgroundColor: primaryColor }}
-                >
+                <div className="p-6 text-center" style={{ backgroundColor: primaryColor }}>
                   <p className="text-white font-bold text-lg">
                     {heroTitle || "Tu Automotora"}
                   </p>
@@ -426,7 +899,7 @@ export default function DealerMicrositePage() {
 
             <hr className="border-neutral-200" />
 
-            <div>
+            <div className="space-y-3">
               <label className="flex items-center gap-3 cursor-pointer">
                 <input
                   type="checkbox"
@@ -435,7 +908,18 @@ export default function DealerMicrositePage() {
                   className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
                 />
                 <span className="text-sm text-neutral-700">
-                  Mostrar botón de WhatsApp en el footer
+                  Mostrar botón flotante de WhatsApp
+                </span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showPhoneInHeader}
+                  onChange={(e) => setShowPhoneInHeader(e.target.checked)}
+                  className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                />
+                <span className="text-sm text-neutral-700">
+                  Mostrar teléfono en el header
                 </span>
               </label>
             </div>
@@ -445,12 +929,9 @@ export default function DealerMicrositePage() {
         {activeTab === "contact" && (
           <div className="space-y-6">
             <div>
-              <h3 className="font-semibold text-neutral-900 mb-4">
-                Información de Contacto
-              </h3>
+              <h3 className="font-semibold text-neutral-900 mb-4">Información de Contacto</h3>
               <p className="text-sm text-neutral-500 mb-4">
-                Esta información se mostrará en tu sitio web y se usará para los
-                botones de contacto.
+                Se mostrará en tu sitio web y se usará para los botones de contacto.
               </p>
               <div className="space-y-4">
                 <div>
@@ -491,6 +972,65 @@ export default function DealerMicrositePage() {
                   <p className="text-xs text-neutral-500 mt-1">
                     Número completo con código de país, sin espacios
                   </p>
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-neutral-200" />
+
+            <div>
+              <h3 className="font-semibold text-neutral-900 mb-4">Redes Sociales</h3>
+              <p className="text-sm text-neutral-500 mb-4">
+                Los links se mostrarán en el footer de tu sitio.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Instagram
+                  </label>
+                  <input
+                    type="url"
+                    value={socialInstagram}
+                    onChange={(e) => setSocialInstagram(e.target.value)}
+                    placeholder="https://instagram.com/miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Facebook
+                  </label>
+                  <input
+                    type="url"
+                    value={socialFacebook}
+                    onChange={(e) => setSocialFacebook(e.target.value)}
+                    placeholder="https://facebook.com/miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    TikTok
+                  </label>
+                  <input
+                    type="url"
+                    value={socialTiktok}
+                    onChange={(e) => setSocialTiktok(e.target.value)}
+                    placeholder="https://tiktok.com/@miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    YouTube
+                  </label>
+                  <input
+                    type="url"
+                    value={socialYoutube}
+                    onChange={(e) => setSocialYoutube(e.target.value)}
+                    placeholder="https://youtube.com/@miautomotora"
+                    className={inputClass}
+                  />
                 </div>
               </div>
             </div>
@@ -563,6 +1103,443 @@ export default function DealerMicrositePage() {
                 </div>
               </div>
             </div>
+          </div>
+        )}
+
+        {activeTab === "pages" && (
+          <div className="space-y-4">
+            {editingPage ? (
+              /* Page Editor */
+              <div className="space-y-6">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-neutral-900">
+                    Editando: {editingPage.title}
+                  </h3>
+                  <div className="flex items-center gap-2">
+                    <Button onClick={() => setEditingPage(null)} size="sm" variant="outline">
+                      <X className="h-4 w-4 mr-1" /> Cancelar
+                    </Button>
+                    <Button
+                      onClick={handleSavePage}
+                      disabled={pageSaving || !editTitle || !editSlug}
+                      size="sm"
+                    >
+                      <Save className="h-4 w-4 mr-1" />
+                      {pageSaving ? "Guardando..." : "Guardar Página"}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">Título</label>
+                    <input
+                      type="text"
+                      value={editTitle}
+                      onChange={(e) => setEditTitle(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-neutral-700 mb-1">Slug (URL)</label>
+                    <input
+                      type="text"
+                      value={editSlug}
+                      onChange={(e) => setEditSlug(e.target.value)}
+                      className={inputClass}
+                    />
+                  </div>
+                </div>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={editShowInNav}
+                    onChange={(e) => setEditShowInNav(e.target.checked)}
+                    className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                  />
+                  <span className="text-sm text-neutral-700">Mostrar en la navegación del sitio</span>
+                </label>
+
+                <hr className="border-neutral-200" />
+
+                {/* Content Blocks */}
+                <div>
+                  <h4 className="font-medium text-neutral-900 mb-3">Contenido</h4>
+
+                  {editBlocks.length === 0 && (
+                    <p className="text-sm text-neutral-500 text-center py-6 bg-neutral-50 rounded-lg border border-dashed border-neutral-300">
+                      Sin contenido. Agregá bloques usando los botones de abajo.
+                    </p>
+                  )}
+
+                  <div className="space-y-3">
+                    {editBlocks.map((block, idx) => (
+                      <div key={idx} className="p-4 bg-neutral-50 rounded-lg border border-neutral-200">
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-xs font-medium text-neutral-500 uppercase">
+                            {block.type === "heading" && "Título"}
+                            {block.type === "paragraph" && "Párrafo"}
+                            {block.type === "image" && "Imagen"}
+                            {block.type === "video" && "Video"}
+                            {block.type === "cta" && "Botón CTA"}
+                            {block.type === "divider" && "Separador"}
+                            {block.type === "list" && "Lista"}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            <button onClick={() => moveBlock(idx, "up")} disabled={idx === 0} className="p-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30">
+                              <ArrowUp className="h-3.5 w-3.5" />
+                            </button>
+                            <button onClick={() => moveBlock(idx, "down")} disabled={idx === editBlocks.length - 1} className="p-1 text-neutral-400 hover:text-neutral-600 disabled:opacity-30">
+                              <ArrowDown className="h-3.5 w-3.5" />
+                            </button>
+                            <button onClick={() => removeBlock(idx)} className="p-1 text-neutral-400 hover:text-red-600">
+                              <Trash2 className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {block.type === "heading" && (
+                          <div className="space-y-2">
+                            <select value={block.level || 2} onChange={(e) => updateBlock(idx, { level: parseInt(e.target.value) as 2 | 3 })} className={`${inputClass} !w-auto`}>
+                              <option value={2}>H2 - Grande</option>
+                              <option value={3}>H3 - Mediano</option>
+                            </select>
+                            <input type="text" value={block.text || ""} onChange={(e) => updateBlock(idx, { text: e.target.value })} placeholder="Texto del título" className={inputClass} />
+                          </div>
+                        )}
+
+                        {block.type === "paragraph" && (
+                          <textarea value={block.text || ""} onChange={(e) => updateBlock(idx, { text: e.target.value })} placeholder="Texto del párrafo..." rows={3} className={`${inputClass} resize-none`} />
+                        )}
+
+                        {block.type === "image" && (
+                          <div className="space-y-2">
+                            <input type="text" value={block.url || ""} onChange={(e) => updateBlock(idx, { url: e.target.value })} placeholder="URL de la imagen" className={inputClass} />
+                            <input type="text" value={block.alt || ""} onChange={(e) => updateBlock(idx, { alt: e.target.value })} placeholder="Texto alternativo" className={inputClass} />
+                            <input type="text" value={block.caption || ""} onChange={(e) => updateBlock(idx, { caption: e.target.value })} placeholder="Pie de imagen (opcional)" className={inputClass} />
+                          </div>
+                        )}
+
+                        {block.type === "video" && (
+                          <div className="space-y-2">
+                            <input type="text" value={block.url || ""} onChange={(e) => updateBlock(idx, { url: e.target.value })} placeholder="URL de YouTube o Vimeo" className={inputClass} />
+                            <input type="text" value={block.caption || ""} onChange={(e) => updateBlock(idx, { caption: e.target.value })} placeholder="Descripción (opcional)" className={inputClass} />
+                          </div>
+                        )}
+
+                        {block.type === "cta" && (
+                          <div className="space-y-2">
+                            <input type="text" value={block.text || ""} onChange={(e) => updateBlock(idx, { text: e.target.value })} placeholder="Texto del botón" className={inputClass} />
+                            <input type="text" value={block.url || ""} onChange={(e) => updateBlock(idx, { url: e.target.value })} placeholder="URL de destino" className={inputClass} />
+                            <select value={block.variant || "primary"} onChange={(e) => updateBlock(idx, { variant: e.target.value as "primary" | "outline" })} className={`${inputClass} !w-auto`}>
+                              <option value="primary">Primario (relleno)</option>
+                              <option value="outline">Outline (borde)</option>
+                            </select>
+                          </div>
+                        )}
+
+                        {block.type === "list" && (
+                          <div className="space-y-2">
+                            <select value={block.style || "bullet"} onChange={(e) => updateBlock(idx, { style: e.target.value as "bullet" | "numbered" })} className={`${inputClass} !w-auto`}>
+                              <option value="bullet">Viñetas</option>
+                              <option value="numbered">Numerada</option>
+                            </select>
+                            {(block.items || []).map((item, itemIdx) => (
+                              <div key={itemIdx} className="flex items-center gap-2">
+                                <input
+                                  type="text"
+                                  value={item}
+                                  onChange={(e) => {
+                                    const items = [...(block.items || [])];
+                                    items[itemIdx] = e.target.value;
+                                    updateBlock(idx, { items });
+                                  }}
+                                  placeholder={`Elemento ${itemIdx + 1}`}
+                                  className={`${inputClass} flex-1`}
+                                />
+                                <button onClick={() => { const items = (block.items || []).filter((_, i) => i !== itemIdx); updateBlock(idx, { items }); }} className="p-1 text-neutral-400 hover:text-red-600">
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            ))}
+                            <button onClick={() => { const items = [...(block.items || []), ""]; updateBlock(idx, { items }); }} className="text-xs text-andino-600 hover:text-andino-700 font-medium">
+                              + Agregar elemento
+                            </button>
+                          </div>
+                        )}
+
+                        {block.type === "divider" && (
+                          <p className="text-xs text-neutral-400 italic">Línea separadora horizontal</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add block buttons */}
+                  <div className="mt-4 pt-4 border-t border-neutral-200">
+                    <p className="text-xs font-medium text-neutral-500 mb-2">Agregar bloque:</p>
+                    <div className="flex flex-wrap gap-2">
+                      <button onClick={() => addBlock("heading")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <Type className="h-3.5 w-3.5" /> Título
+                      </button>
+                      <button onClick={() => addBlock("paragraph")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <FileText className="h-3.5 w-3.5" /> Párrafo
+                      </button>
+                      <button onClick={() => addBlock("image")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <ImageIcon className="h-3.5 w-3.5" /> Imagen
+                      </button>
+                      <button onClick={() => addBlock("video")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <Video className="h-3.5 w-3.5" /> Video
+                      </button>
+                      <button onClick={() => addBlock("cta")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <Link2 className="h-3.5 w-3.5" /> Botón
+                      </button>
+                      <button onClick={() => addBlock("list")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <List className="h-3.5 w-3.5" /> Lista
+                      </button>
+                      <button onClick={() => addBlock("divider")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg transition-colors">
+                        <Minus className="h-3.5 w-3.5" /> Separador
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Page List */
+              <>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-neutral-900">Páginas Personalizadas</h3>
+                  <Button onClick={() => setShowPageForm(!showPageForm)} size="sm" variant={showPageForm ? "outline" : "primary"}>
+                    {showPageForm ? (<><X className="h-4 w-4 mr-1" /> Cancelar</>) : (<><Plus className="h-4 w-4 mr-1" /> Nueva Página</>)}
+                  </Button>
+                </div>
+
+                {showPageForm && (
+                  <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 space-y-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Título</label>
+                        <input
+                          type="text"
+                          value={pageTitle}
+                          onChange={(e) => {
+                            setPageTitle(e.target.value);
+                            setPageSlug(
+                              e.target.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
+                            );
+                          }}
+                          placeholder="Nosotros"
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-neutral-700 mb-1">Slug (URL)</label>
+                        <input type="text" value={pageSlug} onChange={(e) => setPageSlug(e.target.value)} placeholder="nosotros" className={inputClass} />
+                      </div>
+                    </div>
+                    <Button onClick={handleCreatePage} disabled={pageCreating || !pageTitle || !pageSlug} size="sm">
+                      {pageCreating ? "Creando..." : "Crear Página"}
+                    </Button>
+                  </div>
+                )}
+
+                {config?.pages && config.pages.length > 0 ? (
+                  <div className="space-y-2">
+                    {config.pages.map((page) => (
+                      <div key={page.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                        <div className="flex items-center gap-3">
+                          <FileText className="h-4 w-4 text-neutral-400" />
+                          <div>
+                            <p className="font-medium text-neutral-900 text-sm">{page.title}</p>
+                            <p className="text-xs text-neutral-500">/{page.slug}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <button onClick={() => handleEditPage(page)} className="p-1 text-neutral-400 hover:text-andino-600 transition-colors" title="Editar página">
+                            <Pencil className="h-4 w-4" />
+                          </button>
+                          <button
+                            onClick={() => handleTogglePagePublish(page)}
+                            className={`text-xs px-2 py-1 rounded ${page.isPublished ? "bg-green-100 text-green-700" : "bg-neutral-200 text-neutral-600"}`}
+                          >
+                            {page.isPublished ? "Publicada" : "Borrador"}
+                          </button>
+                          <button onClick={() => handleDeletePage(page.id)} className="p-1 text-neutral-400 hover:text-red-600 transition-colors">
+                            <Trash2 className="h-4 w-4" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-neutral-500 text-center py-8">
+                    No hay páginas personalizadas aún.
+                  </p>
+                )}
+              </>
+            )}
+          </div>
+        )}
+
+        {activeTab === "domains" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-neutral-900">Dominios</h3>
+                <p className="text-sm text-neutral-500 mt-1">
+                  Tu subdominio:{" "}
+                  <code className="px-1.5 py-0.5 bg-neutral-100 rounded text-xs">
+                    {dealerSlug}.autoexplora.cl
+                  </code>
+                </p>
+              </div>
+              <Button onClick={() => setShowDomainForm(!showDomainForm)} size="sm" variant={showDomainForm ? "outline" : "primary"}>
+                {showDomainForm ? (<><X className="h-4 w-4 mr-1" /> Cancelar</>) : (<><Plus className="h-4 w-4 mr-1" /> Agregar Dominio</>)}
+              </Button>
+            </div>
+
+            {showDomainForm && (
+              <div className="p-4 bg-neutral-50 rounded-lg border border-neutral-200 space-y-3">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Dominio</label>
+                  <input type="text" value={newDomain} onChange={(e) => setNewDomain(e.target.value)} placeholder="www.miautomotora.cl" className={inputClass} />
+                </div>
+                <div className="p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-xs text-blue-800 font-medium mb-1">Configuración DNS requerida:</p>
+                  <p className="text-xs text-blue-700">
+                    Agregá un registro <strong>CNAME</strong> apuntando a:{" "}
+                    <code className="bg-blue-100 px-1.5 py-0.5 rounded">{CNAME_TARGET}</code>
+                    <button onClick={copyCnameTarget} className="ml-2 inline-flex items-center text-blue-600 hover:text-blue-800">
+                      {copiedCname ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                    </button>
+                  </p>
+                </div>
+                <Button onClick={handleAddDomain} disabled={domainAdding || !newDomain} size="sm">
+                  {domainAdding ? "Agregando..." : "Agregar"}
+                </Button>
+              </div>
+            )}
+
+            {config?.domains && config.domains.length > 0 ? (
+              <div className="space-y-2">
+                {config.domains.map((d) => (
+                  <div key={d.id} className="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Globe className="h-4 w-4 text-neutral-400" />
+                      <div>
+                        <p className="font-medium text-neutral-900 text-sm">{d.domain}</p>
+                        <p className="text-xs text-neutral-500">
+                          {d.status === "VERIFIED" && "Verificado"}
+                          {d.status === "PENDING" && "Pendiente de verificación"}
+                          {d.status === "FAILED" && "Verificación fallida"}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-xs px-2 py-1 rounded ${d.status === "VERIFIED" ? "bg-green-100 text-green-700" : d.status === "FAILED" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700"}`}>
+                        {d.status === "VERIFIED" ? "OK" : d.status === "FAILED" ? "Error" : "Pendiente"}
+                      </span>
+                      {d.status !== "VERIFIED" && (
+                        <button
+                          onClick={() => handleVerifyDomain(d.id)}
+                          disabled={verifyingDomainId === d.id}
+                          className="p-1 text-neutral-400 hover:text-andino-600 transition-colors disabled:opacity-50"
+                          title="Verificar DNS"
+                        >
+                          <RefreshCw className={`h-4 w-4 ${verifyingDomainId === d.id ? "animate-spin" : ""}`} />
+                        </button>
+                      )}
+                      <button onClick={() => handleDeleteDomain(d.id)} className="p-1 text-neutral-400 hover:text-red-600 transition-colors">
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-neutral-500 text-center py-8">
+                No hay dominios personalizados configurados.
+              </p>
+            )}
+          </div>
+        )}
+
+        {activeTab === "leads" && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="font-semibold text-neutral-900">Consultas Recibidas</h3>
+                <p className="text-sm text-neutral-500 mt-1">
+                  Leads generados desde el formulario de contacto de tu micrositio.
+                </p>
+              </div>
+              <Button onClick={() => { setLeadsLoaded(false); fetchLeads(); }} size="sm" variant="outline">
+                <RefreshCw className="h-4 w-4 mr-1" /> Actualizar
+              </Button>
+            </div>
+
+            {leadsLoading ? (
+              <div className="flex items-center justify-center py-12">
+                <div className="animate-spin h-6 w-6 border-2 border-andino-600 border-t-transparent rounded-full" />
+              </div>
+            ) : leads.length === 0 ? (
+              <div className="text-center py-12">
+                <MessageSquare className="h-12 w-12 text-neutral-300 mx-auto mb-4" />
+                <h4 className="text-lg font-semibold text-neutral-900 mb-2">Sin consultas</h4>
+                <p className="text-sm text-neutral-500">
+                  Cuando un visitante complete el formulario de contacto en tu micrositio, las consultas aparecerán aquí.
+                </p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {leads.map((lead) => (
+                  <div
+                    key={lead.id}
+                    className={`p-4 rounded-lg border ${lead.status === "NEW" ? "bg-blue-50 border-blue-200" : "bg-neutral-50 border-neutral-200"}`}
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <p className="font-medium text-neutral-900 text-sm">{lead.name}</p>
+                          {lead.status === "NEW" && (
+                            <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">Nuevo</span>
+                          )}
+                        </div>
+                        <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 mb-2">
+                          <a href={`mailto:${lead.email}`} className="flex items-center gap-1 hover:text-andino-600">
+                            <Mail className="h-3 w-3" /> {lead.email}
+                          </a>
+                          {lead.phone && (
+                            <a href={`tel:${lead.phone}`} className="flex items-center gap-1 hover:text-andino-600">
+                              <Phone className="h-3 w-3" /> {lead.phone}
+                            </a>
+                          )}
+                          <span className="flex items-center gap-1">
+                            <Clock className="h-3 w-3" />
+                            {new Date(lead.createdAt).toLocaleDateString("es-CL", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}
+                          </span>
+                        </div>
+                        {lead.vehicle && (
+                          <p className="text-xs text-andino-600 mb-2">
+                            Vehículo: {lead.vehicle.title}
+                          </p>
+                        )}
+                        <p className="text-sm text-neutral-700 whitespace-pre-line">{lead.message}</p>
+                      </div>
+                      {lead.status === "NEW" && (
+                        <button
+                          onClick={() => handleMarkLeadRead(lead.id)}
+                          className="text-xs px-2 py-1 bg-neutral-200 hover:bg-neutral-300 text-neutral-700 rounded transition-colors shrink-0"
+                        >
+                          Marcar leído
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
