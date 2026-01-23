@@ -104,12 +104,15 @@ export function SearchWidget() {
     }
     setLoadingModels(true);
     setModelId("");
-    fetch(`/api/marcas/${brandId}/modelos`)
+    const url = selectedType
+      ? `/api/marcas/${brandId}/modelos?vehicleType=${selectedType}`
+      : `/api/marcas/${brandId}/modelos`;
+    fetch(url)
       .then((res) => res.json())
       .then((data) => setModels(data.models || []))
       .catch(console.error)
       .finally(() => setLoadingModels(false));
-  }, [brandId]);
+  }, [brandId, selectedType]);
 
   // Fetch regions when "more filters" is shown
   useEffect(() => {

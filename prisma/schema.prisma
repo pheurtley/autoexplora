@@ -211,13 +211,14 @@ model Brand {
 }
 
 model Model {
-  id       String    @id @default(cuid())
-  name     String
-  slug     String
-  brandId  String
-  brand    Brand     @relation(fields: [brandId], references: [id], onDelete: Cascade)
-  vehicles Vehicle[]
-  versions Version[]
+  id           String        @id @default(cuid())
+  name         String
+  slug         String
+  brandId      String
+  vehicleTypes VehicleType[] @default([])
+  brand        Brand         @relation(fields: [brandId], references: [id], onDelete: Cascade)
+  vehicles     Vehicle[]
+  versions     Version[]
 
   @@unique([brandId, slug])
   @@index([brandId])
