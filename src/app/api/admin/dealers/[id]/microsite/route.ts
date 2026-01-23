@@ -74,6 +74,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       "headerStyle",
       "footerStyle",
       "showWhatsAppButton",
+      "showPhoneInHeader",
       "metaTitle",
       "metaDescription",
       "ogImage",
@@ -85,8 +86,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       "contactWhatsApp",
       "heroTitle",
       "heroSubtitle",
+      "heroImage",
+      "heroImagePublicId",
       "showFeaturedVehicles",
       "featuredVehiclesLimit",
+      "socialInstagram",
+      "socialFacebook",
+      "socialTiktok",
+      "socialYoutube",
     ];
 
     const data: Record<string, unknown> = {};

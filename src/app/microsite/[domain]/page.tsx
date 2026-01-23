@@ -58,10 +58,23 @@ export default async function MicrositeHomePage({ params }: PageProps) {
 
       {/* Hero Section */}
       <section
-        className="relative py-20 sm:py-28"
-        style={{ backgroundColor: "var(--ms-primary)" }}
+        className="relative py-20 sm:py-28 overflow-hidden"
+        style={!config.heroImage ? { backgroundColor: "var(--ms-primary)" } : undefined}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
+        {config.heroImage && (
+          <>
+            <Image
+              src={config.heroImage}
+              alt=""
+              fill
+              className="object-cover"
+              priority
+              sizes="100vw"
+            />
+            <div className="absolute inset-0 bg-black/60" />
+          </>
+        )}
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 text-center">
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
             {heroTitle}
           </h1>

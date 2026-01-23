@@ -502,6 +502,13 @@ model DealerSiteConfig {
   headerStyle       String    @default("default") // default, centered, minimal
   footerStyle       String    @default("default") // default, minimal
   showWhatsAppButton Boolean  @default(true)
+  showPhoneInHeader Boolean   @default(true)
+
+  // Social links
+  socialInstagram   String?
+  socialFacebook    String?
+  socialTiktok      String?
+  socialYoutube     String?
 
   // SEO
   metaTitle         String?
@@ -521,6 +528,8 @@ model DealerSiteConfig {
   // Home page
   heroTitle         String?
   heroSubtitle      String?
+  heroImage         String?
+  heroImagePublicId String?
   showFeaturedVehicles Boolean @default(true)
   featuredVehiclesLimit Int    @default(8)
 

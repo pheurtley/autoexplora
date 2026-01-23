@@ -71,7 +71,7 @@ export function MicrositeHeader({ config }: MicrositeHeaderProps) {
             >
               Contacto
             </Link>
-            {config.contactPhone && (
+            {config.showPhoneInHeader && config.contactPhone && (
               <a
                 href={`tel:${config.contactPhone}`}
                 className="flex items-center gap-1.5 text-sm font-medium transition-colors"
@@ -131,7 +131,7 @@ export function MicrositeHeader({ config }: MicrositeHeaderProps) {
             >
               Contacto
             </Link>
-            {config.contactPhone && (
+            {config.showPhoneInHeader && config.contactPhone && (
               <a
                 href={`tel:${config.contactPhone}`}
                 className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium"

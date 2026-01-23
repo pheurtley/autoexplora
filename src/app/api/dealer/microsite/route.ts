@@ -64,6 +64,7 @@ export async function PATCH(request: NextRequest) {
       "headerStyle",
       "footerStyle",
       "showWhatsAppButton",
+      "showPhoneInHeader",
       "metaTitle",
       "metaDescription",
       "ogImage",
@@ -75,8 +76,14 @@ export async function PATCH(request: NextRequest) {
       "contactWhatsApp",
       "heroTitle",
       "heroSubtitle",
+      "heroImage",
+      "heroImagePublicId",
       "showFeaturedVehicles",
       "featuredVehiclesLimit",
+      "socialInstagram",
+      "socialFacebook",
+      "socialTiktok",
+      "socialYoutube",
     ];
 
     const data: Record<string, unknown> = {};

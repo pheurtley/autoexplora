@@ -71,8 +71,11 @@ interface SiteConfig {
   primaryColor: string;
   accentColor: string;
   logo: string | null;
+  logoPublicId: string | null;
   favicon: string | null;
+  faviconPublicId: string | null;
   showWhatsAppButton: boolean;
+  showPhoneInHeader: boolean;
   metaTitle: string | null;
   metaDescription: string | null;
   googleAnalyticsId: string | null;
@@ -82,8 +85,14 @@ interface SiteConfig {
   contactWhatsApp: string | null;
   heroTitle: string | null;
   heroSubtitle: string | null;
+  heroImage: string | null;
+  heroImagePublicId: string | null;
   showFeaturedVehicles: boolean;
   featuredVehiclesLimit: number;
+  socialInstagram: string | null;
+  socialFacebook: string | null;
+  socialTiktok: string | null;
+  socialYoutube: string | null;
   domains: DealerDomain[];
   pages: DealerPage[];
 }
@@ -139,6 +148,13 @@ export default function AdminDealerMicrositePage({
   const [logoPublicId, setLogoPublicId] = useState("");
   const [favicon, setFavicon] = useState("");
   const [faviconPublicId, setFaviconPublicId] = useState("");
+  const [showPhoneInHeader, setShowPhoneInHeader] = useState(true);
+  const [heroImage, setHeroImage] = useState("");
+  const [heroImagePublicId, setHeroImagePublicId] = useState("");
+  const [socialInstagram, setSocialInstagram] = useState("");
+  const [socialFacebook, setSocialFacebook] = useState("");
+  const [socialTiktok, setSocialTiktok] = useState("");
+  const [socialYoutube, setSocialYoutube] = useState("");
 
   // Pages state
   const [showPageForm, setShowPageForm] = useState(false);
@@ -193,6 +209,13 @@ export default function AdminDealerMicrositePage({
         setLogoPublicId(c.logoPublicId || "");
         setFavicon(c.favicon || "");
         setFaviconPublicId(c.faviconPublicId || "");
+        setShowPhoneInHeader(c.showPhoneInHeader ?? true);
+        setHeroImage(c.heroImage || "");
+        setHeroImagePublicId(c.heroImagePublicId || "");
+        setSocialInstagram(c.socialInstagram || "");
+        setSocialFacebook(c.socialFacebook || "");
+        setSocialTiktok(c.socialTiktok || "");
+        setSocialYoutube(c.socialYoutube || "");
       }
     } catch (error) {
       console.error("Error fetching config:", error);
@@ -231,6 +254,13 @@ export default function AdminDealerMicrositePage({
           logoPublicId: logoPublicId || null,
           favicon: favicon || null,
           faviconPublicId: faviconPublicId || null,
+          showPhoneInHeader,
+          heroImage: heroImage || null,
+          heroImagePublicId: heroImagePublicId || null,
+          socialInstagram: socialInstagram || null,
+          socialFacebook: socialFacebook || null,
+          socialTiktok: socialTiktok || null,
+          socialYoutube: socialYoutube || null,
         }),
       });
 
@@ -620,6 +650,29 @@ export default function AdminDealerMicrositePage({
                     className={inputClass}
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Imagen de fondo del hero
+                  </label>
+                  <SingleImageUpload
+                    value={heroImage}
+                    publicId={heroImagePublicId}
+                    onChange={(url, pubId) => {
+                      setHeroImage(url);
+                      setHeroImagePublicId(pubId);
+                    }}
+                    onRemove={() => {
+                      setHeroImage("");
+                      setHeroImagePublicId("");
+                    }}
+                    folder="microsites/heroes"
+                    aspectRatio="banner"
+                    placeholder="Subir imagen de fondo"
+                  />
+                  <p className="text-xs text-neutral-500 mt-1.5">
+                    Si se configura, el hero mostrará esta imagen de fondo con un overlay oscuro. Recomendado: 1920x600px mínimo.
+                  </p>
+                </div>
               </div>
             </div>
 
@@ -785,17 +838,30 @@ export default function AdminDealerMicrositePage({
 
             <hr className="border-neutral-200" />
 
-            <label className="flex items-center gap-3 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={showWhatsAppButton}
-                onChange={(e) => setShowWhatsAppButton(e.target.checked)}
-                className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
-              />
-              <span className="text-sm text-neutral-700">
-                Mostrar botón flotante de WhatsApp
-              </span>
-            </label>
+            <div className="space-y-3">
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showWhatsAppButton}
+                  onChange={(e) => setShowWhatsAppButton(e.target.checked)}
+                  className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                />
+                <span className="text-sm text-neutral-700">
+                  Mostrar botón flotante de WhatsApp
+                </span>
+              </label>
+              <label className="flex items-center gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={showPhoneInHeader}
+                  onChange={(e) => setShowPhoneInHeader(e.target.checked)}
+                  className="h-4 w-4 rounded border-neutral-300 text-andino-600 focus:ring-andino-500"
+                />
+                <span className="text-sm text-neutral-700">
+                  Mostrar teléfono en el header
+                </span>
+              </label>
+            </div>
           </div>
         )}
 
@@ -845,6 +911,65 @@ export default function AdminDealerMicrositePage({
                   <p className="text-xs text-neutral-500 mt-1">
                     Número completo con código de país, sin espacios
                   </p>
+                </div>
+              </div>
+            </div>
+
+            <hr className="border-neutral-200" />
+
+            <div>
+              <h3 className="font-semibold text-neutral-900 mb-4">Redes Sociales</h3>
+              <p className="text-sm text-neutral-500 mb-4">
+                Los links se mostrarán en el footer del micrositio.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Instagram
+                  </label>
+                  <input
+                    type="url"
+                    value={socialInstagram}
+                    onChange={(e) => setSocialInstagram(e.target.value)}
+                    placeholder="https://instagram.com/miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Facebook
+                  </label>
+                  <input
+                    type="url"
+                    value={socialFacebook}
+                    onChange={(e) => setSocialFacebook(e.target.value)}
+                    placeholder="https://facebook.com/miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    TikTok
+                  </label>
+                  <input
+                    type="url"
+                    value={socialTiktok}
+                    onChange={(e) => setSocialTiktok(e.target.value)}
+                    placeholder="https://tiktok.com/@miautomotora"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    YouTube
+                  </label>
+                  <input
+                    type="url"
+                    value={socialYoutube}
+                    onChange={(e) => setSocialYoutube(e.target.value)}
+                    placeholder="https://youtube.com/@miautomotora"
+                    className={inputClass}
+                  />
                 </div>
               </div>
             </div>
