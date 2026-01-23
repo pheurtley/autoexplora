@@ -305,12 +305,15 @@ export default function AdminDealerMicrositePage({
     }
   };
 
-  const handleVerifyDomain = async (domainId: string) => {
+  const handleVerifyDomain = async (domainId: string, force = false) => {
     setVerifyingDomainId(domainId);
     setErrorMessage("");
 
     try {
-      const res = await fetch(`${apiBase}/domains/${domainId}/verify`, { method: "POST" });
+      const url = force
+        ? `${apiBase}/domains/${domainId}/verify?force=true`
+        : `${apiBase}/domains/${domainId}/verify`;
+      const res = await fetch(url, { method: "POST" });
       const data = await res.json();
 
       if (!res.ok) {
@@ -318,7 +321,7 @@ export default function AdminDealerMicrositePage({
       }
 
       if (data.verified) {
-        setSuccessMessage("Dominio verificado correctamente");
+        setSuccessMessage(force ? "Dominio verificado manualmente" : "Dominio verificado correctamente");
         setTimeout(() => setSuccessMessage(""), 3000);
       } else {
         setErrorMessage(data.error || "No se pudo verificar el dominio");
@@ -918,16 +921,26 @@ export default function AdminDealerMicrositePage({
                         {d.status === "VERIFIED" ? "OK" : d.status === "FAILED" ? "Error" : "Pendiente"}
                       </span>
                       {d.status !== "VERIFIED" && (
-                        <button
-                          onClick={() => handleVerifyDomain(d.id)}
-                          disabled={verifyingDomainId === d.id}
-                          className="p-1 text-neutral-400 hover:text-andino-600 transition-colors disabled:opacity-50"
-                          title="Verificar DNS"
-                        >
-                          <RefreshCw
-                            className={`h-4 w-4 ${verifyingDomainId === d.id ? "animate-spin" : ""}`}
-                          />
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleVerifyDomain(d.id)}
+                            disabled={verifyingDomainId === d.id}
+                            className="p-1 text-neutral-400 hover:text-andino-600 transition-colors disabled:opacity-50"
+                            title="Verificar DNS"
+                          >
+                            <RefreshCw
+                              className={`h-4 w-4 ${verifyingDomainId === d.id ? "animate-spin" : ""}`}
+                            />
+                          </button>
+                          <button
+                            onClick={() => handleVerifyDomain(d.id, true)}
+                            disabled={verifyingDomainId === d.id}
+                            className="text-xs px-2 py-1 bg-andino-50 text-andino-700 hover:bg-andino-100 rounded transition-colors disabled:opacity-50"
+                            title="Forzar verificación sin chequeo DNS"
+                          >
+                            Forzar
+                          </button>
+                        </>
                       )}
                       <button
                         onClick={() => handleDeleteDomain(d.id)}

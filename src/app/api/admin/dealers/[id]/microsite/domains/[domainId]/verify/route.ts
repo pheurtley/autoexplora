@@ -10,7 +10,7 @@ interface RouteParams {
   params: Promise<{ id: string; domainId: string }>;
 }
 
-export async function POST(_request: NextRequest, { params }: RouteParams) {
+export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const session = await auth();
     await requireAdmin(session);
@@ -25,6 +25,29 @@ export async function POST(_request: NextRequest, { params }: RouteParams) {
 
     if (!domain) {
       return NextResponse.json({ error: "Dominio no encontrado" }, { status: 404 });
+    }
+
+    // Check if admin wants to force verification
+    const { searchParams } = new URL(request.url);
+    const force = searchParams.get("force") === "true";
+
+    if (force) {
+      const updatedDomain = await prisma.dealerDomain.update({
+        where: { id: domainId },
+        data: {
+          status: "VERIFIED",
+          isPrimary: true,
+          verifiedAt: new Date(),
+          lastCheckedAt: new Date(),
+        },
+      });
+
+      return NextResponse.json({
+        domain: updatedDomain,
+        verified: true,
+        forced: true,
+        error: null,
+      });
     }
 
     let verified = false;
