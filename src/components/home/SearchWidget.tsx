@@ -62,7 +62,7 @@ interface Region {
 
 export function SearchWidget() {
   const router = useRouter();
-  const [selectedType, setSelectedType] = useState("AUTO");
+  const [selectedType, setSelectedType] = useState("");
   const [brandId, setBrandId] = useState("");
   const [modelId, setModelId] = useState("");
   const [category, setCategory] = useState("");
@@ -87,7 +87,8 @@ export function SearchWidget() {
     setLoadingBrands(true);
     setBrandId("");
     setModelId("");
-    fetch(`/api/marcas?vehicleType=${selectedType}`)
+    const url = selectedType ? `/api/marcas?vehicleType=${selectedType}` : "/api/marcas";
+    fetch(url)
       .then((res) => res.json())
       .then((data) => setBrands(data.brands || []))
       .catch(console.error)
@@ -133,7 +134,7 @@ export function SearchWidget() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    params.set("vehicleType", selectedType);
+    if (selectedType) params.set("vehicleType", selectedType);
     if (brandId) params.set("brandId", brandId);
     if (modelId) params.set("modelId", modelId);
     if (category) params.set("category", category);
@@ -160,7 +161,7 @@ export function SearchWidget() {
         {vehicleTypes.map((type) => (
           <button
             key={type.id}
-            onClick={() => setSelectedType(type.id)}
+            onClick={() => setSelectedType(selectedType === type.id ? "" : type.id)}
             className={`group flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg font-medium transition-all duration-200 text-sm sm:text-base ${
               selectedType === type.id
                 ? "bg-andino-600 text-white shadow-md shadow-andino-600/25"

@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const validTypes = Object.values(VehicleType);
 
     const where = vehicleType && validTypes.includes(vehicleType as VehicleType)
-      ? { vehicles: { some: { vehicleType: vehicleType as VehicleType, status: "ACTIVE" as const } } }
+      ? { vehicleTypes: { has: vehicleType as VehicleType } }
       : undefined;
 
     const brands = await prisma.brand.findMany({

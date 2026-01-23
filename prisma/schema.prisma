@@ -199,12 +199,13 @@ model VehicleImage {
 }
 
 model Brand {
-  id       String    @id @default(cuid())
-  name     String    @unique
-  slug     String    @unique
-  logo     String?
-  models   Model[]
-  vehicles Vehicle[]
+  id           String        @id @default(cuid())
+  name         String        @unique
+  slug         String        @unique
+  logo         String?
+  vehicleTypes VehicleType[] @default([])
+  models       Model[]
+  vehicles     Vehicle[]
 
   @@index([slug])
 }
