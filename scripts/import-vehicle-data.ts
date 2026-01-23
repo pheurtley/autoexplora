@@ -105,10 +105,11 @@ interface VehicleData {
 }
 
 async function main() {
-  console.log("🚗 Importando datos de vehículos...\n");
+  const file = process.argv[2] || "vehiculos.json";
+  console.log(`🚗 Importando datos desde ${file}...\n`);
 
   // Read JSON file
-  const jsonPath = path.join(__dirname, "../data/vehiculos.json");
+  const jsonPath = path.join(__dirname, "../data", file);
   const jsonContent = fs.readFileSync(jsonPath, "utf-8");
   const vehicleData: VehicleData = JSON.parse(jsonContent);
 
