@@ -533,6 +533,11 @@ model DealerSiteConfig {
   showFeaturedVehicles Boolean @default(true)
   featuredVehiclesLimit Int    @default(8)
 
+  // "Why Us" section
+  whyUsTitle        String?
+  whyUsSubtitle     String?
+  whyUsFeatures     Json?   // [{icon, title, description}]
+
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
 

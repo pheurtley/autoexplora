@@ -93,6 +93,9 @@ interface SiteConfig {
   socialFacebook: string | null;
   socialTiktok: string | null;
   socialYoutube: string | null;
+  whyUsTitle: string | null;
+  whyUsSubtitle: string | null;
+  whyUsFeatures: { icon: string; title: string; description: string }[] | null;
   domains: DealerDomain[];
   pages: DealerPage[];
 }
@@ -155,6 +158,9 @@ export default function AdminDealerMicrositePage({
   const [socialFacebook, setSocialFacebook] = useState("");
   const [socialTiktok, setSocialTiktok] = useState("");
   const [socialYoutube, setSocialYoutube] = useState("");
+  const [whyUsTitle, setWhyUsTitle] = useState("");
+  const [whyUsSubtitle, setWhyUsSubtitle] = useState("");
+  const [whyUsFeatures, setWhyUsFeatures] = useState<{ icon: string; title: string; description: string }[]>([]);
 
   // Pages state
   const [showPageForm, setShowPageForm] = useState(false);
@@ -216,6 +222,9 @@ export default function AdminDealerMicrositePage({
         setSocialFacebook(c.socialFacebook || "");
         setSocialTiktok(c.socialTiktok || "");
         setSocialYoutube(c.socialYoutube || "");
+        setWhyUsTitle(c.whyUsTitle || "");
+        setWhyUsSubtitle(c.whyUsSubtitle || "");
+        setWhyUsFeatures(c.whyUsFeatures || []);
       }
     } catch (error) {
       console.error("Error fetching config:", error);
@@ -261,6 +270,9 @@ export default function AdminDealerMicrositePage({
           socialFacebook: socialFacebook || null,
           socialTiktok: socialTiktok || null,
           socialYoutube: socialYoutube || null,
+          whyUsTitle: whyUsTitle || null,
+          whyUsSubtitle: whyUsSubtitle || null,
+          whyUsFeatures: whyUsFeatures.length > 0 ? whyUsFeatures : null,
         }),
       });
 
@@ -708,6 +720,121 @@ export default function AdminDealerMicrositePage({
                     </select>
                   </div>
                 )}
+              </div>
+            </div>
+
+            <hr className="border-neutral-200" />
+
+            <div>
+              <h3 className="font-semibold text-neutral-900 mb-4">Sección &quot;¿Por qué elegirnos?&quot;</h3>
+              <p className="text-sm text-neutral-500 mb-4">
+                Configura el título, subtítulo y las características que se muestran en la sección de valor del sitio.
+              </p>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Título de la sección
+                  </label>
+                  <input
+                    type="text"
+                    value={whyUsTitle}
+                    onChange={(e) => setWhyUsTitle(e.target.value)}
+                    placeholder="¿Por qué elegirnos?"
+                    className={inputClass}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1.5">
+                    Subtítulo
+                  </label>
+                  <textarea
+                    value={whyUsSubtitle}
+                    onChange={(e) => setWhyUsSubtitle(e.target.value)}
+                    placeholder="En [Automotora] nos comprometemos con la calidad y transparencia..."
+                    rows={2}
+                    className={`${inputClass} resize-none`}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-neutral-700 mb-2">
+                    Características (máx. 3)
+                  </label>
+                  {whyUsFeatures.map((feature, idx) => (
+                    <div key={idx} className="flex items-start gap-3 mb-3 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+                      <div className="space-y-2 flex-1">
+                        <div>
+                          <label className="block text-xs text-neutral-500 mb-1">Ícono</label>
+                          <select
+                            value={feature.icon}
+                            onChange={(e) => {
+                              const updated = [...whyUsFeatures];
+                              updated[idx] = { ...updated[idx], icon: e.target.value };
+                              setWhyUsFeatures(updated);
+                            }}
+                            className={`${inputClass} !py-1.5 text-xs`}
+                          >
+                            <option value="check">Check</option>
+                            <option value="shield">Escudo</option>
+                            <option value="money">Dinero</option>
+                            <option value="chat">Chat</option>
+                            <option value="star">Estrella</option>
+                            <option value="clock">Reloj</option>
+                            <option value="heart">Corazón</option>
+                            <option value="truck">Camión</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-500 mb-1">Título</label>
+                          <input
+                            type="text"
+                            value={feature.title}
+                            onChange={(e) => {
+                              const updated = [...whyUsFeatures];
+                              updated[idx] = { ...updated[idx], title: e.target.value };
+                              setWhyUsFeatures(updated);
+                            }}
+                            placeholder="Garantía"
+                            className={`${inputClass} !py-1.5 text-xs`}
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs text-neutral-500 mb-1">Descripción</label>
+                          <input
+                            type="text"
+                            value={feature.description}
+                            onChange={(e) => {
+                              const updated = [...whyUsFeatures];
+                              updated[idx] = { ...updated[idx], description: e.target.value };
+                              setWhyUsFeatures(updated);
+                            }}
+                            placeholder="Vehículos con garantía y respaldo profesional."
+                            className={`${inputClass} !py-1.5 text-xs`}
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setWhyUsFeatures(whyUsFeatures.filter((_, i) => i !== idx))}
+                        className="p-1 text-neutral-400 hover:text-red-600 mt-1"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
+                    </div>
+                  ))}
+                  {whyUsFeatures.length < 3 && (
+                    <button
+                      onClick={() =>
+                        setWhyUsFeatures([
+                          ...whyUsFeatures,
+                          { icon: "check", title: "", description: "" },
+                        ])
+                      }
+                      className="text-sm text-andino-600 hover:text-andino-700 font-medium flex items-center gap-1"
+                    >
+                      <Plus className="h-4 w-4" /> Agregar característica
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

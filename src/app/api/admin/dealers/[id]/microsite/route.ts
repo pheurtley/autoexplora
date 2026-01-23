@@ -94,6 +94,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       "socialFacebook",
       "socialTiktok",
       "socialYoutube",
+      "whyUsTitle",
+      "whyUsSubtitle",
+      "whyUsFeatures",
     ];
 
     const data: Record<string, unknown> = {};

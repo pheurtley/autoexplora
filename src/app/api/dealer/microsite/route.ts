@@ -84,6 +84,9 @@ export async function PATCH(request: NextRequest) {
       "socialFacebook",
       "socialTiktok",
       "socialYoutube",
+      "whyUsTitle",
+      "whyUsSubtitle",
+      "whyUsFeatures",
     ];
 
     const data: Record<string, unknown> = {};
