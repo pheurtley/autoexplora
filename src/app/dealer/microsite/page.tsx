@@ -167,6 +167,13 @@ export default function DealerMicrositePage() {
         </div>
         <div className="flex items-center gap-3">
           <Link
+            href="/dealer/microsite/dominios"
+            className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
+          >
+            <Globe className="h-4 w-4" />
+            Dominios
+          </Link>
+          <Link
             href="/dealer/microsite/paginas"
             className="inline-flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg text-sm font-medium text-neutral-700 hover:bg-neutral-50 transition-colors"
           >
