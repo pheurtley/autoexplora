@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { headers } from "next/headers";
 import "./globals.css";
 import { Header, ConditionalFooter } from "@/components/layout";
 import { SessionProvider } from "@/components/providers/SessionProvider";
@@ -66,11 +67,14 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const headersList = await headers();
+  const isMicrosite = headersList.get("x-microsite") === "1";
+
   return (
     <html lang="es-CL" className={inter.variable}>
       <head>
@@ -79,13 +83,17 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://res.cloudinary.com" />
       </head>
       <body className="min-h-screen flex flex-col bg-background text-foreground antialiased">
-        <SessionProvider>
-          <SiteConfigProvider>
-            <Header />
-            <main className="flex-1">{children}</main>
-            <ConditionalFooter />
-          </SiteConfigProvider>
-        </SessionProvider>
+        {isMicrosite ? (
+          children
+        ) : (
+          <SessionProvider>
+            <SiteConfigProvider>
+              <Header />
+              <main className="flex-1">{children}</main>
+              <ConditionalFooter />
+            </SiteConfigProvider>
+          </SessionProvider>
+        )}
       </body>
     </html>
   );

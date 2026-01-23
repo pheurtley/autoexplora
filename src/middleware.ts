@@ -64,10 +64,13 @@ export function middleware(request: NextRequest) {
   const micrositePath = path === "/" ? "" : path;
   url.pathname = `/microsite/${dealerDomain}${micrositePath}`;
 
-  const response = NextResponse.rewrite(url);
-  response.headers.set("x-dealer-domain", dealerDomain);
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-microsite", "1");
+  requestHeaders.set("x-dealer-domain", dealerDomain);
 
-  return response;
+  return NextResponse.rewrite(url, {
+    request: { headers: requestHeaders },
+  });
 }
 
 export const config = {
