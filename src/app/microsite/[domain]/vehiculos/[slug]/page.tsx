@@ -39,13 +39,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const conditionText = vehicle.condition === "NUEVO" ? "Nuevo" : "Usado";
   const description = `${conditionText} · ${formatKilometers(vehicle.mileage)} · ${formatPrice(vehicle.price)}. ${config.dealer.tradeName}`;
 
+  const ogImage = vehicle.images[0]?.url || config.ogImage || config.logo || config.favicon;
+
   return {
     title,
     description,
     openGraph: {
       title,
       description,
-      images: vehicle.images[0]?.url ? [vehicle.images[0].url] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }

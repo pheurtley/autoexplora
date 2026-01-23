@@ -28,6 +28,8 @@ export async function generateMetadata({
     config.metaDescription ||
     `Vehículos en venta en ${config.dealer.tradeName}. Encuentra los mejores autos nuevos y usados.`;
 
+  const ogImage = config.ogImage || config.logo || config.favicon;
+
   return {
     title: {
       default: title,
@@ -42,7 +44,7 @@ export async function generateMetadata({
       siteName: config.dealer.tradeName,
       title,
       description,
-      images: config.ogImage ? [config.ogImage] : undefined,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }
