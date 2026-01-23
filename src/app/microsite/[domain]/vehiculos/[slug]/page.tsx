@@ -236,7 +236,7 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
                 )}
 
                 <Link
-                  href="/contacto"
+                  href={`/contacto?vehicleId=${vehicle.id}`}
                   className="flex items-center justify-center w-full py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg font-medium transition-colors text-sm"
                 >
                   Enviar consulta
