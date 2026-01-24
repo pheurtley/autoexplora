@@ -94,6 +94,7 @@ export function Header() {
                 alt={config.siteName}
                 width={48}
                 height={48}
+                priority
                 className={`${logoSizeClass} max-h-12 w-auto rounded-full object-cover`}
               />
             ) : (
@@ -235,6 +236,7 @@ export function Header() {
             type="button"
             className="md:hidden p-2 text-neutral-600 hover:text-andino-600 hover:bg-neutral-50 rounded-lg transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
           >
             {mobileMenuOpen ? (
               <X className="h-6 w-6" />

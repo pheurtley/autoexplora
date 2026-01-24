@@ -69,7 +69,7 @@ export async function HeroBanner() {
           <h1 className="text-3xl md:text-5xl font-bold text-white mb-4 animate-fade-in">
             Encuentra tu próximo vehículo
           </h1>
-          <p className="text-lg md:text-xl text-andino-100 max-w-2xl mx-auto animate-fade-in animation-delay-200">
+          <p className="text-lg md:text-xl text-andino-100 max-w-2xl mx-auto animate-fade-in">
             Miles de autos, motos y vehículos comerciales te esperan en el
             marketplace más grande de Chile
           </p>

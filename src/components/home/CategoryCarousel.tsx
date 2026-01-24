@@ -1,9 +1,5 @@
-"use client";
-
 import Link from "next/link";
 import { Container } from "@/components/layout";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { FreeMode } from "swiper/modules";
 import {
   Car,
   Truck,
@@ -12,9 +8,6 @@ import {
   CarFront,
   Bus,
 } from "lucide-react";
-
-import "swiper/css";
-import "swiper/css/free-mode";
 
 const categories = [
   {
@@ -61,20 +54,11 @@ const categories = [
   },
 ];
 
-interface CategoryItemProps {
-  category: (typeof categories)[number];
-  index?: number;
-  animated?: boolean;
-}
-
-function CategoryItem({ category, index = 0, animated = false }: CategoryItemProps) {
+function CategoryItem({ category }: { category: (typeof categories)[number] }) {
   return (
     <Link
       href={`/vehiculos?category=${category.slug}`}
-      className={`group flex flex-col items-center p-4 bg-white rounded-xl border border-neutral-200 hover:border-andino-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ${
-        animated ? "animate-slide-up" : ""
-      }`}
-      style={animated ? { animationDelay: `${index * 75}ms` } : undefined}
+      className="group flex flex-col items-center p-4 bg-white rounded-xl border border-neutral-200 hover:border-andino-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
     >
       <div
         className={`w-12 h-12 rounded-full flex items-center justify-center mb-3 ${category.color} group-hover:scale-110 transition-transform duration-300`}
@@ -96,32 +80,19 @@ export function CategoryCarousel() {
           Explorar por categoría
         </h2>
 
-        {/* Mobile: Swiper */}
-        <div className="md:hidden overflow-hidden -mx-4">
-          <Swiper
-            slidesPerView="auto"
-            spaceBetween={12}
-            freeMode={true}
-            modules={[FreeMode]}
-            className="!pl-4"
-          >
+        {/* Mobile: CSS horizontal scroll */}
+        <div className="md:hidden overflow-x-auto -mx-4 px-4 scrollbar-hide">
+          <div className="flex gap-3 w-max">
             {categories.map((category) => (
-              <SwiperSlide key={category.slug} className="!w-auto">
-                <CategoryItem category={category} />
-              </SwiperSlide>
+              <CategoryItem key={category.slug} category={category} />
             ))}
-          </Swiper>
+          </div>
         </div>
 
-        {/* Desktop: Animated Grid */}
+        {/* Desktop: Grid */}
         <div className="hidden md:grid md:grid-cols-7 gap-4">
-          {categories.map((category, index) => (
-            <CategoryItem
-              key={category.slug}
-              category={category}
-              index={index}
-              animated={true}
-            />
+          {categories.map((category) => (
+            <CategoryItem key={category.slug} category={category} />
           ))}
         </div>
       </Container>

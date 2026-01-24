@@ -14,8 +14,8 @@ import { Container } from "@/components/layout";
 import { getSiteConfig } from "@/lib/config";
 import { SITE_URL } from "@/lib/constants";
 
-// Revalidate home page every 60 seconds
-export const revalidate = 60;
+// Revalidate home page every 5 minutes
+export const revalidate = 300;
 
 export default async function HomePage() {
   const config = await getSiteConfig();

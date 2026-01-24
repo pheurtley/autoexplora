@@ -183,11 +183,12 @@ export function SearchWidget() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Brand */}
           <div>
-            <label className="block text-xs font-medium text-neutral-600 mb-1">
+            <label htmlFor="search-brand" className="block text-xs font-medium text-neutral-600 mb-1">
               <Tag className="h-3 w-3 inline mr-1 text-neutral-400" />
               Marca
             </label>
             <select
+              id="search-brand"
               value={brandId}
               onChange={(e) => setBrandId(e.target.value)}
               className={selectClass}
@@ -204,11 +205,12 @@ export function SearchWidget() {
 
           {/* Model */}
           <div>
-            <label className="block text-xs font-medium text-neutral-600 mb-1">
+            <label htmlFor="search-model" className="block text-xs font-medium text-neutral-600 mb-1">
               <Layers className="h-3 w-3 inline mr-1 text-neutral-400" />
               Modelo
             </label>
             <select
+              id="search-model"
               value={modelId}
               onChange={(e) => setModelId(e.target.value)}
               className={selectClass}
@@ -227,11 +229,12 @@ export function SearchWidget() {
 
           {/* Max Price */}
           <div>
-            <label className="block text-xs font-medium text-neutral-600 mb-1">
+            <label htmlFor="search-price" className="block text-xs font-medium text-neutral-600 mb-1">
               <DollarSign className="h-3 w-3 inline mr-1 text-neutral-400" />
               Precio máximo
             </label>
             <select
+              id="search-price"
               value={priceMax}
               onChange={(e) => setPriceMax(e.target.value)}
               className={selectClass}
@@ -248,11 +251,12 @@ export function SearchWidget() {
 
           {/* Year */}
           <div>
-            <label className="block text-xs font-medium text-neutral-600 mb-1">
+            <label htmlFor="search-year" className="block text-xs font-medium text-neutral-600 mb-1">
               <Calendar className="h-3 w-3 inline mr-1 text-neutral-400" />
               Año desde
             </label>
             <select
+              id="search-year"
               value={yearMin}
               onChange={(e) => setYearMin(e.target.value)}
               className={selectClass}
