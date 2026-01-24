@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Car, ArrowRight, MapPin } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 import { MicrositeLocalBusinessJsonLd } from "@/components/microsite/MicrositeJsonLd";
 
 const defaultWhyUsFeatures = [
@@ -154,7 +155,7 @@ export default async function MicrositeHomePage({ params }: PageProps) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {vehicles.map((vehicle) => {
+              {vehicles.map((vehicle, index) => {
                 const image = vehicle.images[0]?.url;
                 const price = vehicle.price
                   ? `$${vehicle.price.toLocaleString("es-CL")}`
@@ -169,9 +170,10 @@ export default async function MicrositeHomePage({ params }: PageProps) {
                     <div className="aspect-[4/3] relative bg-neutral-100">
                       {image ? (
                         <Image
-                          src={image}
+                          src={getOptimizedUrl(image, "card")}
                           alt={vehicle.title}
                           fill
+                          priority={index === 0}
                           className="object-cover group-hover:scale-105 transition-transform duration-300"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />

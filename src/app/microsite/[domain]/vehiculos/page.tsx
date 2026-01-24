@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Car, Calendar, Gauge, Fuel, ChevronLeft, ChevronRight } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
+import { getOptimizedUrl } from "@/lib/cloudinary";
 import { formatPrice, formatKilometers } from "@/lib/utils";
 import { FUEL_TYPES } from "@/lib/constants";
 import { MicrositeVehicleFilters } from "@/components/microsite/MicrositeVehicleFilters";
@@ -168,7 +169,7 @@ export default async function MicrositeVehiculosPage({
                   <div className="aspect-[4/3] relative bg-neutral-100">
                     {image ? (
                       <Image
-                        src={image}
+                        src={getOptimizedUrl(image, "card")}
                         alt={vehicle.title}
                         fill
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
