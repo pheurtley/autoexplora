@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
+import { useContactTracking } from "@/hooks";
 import { MessageCircle } from "lucide-react";
 import type { ChatButtonProps } from "@/types/chat";
 
@@ -15,6 +16,7 @@ export function ChatButton({
 }: ChatButtonProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const { trackContact } = useContactTracking();
 
   // Don't show button if user is the seller
   if (currentUserId === sellerId) {
@@ -43,6 +45,7 @@ export function ChatButton({
       }
 
       const data = await response.json();
+      trackContact("CHAT_START", { vehicleId });
       router.push(`/cuenta/mensajes/${data.conversationId}`);
     } catch (error) {
       console.error("Error starting conversation:", error);

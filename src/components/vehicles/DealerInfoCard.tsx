@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Building2, MessageCircle, BadgeCheck, ExternalLink } from "lucide-react";
 import { Button, Badge, BusinessHoursDisplay } from "@/components/ui";
+import { useContactTracking } from "@/hooks";
 import type { WeekSchedule } from "@/components/ui";
 import { DEALER_TYPES } from "@/lib/constants";
 import type { DealerType } from "@prisma/client";
@@ -25,6 +26,7 @@ interface DealerInfoCardProps {
 export function DealerInfoCard({ dealer }: DealerInfoCardProps) {
   const typeConfig = DEALER_TYPES[dealer.type];
   const isVerified = dealer.verifiedAt !== null;
+  const { trackContact } = useContactTracking();
 
   return (
     <div className="bg-white rounded-xl border border-neutral-200 p-6">
@@ -83,6 +85,7 @@ export function DealerInfoCard({ dealer }: DealerInfoCardProps) {
             href={`https://wa.me/${dealer.whatsapp.replace(/\D/g, "")}?text=${encodeURIComponent("Hola, me interesa un vehículo que vi en AutoExplora.cl")}`}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackContact("WHATSAPP_CLICK", { dealerId: dealer.id })}
             className="block"
           >
             <Button className="w-full">

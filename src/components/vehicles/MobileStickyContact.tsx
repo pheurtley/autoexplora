@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { Button } from "@/components/ui";
 import { getWhatsAppLink } from "@/lib/utils";
+import { useContactTracking } from "@/hooks";
 import { Phone, MessageCircle } from "lucide-react";
 
 interface MobileStickyContactProps {
+  vehicleId: string;
   title: string;
   contactPhone: string | null;
   contactWhatsApp: string | null;
@@ -13,12 +15,14 @@ interface MobileStickyContactProps {
 }
 
 export function MobileStickyContact({
+  vehicleId,
   title,
   contactPhone,
   contactWhatsApp,
   showPhone,
 }: MobileStickyContactProps) {
   const [phoneRevealed, setPhoneRevealed] = useState(false);
+  const { trackContact } = useContactTracking();
 
   const whatsappMessage = `Hola, me interesa el ${title} publicado en AutoExplora.cl. ¿Está disponible?`;
   const whatsappLink = contactWhatsApp
@@ -29,10 +33,12 @@ export function MobileStickyContact({
     if (!showPhone || !contactPhone) return;
 
     if (!phoneRevealed) {
+      trackContact("PHONE_REVEAL", { vehicleId });
       setPhoneRevealed(true);
       return;
     }
 
+    trackContact("PHONE_CALL", { vehicleId });
     window.location.href = `tel:${contactPhone}`;
   };
 
@@ -44,6 +50,7 @@ export function MobileStickyContact({
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackContact("WHATSAPP_CLICK", { vehicleId })}
             className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg transition-colors"
           >
             <MessageCircle className="h-4 w-4" />

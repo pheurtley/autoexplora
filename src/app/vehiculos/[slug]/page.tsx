@@ -376,6 +376,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
         {/* Mobile Sticky Contact */}
         <MobileStickyContact
+          vehicleId={vehicle.id}
           title={vehicle.title}
           contactPhone={vehicle.contactPhone}
           contactWhatsApp={vehicle.contactWhatsApp}

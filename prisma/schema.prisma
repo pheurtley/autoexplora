@@ -76,6 +76,7 @@ model Dealer {
   vehicles        Vehicle[]
   siteConfig      DealerSiteConfig?
   leads           DealerLead[]
+  contactEvents   ContactEvent[]
 
   @@index([status])
   @@index([type])
@@ -170,6 +171,7 @@ model Vehicle {
   version         Version?         @relation(fields: [versionId], references: [id])
   images          VehicleImage[]
   dealerLeads     DealerLead[]
+  contactEvents   ContactEvent[]
 
   @@index([userId])
   @@index([brandId])
@@ -644,4 +646,42 @@ enum LeadStatus {
   QUALIFIED
   CONVERTED
   LOST
+}
+
+// ============================================================================
+// Contact Events (Tracking de clicks en botones de contacto)
+// ============================================================================
+
+model ContactEvent {
+  id        String           @id @default(cuid())
+  eventType ContactEventType
+
+  // Contexto
+  vehicleId String?
+  dealerId  String?
+  source    String           @default("marketplace") // "marketplace" | "microsite"
+
+  // Metadata
+  userAgent String?
+  ipHash    String? // Hash para anonimizar IP
+  sessionId String? // Para agrupar eventos de misma sesión
+
+  createdAt DateTime @default(now())
+
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  dealer  Dealer?  @relation(fields: [dealerId], references: [id], onDelete: SetNull)
+
+  @@index([vehicleId])
+  @@index([dealerId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@index([source])
+}
+
+enum ContactEventType {
+  WHATSAPP_CLICK
+  PHONE_REVEAL
+  PHONE_CALL
+  CHAT_START
+  CONTACT_FORM
 }

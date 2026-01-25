@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useContactTracking } from "@/hooks";
 import { Send, CheckCircle, AlertCircle } from "lucide-react";
 
 interface MicrositeContactFormProps {
@@ -18,6 +19,7 @@ export function MicrositeContactForm({
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [errorMessage, setErrorMessage] = useState("");
+  const { trackContact } = useContactTracking();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +45,7 @@ export function MicrositeContactForm({
         throw new Error(data.error || "Error al enviar");
       }
 
+      trackContact("CONTACT_FORM", { dealerId, vehicleId, source: "microsite" });
       setStatus("success");
       setName("");
       setEmail("");

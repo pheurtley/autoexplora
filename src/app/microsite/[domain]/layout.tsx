@@ -75,6 +75,7 @@ export default async function MicrositeLayout({
         <MicrositeWhatsAppButton
           phoneNumber={config.contactWhatsApp}
           dealerName={config.dealer.tradeName}
+          dealerId={config.dealer.id}
         />
       )}
 

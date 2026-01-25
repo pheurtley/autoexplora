@@ -5,6 +5,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui";
 import { ChatButton } from "@/components/chat";
 import { getWhatsAppLink, getRelativeTime } from "@/lib/utils";
+import { useContactTracking } from "@/hooks";
 import { Phone, MessageCircle, User, MapPin, Calendar, Copy, Check } from "lucide-react";
 
 interface ContactCardProps {
@@ -35,6 +36,7 @@ export function ContactCard({
 }: ContactCardProps) {
   const [showPhone, setShowPhone] = useState(false);
   const [phoneCopied, setPhoneCopied] = useState(false);
+  const { trackContact } = useContactTracking();
 
   const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en AutoExplora.cl. ¿Está disponible?`;
 
@@ -103,6 +105,7 @@ export function ContactCard({
             href={getWhatsAppLink(vehicle.contactWhatsApp, whatsappMessage)}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackContact("WHATSAPP_CLICK", { vehicleId: vehicle.id })}
             className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-colors"
           >
             <MessageCircle className="w-5 h-5" />
@@ -117,6 +120,7 @@ export function ContactCard({
               <div className="flex gap-2">
                 <a
                   href={`tel:${vehicle.contactPhone}`}
+                  onClick={() => trackContact("PHONE_CALL", { vehicleId: vehicle.id })}
                   className="flex-1 flex items-center justify-center gap-2 py-3 bg-andino-600 hover:bg-andino-700 text-white rounded-xl font-medium transition-colors"
                 >
                   <Phone className="w-5 h-5" />
@@ -142,7 +146,10 @@ export function ContactCard({
               <Button
                 variant="outline"
                 fullWidth
-                onClick={() => setShowPhone(true)}
+                onClick={() => {
+                  trackContact("PHONE_REVEAL", { vehicleId: vehicle.id });
+                  setShowPhone(true);
+                }}
                 className="py-3"
               >
                 <Phone className="w-5 h-5 mr-2" />

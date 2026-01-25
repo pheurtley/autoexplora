@@ -1,11 +1,12 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, MessageCircle, Phone } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
 import { VehicleSpecs } from "@/components/vehicles/VehicleSpecs";
 import { MicrositeVehicleJsonLd } from "@/components/microsite/MicrositeJsonLd";
+import { MicrositeVehicleContactButtons } from "@/components/microsite/MicrositeVehicleContactButtons";
 import { formatPrice, formatKilometers } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -193,56 +194,24 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
             </div>
 
             {/* Contact Card */}
-            <div className="bg-white rounded-xl border border-neutral-200 p-6">
-              <h3 className="font-semibold text-neutral-900 mb-4">
-                Contactar a {dealer.tradeName}
-              </h3>
+            <MicrositeVehicleContactButtons
+              vehicleId={vehicle.id}
+              dealerId={dealer.id}
+              dealerName={dealer.tradeName}
+              whatsappNumber={whatsappNumber || null}
+              whatsappMessage={whatsappMessage}
+              contactPhone={config.contactPhone}
+            />
 
-              <div className="space-y-3">
-                {whatsappNumber && (
-                  <a
-                    href={`https://wa.me/${whatsappNumber}?text=${whatsappMessage}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center justify-center gap-2 w-full py-3 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
-                  >
-                    <MessageCircle className="h-5 w-5" />
-                    WhatsApp
-                  </a>
-                )}
-
-                {config.contactPhone && (
-                  <a
-                    href={`tel:${config.contactPhone}`}
-                    className="flex items-center justify-center gap-2 w-full py-3 border-2 rounded-lg font-medium transition-colors"
-                    style={{
-                      borderColor: "var(--ms-primary)",
-                      color: "var(--ms-primary)",
-                    }}
-                  >
-                    <Phone className="h-5 w-5" />
-                    Llamar
-                  </a>
-                )}
-
-                <Link
-                  href={`/contacto?vehicleId=${vehicle.id}`}
-                  className="flex items-center justify-center w-full py-3 bg-neutral-100 hover:bg-neutral-200 text-neutral-700 rounded-lg font-medium transition-colors text-sm"
-                >
-                  Enviar consulta
-                </Link>
+            {/* Location */}
+            {(dealer.comuna || dealer.region) && (
+              <div className="bg-white rounded-xl border border-neutral-200 p-4">
+                <p className="text-sm text-neutral-500">
+                  📍 {dealer.comuna?.name}
+                  {dealer.region && `, ${dealer.region.name}`}
+                </p>
               </div>
-
-              {/* Location */}
-              {(dealer.comuna || dealer.region) && (
-                <div className="mt-4 pt-4 border-t border-neutral-100">
-                  <p className="text-sm text-neutral-500">
-                    📍 {dealer.comuna?.name}
-                    {dealer.region && `, ${dealer.region.name}`}
-                  </p>
-                </div>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>

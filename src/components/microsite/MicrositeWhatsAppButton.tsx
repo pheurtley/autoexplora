@@ -1,19 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useContactTracking } from "@/hooks";
 import { X } from "lucide-react";
 
 interface MicrositeWhatsAppButtonProps {
   phoneNumber: string;
   dealerName: string;
+  dealerId: string;
 }
 
 export function MicrositeWhatsAppButton({
   phoneNumber,
   dealerName,
+  dealerId,
 }: MicrositeWhatsAppButtonProps) {
   const [showTooltip, setShowTooltip] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const { trackContact } = useContactTracking();
 
   const cleanNumber = phoneNumber.replace(/[^0-9]/g, "");
   const message = encodeURIComponent(
@@ -49,6 +53,7 @@ export function MicrositeWhatsAppButton({
         href={`https://wa.me/${cleanNumber}?text=${message}`}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackContact("WHATSAPP_CLICK", { dealerId, source: "microsite" })}
         onMouseEnter={() => setShowTooltip(true)}
         onMouseLeave={() => {
           if (!dismissed) setShowTooltip(false);
