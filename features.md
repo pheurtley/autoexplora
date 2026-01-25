@@ -207,6 +207,68 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Compartir en redes sociales
 - [ ] Imprimir ficha de vehículo
 - [ ] QR code para cada vehículo
+- [ ] **Videos en publicaciones**
+  - [ ] Subir video directo (Cloudinary)
+  - [ ] Embed de YouTube URL
+  - [ ] Preview de video en galería
+- [ ] **Ficha técnica descargable (PDF)**
+  - [ ] Generar PDF con specs del vehículo
+  - [ ] Incluir fotos, precio, datos de contacto
+  - [ ] Branding del dealer si aplica
+
+#### Score de Calidad de Anuncio
+- [ ] Calcular score (0-100%) basado en completitud:
+  - Título descriptivo
+  - Cantidad de fotos (mínimo 5 = +20%)
+  - Descripción detallada
+  - Especificaciones completas
+  - Video incluido (+10% bonus)
+- [ ] Mostrar score en panel de dealer
+- [ ] Indicadores visuales de qué falta mejorar
+- [ ] Sugerencias automáticas para mejorar calidad
+
+#### Sistema de Promociones/Destacados
+- [ ] Tipos de anuncio:
+  - Estándar (gratuito, posición normal)
+  - Destacado (pago, aparece primero en búsquedas)
+  - TopSpot (pago premium, banner en home)
+- [ ] Cupos mensuales por plan de dealer
+- [ ] Modalidades: Recurrente vs One-Shot
+- [ ] Admin: gestionar planes y cupos
+- [ ] Contador de días restantes de promoción
+
+#### Leads y CRM Básico
+- [ ] Tracking de contactos por vehículo:
+  - Tipo: WhatsApp, Llamada, Email, Chat
+  - Nombre del lead (si disponible)
+  - Fecha y hora
+  - Link "Ir al evento" (ver conversación)
+- [ ] Métricas agregadas en dashboard:
+  - Total leads por período
+  - Leads por canal (WhatsApp vs Llamada vs Email)
+  - Tasa de conversión (leads/vistas)
+- [ ] Export de leads a CSV
+- [ ] Notas internas por lead
+
+#### Métricas por Vehículo
+- [ ] Contador de vistas totales
+- [ ] Contador de vistas de detalle
+- [ ] Gráfico de vistas en el tiempo
+- [ ] Comparativa con promedio del inventario
+- [ ] Días publicado (contador automático)
+- [ ] Última modificación (timestamp)
+
+#### Integraciones Externas
+- [ ] **Autofact** (verificación vehicular Chile)
+  - [ ] Consultar historial del vehículo
+  - [ ] Badge "Verificado con Autofact"
+  - [ ] Mostrar resumen de informe en detalle
+- [ ] **Mercado Libre** (multi-plataforma)
+  - [ ] Toggle para publicar en ML
+  - [ ] Sincronización de inventario
+  - [ ] OAuth para autorizar cuenta ML
+- [ ] **Yapo.cl** (futuro)
+  - [ ] Similar a ML
 
 #### Dealers
 - [ ] Sistema de reviews/calificaciones
@@ -220,7 +282,8 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Import masivo de vehículos (CSV/Excel)
 - [ ] Template descargable para import
 - [ ] Validación y preview antes de importar
-- [ ] Export de inventario a CSV
+- [ ] Export de inventario a CSV/Excel
+- [ ] Filtros en export (por estado, fecha, etc.)
 - [ ] Sincronización con otros portales
 
 #### Analytics
@@ -276,15 +339,26 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 3. Info de dealer en detalle de vehículo
 4. Upload de logo/banner
 
+### Prioridades Media (Panel Dealer)
+1. Score de calidad de anuncio
+2. Métricas por vehículo (vistas, días publicado)
+3. Leads tracking básico
+4. Videos en publicaciones (YouTube embed)
+5. Ficha técnica PDF
+
 ### Dependencias Externas Necesarias
 - Servicio de email (Resend recomendado)
 - Cloudinary (ya configurado)
 - Analytics (Google Analytics o similar)
+- Autofact API (para verificación vehicular)
+- Mercado Libre API (para multi-plataforma)
 
 ### Decisiones Pendientes
 - Sistema de pagos para dealers premium
 - Planes de suscripción y precios
 - Límites de publicaciones por plan
+- Precios de promociones (Destacado, TopSpot)
+- Integración con pasarelas de pago (Transbank, MercadoPago)
 
 ---
 
