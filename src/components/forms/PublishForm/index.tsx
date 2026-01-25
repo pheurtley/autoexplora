@@ -215,8 +215,9 @@ export function PublishForm() {
         };
         break;
       case 3:
-        // Validate images
-        const imageResult = imagesSchema.safeParse(formData.images);
+        // Filter out images that are still uploading
+        const uploadedImages = formData.images.filter((img) => !img.isUploading);
+        const imageResult = imagesSchema.safeParse(uploadedImages);
         if (!imageResult.success) {
           setErrors({ images: imageResult.error.issues[0].message });
           return false;
@@ -287,13 +288,15 @@ export function PublishForm() {
     setErrors({});
 
     try {
-      // Prepare images data for API
-      const imagesForApi = formData.images.map((img) => ({
-        url: img.url,
-        publicId: img.publicId,
-        isPrimary: img.isPrimary,
-        order: img.order,
-      }));
+      // Prepare images data for API (filter out any still uploading)
+      const imagesForApi = formData.images
+        .filter((img) => !img.isUploading)
+        .map((img) => ({
+          url: img.url,
+          publicId: img.publicId,
+          isPrimary: img.isPrimary,
+          order: img.order,
+        }));
 
       const response = await fetch("/api/vehiculos", {
         method: "POST",

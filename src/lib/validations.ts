@@ -50,7 +50,7 @@ export const tractionEnum = z.enum(["2WD", "4WD", "AWD"]);
 
 export const imageSchema = z.object({
   id: z.string(),
-  url: z.string().url(),
+  url: z.string().min(1, "URL de imagen requerida"),
   publicId: z.string(),
   isPrimary: z.boolean(),
   order: z.number(),
@@ -112,19 +112,22 @@ export const step4Schema = z.object({
 });
 
 // Paso 5: Contacto y Ubicación
-// Chilean phone regex: +56 9 XXXX XXXX or 9 XXXX XXXX or similar formats
-const chileanPhoneRegex = /^(\+?56)?[\s-]?9[\s-]?\d{4}[\s-]?\d{4}$/;
-
 export const step5Schema = z.object({
   regionId: z.string().min(1, "Selecciona una región"),
   comunaId: z.string().optional(),
   contactPhone: z
     .string()
-    .min(9, "El teléfono debe tener al menos 9 dígitos")
-    .regex(chileanPhoneRegex, "Formato inválido. Ej: +56 9 1234 5678"),
+    .min(1, "Ingresa un número de teléfono")
+    .refine(
+      (val) => val.replace(/\D/g, "").length >= 9,
+      "El teléfono debe tener al menos 9 dígitos"
+    ),
   contactWhatsApp: z
     .string()
-    .regex(/^((\+?56)?[\s-]?9[\s-]?\d{4}[\s-]?\d{4})?$/, "Formato inválido. Ej: +56 9 1234 5678")
+    .refine(
+      (val) => !val || val.replace(/\D/g, "").length >= 9,
+      "El teléfono debe tener al menos 9 dígitos"
+    )
     .optional()
     .or(z.literal("")),
   showPhone: z.boolean().default(true),
@@ -148,7 +151,7 @@ export const publishVehicleSchema = z.object({
     .array(
       z.object({
         id: z.string().optional(), // Optional for new images, present for existing
-        url: z.string().url(),
+        url: z.string().min(1, "URL de imagen requerida"),
         publicId: z.string(),
         isPrimary: z.boolean(),
         order: z.number(),
@@ -191,6 +194,7 @@ export interface PublishFormImage {
   publicId: string;
   isPrimary: boolean;
   order: number;
+  isUploading?: boolean;
 }
 
 export interface PublishFormData {
