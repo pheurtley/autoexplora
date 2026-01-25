@@ -9,12 +9,13 @@ import { DealerInfoCard } from "@/components/vehicles/DealerInfoCard";
 import { FavoriteButton } from "@/components/vehicles/FavoriteButton";
 import { ShareButtons } from "@/components/vehicles/ShareButtons";
 import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
+import { MobileStickyContact } from "@/components/vehicles/MobileStickyContact";
 import { VehicleJsonLd, BreadcrumbJsonLd } from "@/components/seo";
 import { Badge } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, formatKilometers, isCuid } from "@/lib/utils";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
-import { Star, Eye, Calendar } from "lucide-react";
+import { Star } from "lucide-react";
 import type { Metadata } from "next";
 
 interface PageProps {
@@ -170,12 +171,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     isFavorited = !!favorite;
   }
 
-  const publishedDate = new Date(vehicle.publishedAt).toLocaleDateString("es-CL", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-
   const vehicleUrl = `${SITE_URL}/vehiculos/${vehicle.slug}`;
 
   return (
@@ -210,7 +205,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         ]}
       />
 
-      <main className="min-h-screen bg-neutral-50 pb-12">
+      <main className="min-h-screen bg-neutral-50 pb-24 md:pb-12">
         <Container>
           <div className="py-6">
             {/* Breadcrumb */}
@@ -289,19 +284,6 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                 </div>
               )}
 
-              {/* Publication Info */}
-              <div className="bg-white rounded-xl border border-neutral-200 p-6">
-                <div className="flex flex-wrap gap-6 text-sm text-neutral-500">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>Publicado el {publishedDate}</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-4 h-4" />
-                    <span>{vehicle.views} visitas</span>
-                  </div>
-                </div>
-              </div>
             </div>
 
             {/* Right Column - Contact Card */}
@@ -390,6 +372,14 @@ export default async function VehicleDetailPage({ params }: PageProps) {
           brandId={vehicle.brandId}
           price={vehicle.price}
           vehicleType={vehicle.vehicleType}
+        />
+
+        {/* Mobile Sticky Contact */}
+        <MobileStickyContact
+          title={vehicle.title}
+          contactPhone={vehicle.contactPhone}
+          contactWhatsApp={vehicle.contactWhatsApp}
+          showPhone={vehicle.showPhone}
         />
       </main>
     </>

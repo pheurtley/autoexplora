@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, MessageCircle, Phone, Calendar, Eye } from "lucide-react";
+import { ArrowLeft, MessageCircle, Phone } from "lucide-react";
 import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
 import { ImageGallery } from "@/components/vehicles/ImageGallery";
@@ -84,14 +84,6 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
     data: { views: { increment: 1 } },
   });
 
-  const publishedDate = vehicle.publishedAt
-    ? new Date(vehicle.publishedAt).toLocaleDateString("es-CL", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : null;
-
   const whatsappNumber = config.contactWhatsApp?.replace(/[^0-9]/g, "");
   const whatsappMessage = encodeURIComponent(
     `Hola, me interesa el ${vehicle.title} que vi en su sitio web.`
@@ -168,21 +160,6 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
               </div>
             )}
 
-            {/* Publication Info */}
-            <div className="bg-white rounded-xl border border-neutral-200 p-6">
-              <div className="flex flex-wrap gap-6 text-sm text-neutral-500">
-                {publishedDate && (
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4" />
-                    <span>Publicado el {publishedDate}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-2">
-                  <Eye className="w-4 h-4" />
-                  <span>{vehicle.views} visitas</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Right Column - Price & Contact */}

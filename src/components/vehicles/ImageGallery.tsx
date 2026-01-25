@@ -22,6 +22,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const thumbnailsRef = useRef<HTMLDivElement>(null);
 
   const currentImage = images[currentIndex];
@@ -32,6 +33,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   const goToPrevious = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
+    setIsLoading(true);
     setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
     setIsZoomed(false);
     setTimeout(() => setIsTransitioning(false), 300);
@@ -40,6 +42,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   const goToNext = useCallback(() => {
     if (isTransitioning) return;
     setIsTransitioning(true);
+    setIsLoading(true);
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
     setIsZoomed(false);
     setTimeout(() => setIsTransitioning(false), 300);
@@ -48,9 +51,14 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
   const goToIndex = (index: number) => {
     if (index === currentIndex || isTransitioning) return;
     setIsTransitioning(true);
+    setIsLoading(true);
     setCurrentIndex(index);
     setIsZoomed(false);
     setTimeout(() => setIsTransitioning(false), 300);
+  };
+
+  const handleImageLoad = () => {
+    setIsLoading(false);
   };
 
   // Handle keyboard navigation
@@ -160,6 +168,13 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
           tabIndex={0}
           aria-label="Ver imagen en pantalla completa"
         >
+          {/* Loading Skeleton */}
+          {isLoading && (
+            <div className="absolute inset-0 bg-neutral-200 animate-pulse flex items-center justify-center">
+              <div className="w-12 h-12 border-4 border-neutral-300 border-t-andino-500 rounded-full animate-spin" />
+            </div>
+          )}
+
           <div
             className={`relative w-full h-full transition-opacity duration-300 ${
               isTransitioning ? "opacity-80" : "opacity-100"
@@ -172,6 +187,7 @@ export function ImageGallery({ images, title }: ImageGalleryProps) {
               className="object-contain"
               sizes="(max-width: 1024px) 100vw, 66vw"
               priority={currentIndex === 0}
+              onLoad={handleImageLoad}
             />
           </div>
 
