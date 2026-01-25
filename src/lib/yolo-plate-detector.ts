@@ -1,25 +1,42 @@
-import * as ort from 'onnxruntime-node';
 import sharp from 'sharp';
 import path from 'path';
 import type { PlateRegion } from './cloudinary';
+
+// Dynamic import types
+type OrtModule = typeof import('onnxruntime-node');
+type InferenceSession = import('onnxruntime-node').InferenceSession;
+type Tensor = import('onnxruntime-node').Tensor;
 
 // Model configuration
 const MODEL_INPUT_SIZE = 640;
 const CONFIDENCE_THRESHOLD = 0.25;
 const IOU_THRESHOLD = 0.45;
 
-let session: ort.InferenceSession | null = null;
+let ort: OrtModule | null = null;
+let session: InferenceSession | null = null;
 let sessionInitialized = false;
+let ortAvailable = true;
 
 /**
  * Initialize ONNX Runtime session with the YOLO model
+ * Uses dynamic import to handle environments where native modules aren't available
  */
-async function initializeModel(): Promise<ort.InferenceSession | null> {
+async function initializeModel(): Promise<InferenceSession | null> {
   if (sessionInitialized) {
     return session;
   }
 
+  if (!ortAvailable) {
+    return null;
+  }
+
   try {
+    // Dynamic import to handle serverless environments
+    if (!ort) {
+      console.log('[YOLO] Loading ONNX Runtime...');
+      ort = await import('onnxruntime-node');
+    }
+
     const modelPath = path.join(process.cwd(), 'models', 'license-plate-detection.onnx');
     console.log('[YOLO] Loading model from:', modelPath);
 
@@ -34,8 +51,19 @@ async function initializeModel(): Promise<ort.InferenceSession | null> {
 
     return session;
   } catch (error) {
-    console.error('[YOLO] Failed to load model:', error);
-    sessionInitialized = true; // Mark as initialized to avoid retrying
+    const errorMessage = error instanceof Error ? error.message : String(error);
+
+    // Check if it's a native module error (serverless environment)
+    if (errorMessage.includes('libonnxruntime') ||
+        errorMessage.includes('cannot open shared object') ||
+        errorMessage.includes('Failed to load')) {
+      console.warn('[YOLO] ONNX Runtime not available in this environment (serverless?)');
+      ortAvailable = false;
+    } else {
+      console.error('[YOLO] Failed to load model:', error);
+    }
+
+    sessionInitialized = true;
     return null;
   }
 }
@@ -47,13 +75,15 @@ async function initializeModel(): Promise<ort.InferenceSession | null> {
  * - Convert to NCHW format (batch, channels, height, width)
  */
 async function preprocessImage(imageBuffer: Buffer): Promise<{
-  tensor: ort.Tensor;
+  tensor: Tensor;
   originalWidth: number;
   originalHeight: number;
   scale: number;
   padX: number;
   padY: number;
-}> {
+} | null> {
+  if (!ort) return null;
+
   // Get original dimensions
   const metadata = await sharp(imageBuffer).metadata();
   const originalWidth = metadata.width || 640;
@@ -148,7 +178,7 @@ function calculateIoU(
  * YOLOv8/v11 output format: [1, 5, 8400] where 5 = [x, y, w, h, confidence]
  */
 function parseYoloOutput(
-  output: ort.Tensor,
+  output: Tensor,
   scale: number,
   padX: number,
   padY: number,
@@ -216,18 +246,24 @@ function parseYoloOutput(
 export async function detectPlatesWithYolo(imageBuffer: Buffer): Promise<PlateRegion[]> {
   try {
     const model = await initializeModel();
-    if (!model) {
-      console.warn('[YOLO] Model not available');
+    if (!model || !ort) {
+      console.warn('[YOLO] Model not available (serverless environment?)');
       return [];
     }
 
     // Preprocess image
-    const { tensor, originalWidth, originalHeight, scale, padX, padY } = await preprocessImage(imageBuffer);
+    const preprocessed = await preprocessImage(imageBuffer);
+    if (!preprocessed) {
+      console.warn('[YOLO] Preprocessing failed');
+      return [];
+    }
+
+    const { tensor, originalWidth, originalHeight, scale, padX, padY } = preprocessed;
     console.log('[YOLO] Image preprocessed:', originalWidth, 'x', originalHeight, '-> 640x640');
 
     // Run inference
     const inputName = model.inputNames[0];
-    const feeds: Record<string, ort.Tensor> = { [inputName]: tensor };
+    const feeds: Record<string, Tensor> = { [inputName]: tensor };
 
     const startTime = Date.now();
     const results = await model.run(feeds);

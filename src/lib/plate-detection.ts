@@ -20,7 +20,7 @@ export function getPlateDetectionMethod(): PlateDetectionMethod {
     return method;
   }
 
-  // Default to yolo (free, local) - or plate-recognizer if token is configured
+  // Default to plate-recognizer (works in serverless), fallback to yolo for local dev
   if (process.env.PLATE_RECOGNIZER_API_TOKEN) {
     return "plate-recognizer";
   }
@@ -29,6 +29,7 @@ export function getPlateDetectionMethod(): PlateDetectionMethod {
 
 /**
  * Main function to detect license plates using the configured method
+ * Falls back to plate-recognizer if YOLO fails (e.g., in serverless environments)
  */
 export async function detectLicensePlates(
   imageBuffer: Buffer,
@@ -51,6 +52,11 @@ export async function detectLicensePlates(
 
     case "yolo":
       regions = await detectPlatesWithYolo(imageBuffer);
+      // Fallback to plate-recognizer if YOLO returned empty (serverless environment)
+      if (regions.length === 0 && process.env.PLATE_RECOGNIZER_API_TOKEN) {
+        console.log("[PlateDetection] YOLO returned empty, trying plate-recognizer fallback");
+        regions = await detectWithPlateRecognizer(imageBuffer);
+      }
       break;
 
     default:
