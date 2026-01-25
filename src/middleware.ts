@@ -10,6 +10,9 @@ const MAIN_DOMAINS = [
 
 const SUBDOMAIN_PATTERN = /^(.+)\.autoexplora\.cl$/;
 
+// Private/local IP ranges for development
+const PRIVATE_IP_PATTERN = /^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[0-1])\.|127\.)/;
+
 // Paths that should not be rewritten even on dealer domains
 const INTERNAL_PATHS = [
   "/_next",
@@ -28,11 +31,13 @@ export function middleware(request: NextRequest) {
   }
 
   // Check if this is a main domain request (normal site)
+  const hostnameWithoutPort = hostname.replace(/:\d+$/, "");
   const isMainDomain = MAIN_DOMAINS.some(
     (d) => hostname === d || hostname.startsWith(`${d}:`)
   );
+  const isPrivateIP = PRIVATE_IP_PATTERN.test(hostnameWithoutPort);
 
-  if (isMainDomain) {
+  if (isMainDomain || isPrivateIP) {
     return NextResponse.next();
   }
 
