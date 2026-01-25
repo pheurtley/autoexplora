@@ -70,11 +70,15 @@
 - [x] Dashboard de leads recibidos por micrositio
 - [x] Marcar leads como leidos/contactados
 - Notificaciones por email al dealer cuando llega un lead
-- Exportar leads a CSV
+- [x] Exportar leads/contactos a CSV
 
 ### Analytics
-- Dashboard interno con metricas (visitas, leads, vehiculos mas vistos)
-- Reporte de rendimiento del micrositio por periodo
+- [x] Dashboard interno con metricas (visitas, leads, vehiculos mas vistos)
+- [x] Reporte de rendimiento del micrositio por periodo (7, 30, 90 días)
+- [x] Tracking de page views en micrositios (MICROSITE_HOME_VIEW, VEHICLE_VIEW)
+- [x] Desglose por fuente (marketplace vs micrositio)
+- [x] Funnel de conversión
+- [x] Exportar métricas a CSV
 - Heatmap de clics en la pagina
 
 ### SEO

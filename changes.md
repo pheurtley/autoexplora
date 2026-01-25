@@ -1,5 +1,91 @@
 # Resumen de Cambios por Branch
 
+## Branch: `feature/enhanced-tracking`
+
+**Commits:**
+- `a6f00c1` Fix TrackingEvent API: use hardcoded event types instead of Prisma enum import
+- `f20692c` Add comprehensive tracking system with analytics dashboards
+
+**Cambios realizados:**
+
+1. **Nuevo modelo de tracking en Prisma**
+   - `TrackingEvent` model para registrar eventos de usuario
+   - `TrackingEventType` enum con 15 tipos de eventos:
+     - Contacto: `WHATSAPP_CLICK`, `PHONE_REVEAL`, `PHONE_CALL`, `CHAT_START`, `CONTACT_FORM`
+     - Vistas: `PAGE_VIEW`, `VEHICLE_VIEW`, `DEALER_PROFILE_VIEW`, `MICROSITE_HOME_VIEW`, `IMAGE_GALLERY_VIEW`
+     - Interacciones: `SEARCH_PERFORMED`, `FILTER_APPLIED`, `FAVORITE_ADDED`, `FAVORITE_REMOVED`, `SHARE_CLICK`
+
+2. **API de tracking**
+   - `POST /api/events/track` - Registrar cualquier evento de tracking
+   - `GET /api/dealer/stats/traffic` - Estadísticas de tráfico para dealers
+   - `GET /api/dealer/stats/funnel` - Funnel de conversión para dealers
+   - `GET /api/admin/analytics` - Analytics de toda la plataforma para admin
+
+3. **Hook useTracking**
+   - `trackEvent()` - Evento genérico
+   - `trackPageView()` - Vistas de página (con deduplicación por sesión)
+   - `trackSearch()` - Búsquedas realizadas
+   - `trackContact()` - Eventos de contacto
+   - `trackFavorite()` - Agregar/quitar favoritos
+   - `trackShare()` - Compartir en redes
+
+4. **Componente PageViewTracker**
+   - Componente cliente para usar en páginas server-rendered
+   - Registra automáticamente page views
+
+5. **Dashboard de estadísticas para dealers** (`/dealer/estadisticas`)
+   - 3 tabs: Resumen, Tráfico, Contactos
+   - Selector de período (7, 30, 90 días)
+   - Métricas con indicador de cambio vs período anterior
+   - Gráfico de tráfico por día
+   - Funnel de conversión visual
+   - Desglose por dispositivo y fuente
+   - Top vehículos por contactos
+   - Exportar a CSV
+
+6. **Dashboard de analytics para admin** (`/admin/analytics`)
+   - Métricas globales de la plataforma
+   - Vistas, visitantes, contactos, leads, búsquedas, favoritos, shares
+   - Funnel de conversión global
+   - Top dealers por contactos
+   - Top vehículos por vistas
+   - Desglose por dispositivo, fuente, tipo de contacto
+   - Exportar a CSV
+
+7. **Integración de tracking en páginas existentes**
+   - Vehículo detalle: `VEHICLE_VIEW`
+   - Perfil de dealer: `DEALER_PROFILE_VIEW`
+   - Micrositio home: `MICROSITE_HOME_VIEW`
+   - Micrositio vehículo: `VEHICLE_VIEW` (source: microsite)
+   - SearchWidget: `SEARCH_PERFORMED`
+   - FavoriteButton: `FAVORITE_ADDED`, `FAVORITE_REMOVED`
+   - ShareButtons: `SHARE_CLICK`
+
+**Archivos nuevos:**
+- `src/app/api/events/track/route.ts`
+- `src/app/api/dealer/stats/traffic/route.ts`
+- `src/app/api/dealer/stats/funnel/route.ts`
+- `src/app/api/admin/analytics/route.ts`
+- `src/app/admin/analytics/page.tsx`
+- `src/hooks/useTracking.ts`
+- `src/components/tracking/PageViewTracker.tsx`
+- `src/components/tracking/index.ts`
+
+**Archivos modificados:**
+- `prisma/schema.prisma` (nuevo modelo TrackingEvent)
+- `src/app/dealer/estadisticas/page.tsx` (reescrito completamente)
+- `src/app/vehiculos/[slug]/page.tsx`
+- `src/app/automotora/[slug]/page.tsx`
+- `src/app/microsite/[domain]/page.tsx`
+- `src/app/microsite/[domain]/vehiculos/[slug]/page.tsx`
+- `src/components/home/SearchWidget.tsx`
+- `src/components/vehicles/FavoriteButton.tsx`
+- `src/components/vehicles/ShareButtons.tsx`
+- `src/components/admin/AdminSidebar.tsx`
+- `src/hooks/index.ts`
+
+---
+
 ## Branch: `feature/home-admin-config`
 
 **Commits:**
@@ -188,12 +274,13 @@
 
 | Branch | Commits | Archivos Nuevos | Archivos Modificados |
 |--------|---------|-----------------|---------------------|
+| feature/enhanced-tracking | 2 | 8 | 11 |
 | feature/home-admin-config | 7 | 2 | 13 |
 | fix/vehicle-search-filters | 2 | 0 | 2 |
 | feature/vehicle-detail-improvements | 1 | 2 | 4 |
 | feature/messaging-improvements | 4 | 5 | 11 |
-| **Total** | **14** | **9** | **30** |
+| **Total** | **16** | **17** | **41** |
 
 ---
 
-*Generado el: 2026-01-18*
+*Última actualización: 2026-01-25*

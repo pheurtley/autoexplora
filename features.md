@@ -88,6 +88,29 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Redirección inteligente para dealers (publicaciones → dealer/vehiculos)
 - [x] APIs de dealer (registro, perfil, vehículos, equipo, stats)
 
+### Sistema de Tracking y Analytics
+- [x] Modelo TrackingEvent para eventos de usuario
+- [x] Tracking de page views (vehículos, perfiles de dealer, micrositios)
+- [x] Tracking de búsquedas realizadas
+- [x] Tracking de contactos (WhatsApp, teléfono, chat, formulario)
+- [x] Tracking de favoritos (agregar/quitar)
+- [x] Tracking de compartir (WhatsApp, Facebook, copiar link)
+- [x] Dashboard de estadísticas para dealers (`/dealer/estadisticas`):
+  - [x] Tabs: Resumen, Tráfico, Contactos
+  - [x] Métricas con comparativa vs período anterior
+  - [x] Gráfico de tráfico por día
+  - [x] Funnel de conversión (visitantes → vehículos → contactos → leads)
+  - [x] Desglose por dispositivo (mobile/desktop/tablet)
+  - [x] Desglose por fuente (marketplace/micrositio)
+  - [x] Top vehículos por contactos
+  - [x] Exportar a CSV
+- [x] Dashboard de analytics para admin (`/admin/analytics`):
+  - [x] Métricas de plataforma completa
+  - [x] Top dealers por contactos
+  - [x] Top vehículos por vistas
+  - [x] Funnel de conversión global
+  - [x] Exportar a CSV
+
 ---
 
 ## Funcionalidades Pendientes
@@ -139,11 +162,12 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Historial de actividad por miembro
 
 #### Estadísticas Avanzadas
-- [ ] Gráfico de vistas por período (día, semana, mes)
-- [ ] Gráfico de mensajes/contactos recibidos
-- [ ] Top vehículos más vistos
-- [ ] Comparativa con período anterior
-- [ ] Exportar estadísticas a CSV/PDF
+- [x] Gráfico de vistas por período (día, semana, mes)
+- [x] Gráfico de mensajes/contactos recibidos
+- [x] Top vehículos más vistos
+- [x] Comparativa con período anterior
+- [x] Exportar estadísticas a CSV
+- [ ] Exportar estadísticas a PDF
 
 ### Notificaciones
 
@@ -238,22 +262,22 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Contador de días restantes de promoción
 
 #### Leads y CRM Básico
-- [ ] Tracking de contactos por vehículo:
-  - Tipo: WhatsApp, Llamada, Email, Chat
-  - Nombre del lead (si disponible)
-  - Fecha y hora
-  - Link "Ir al evento" (ver conversación)
-- [ ] Métricas agregadas en dashboard:
-  - Total leads por período
-  - Leads por canal (WhatsApp vs Llamada vs Email)
-  - Tasa de conversión (leads/vistas)
-- [ ] Export de leads a CSV
+- [x] Tracking de contactos por vehículo:
+  - [x] Tipo: WhatsApp, Llamada, Chat, Formulario
+  - [ ] Nombre del lead (si disponible)
+  - [x] Fecha y hora
+  - [ ] Link "Ir al evento" (ver conversación)
+- [x] Métricas agregadas en dashboard:
+  - [x] Total leads por período
+  - [x] Leads por canal (WhatsApp vs Llamada vs Chat vs Form)
+  - [x] Tasa de conversión (leads/vistas) - Funnel de conversión
+- [x] Export de leads a CSV
 - [ ] Notas internas por lead
 
 #### Métricas por Vehículo
-- [ ] Contador de vistas totales
-- [ ] Contador de vistas de detalle
-- [ ] Gráfico de vistas en el tiempo
+- [x] Contador de vistas totales
+- [x] Contador de vistas de detalle
+- [x] Gráfico de vistas en el tiempo
 - [ ] Comparativa con promedio del inventario
 - [ ] Días publicado (contador automático)
 - [ ] Última modificación (timestamp)
@@ -288,8 +312,8 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 #### Analytics
 - [ ] Integración con Google Analytics
-- [ ] Eventos personalizados (ver teléfono, enviar mensaje, etc.)
-- [ ] Dashboard de analytics para admin
+- [x] Eventos personalizados (ver teléfono, enviar mensaje, WhatsApp, favoritos, compartir, búsquedas)
+- [x] Dashboard de analytics para admin (`/admin/analytics`)
 - [ ] Reportes automáticos semanales/mensuales
 
 #### Seguridad
@@ -341,8 +365,8 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 ### Prioridades Media (Panel Dealer)
 1. Score de calidad de anuncio
-2. Métricas por vehículo (vistas, días publicado)
-3. Leads tracking básico
+2. ~~Métricas por vehículo (vistas, días publicado)~~ ✅ Implementado
+3. ~~Leads tracking básico~~ ✅ Implementado
 4. Videos en publicaciones (YouTube embed)
 5. Ficha técnica PDF
 
@@ -362,4 +386,4 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 ---
 
-*Última actualización: Enero 2025*
+*Última actualización: 25 Enero 2026*
