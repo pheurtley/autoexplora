@@ -58,19 +58,45 @@ export function PublishForm() {
     ? COLORS[formData.color as keyof typeof COLORS]?.label || ""
     : "";
 
-  // Load draft from localStorage on mount
+  // Load draft from localStorage on mount, then fetch user defaults if needed
   useEffect(() => {
-    const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
-    if (savedDraft) {
-      try {
-        const parsed = JSON.parse(savedDraft);
-        // Don't restore images as they are uploaded to cloud
-        setFormData({ ...initialFormData, ...parsed, images: [] });
-      } catch (e) {
-        console.error("Error loading draft:", e);
+    async function initializeForm() {
+      const savedDraft = localStorage.getItem(DRAFT_STORAGE_KEY);
+      let draftData: Partial<PublishFormData> = {};
+
+      if (savedDraft) {
+        try {
+          draftData = JSON.parse(savedDraft);
+          // Don't restore images as they are uploaded to cloud
+          setFormData({ ...initialFormData, ...draftData, images: [] });
+        } catch (e) {
+          console.error("Error loading draft:", e);
+        }
       }
+
+      // Fetch user's default location if not already set in draft
+      if (!draftData.regionId) {
+        try {
+          const response = await fetch("/api/user/default-location");
+          if (response.ok) {
+            const defaults = await response.json();
+            setFormData((prev) => ({
+              ...prev,
+              regionId: prev.regionId || defaults.regionId || "",
+              comunaId: prev.comunaId || defaults.comunaId || "",
+              contactPhone: prev.contactPhone || defaults.contactPhone || "",
+              contactWhatsApp: prev.contactWhatsApp || defaults.contactWhatsApp || "",
+            }));
+          }
+        } catch (e) {
+          console.error("Error fetching user defaults:", e);
+        }
+      }
+
+      setDraftLoaded(true);
     }
-    setDraftLoaded(true);
+
+    initializeForm();
   }, []);
 
   // Save draft to localStorage on formData change
