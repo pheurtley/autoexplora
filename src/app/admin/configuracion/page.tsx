@@ -47,6 +47,16 @@ interface SiteConfig {
   ctaTitle: string;
   ctaSubtitle: string;
   ctaButtonText: string;
+  // Why Us Features
+  whyUsFeature1Icon: string;
+  whyUsFeature1Title: string;
+  whyUsFeature1Desc: string;
+  whyUsFeature2Icon: string;
+  whyUsFeature2Title: string;
+  whyUsFeature2Desc: string;
+  whyUsFeature3Icon: string;
+  whyUsFeature3Title: string;
+  whyUsFeature3Desc: string;
   // Home Section Visibility
   showFeaturedVehicles: boolean;
   showRecentVehicles: boolean;
@@ -119,6 +129,16 @@ export default function AdminConfigPage() {
     ctaTitle: "¿Listo para vender tu vehículo?",
     ctaSubtitle: "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
     ctaButtonText: "Publicar mi vehículo",
+    // Why Us Features
+    whyUsFeature1Icon: "Shield",
+    whyUsFeature1Title: "Compra segura",
+    whyUsFeature1Desc: "Verificamos a los vendedores y te ayudamos en todo el proceso de compra para que sea una experiencia segura.",
+    whyUsFeature2Icon: "Zap",
+    whyUsFeature2Title: "Vende rápido",
+    whyUsFeature2Desc: "Publica tu vehículo en minutos y llega a miles de compradores potenciales en todo Chile.",
+    whyUsFeature3Icon: "Users",
+    whyUsFeature3Title: "Gran comunidad",
+    whyUsFeature3Desc: "Más de 50,000 vehículos disponibles y una comunidad activa de compradores y vendedores.",
     // Home Section Visibility
     showFeaturedVehicles: true,
     showRecentVehicles: true,
@@ -175,6 +195,16 @@ export default function AdminConfigPage() {
           ctaTitle: data.ctaTitle || "¿Listo para vender tu vehículo?",
           ctaSubtitle: data.ctaSubtitle || "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
           ctaButtonText: data.ctaButtonText || "Publicar mi vehículo",
+          // Why Us Features
+          whyUsFeature1Icon: data.whyUsFeature1Icon || "Shield",
+          whyUsFeature1Title: data.whyUsFeature1Title || "Compra segura",
+          whyUsFeature1Desc: data.whyUsFeature1Desc || "Verificamos a los vendedores y te ayudamos en todo el proceso de compra para que sea una experiencia segura.",
+          whyUsFeature2Icon: data.whyUsFeature2Icon || "Zap",
+          whyUsFeature2Title: data.whyUsFeature2Title || "Vende rápido",
+          whyUsFeature2Desc: data.whyUsFeature2Desc || "Publica tu vehículo en minutos y llega a miles de compradores potenciales en todo Chile.",
+          whyUsFeature3Icon: data.whyUsFeature3Icon || "Users",
+          whyUsFeature3Title: data.whyUsFeature3Title || "Gran comunidad",
+          whyUsFeature3Desc: data.whyUsFeature3Desc || "Más de 50,000 vehículos disponibles y una comunidad activa de compradores y vendedores.",
           // Home Section Visibility
           showFeaturedVehicles: data.showFeaturedVehicles ?? true,
           showRecentVehicles: data.showRecentVehicles ?? true,
@@ -722,6 +752,147 @@ export default function AdminConfigPage() {
                     className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
+                </div>
+
+                {/* Feature 1 */}
+                <div className="mt-6 p-4 bg-neutral-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-neutral-700 mb-3">Característica 1</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs text-neutral-500 mb-1">Icono</label>
+                      <select
+                        value={formData.whyUsFeature1Icon}
+                        onChange={(e) => handleChange("whyUsFeature1Icon", e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      >
+                        <option value="Shield">Escudo (Seguridad)</option>
+                        <option value="Zap">Rayo (Rapidez)</option>
+                        <option value="Users">Usuarios (Comunidad)</option>
+                        <option value="Star">Estrella (Calidad)</option>
+                        <option value="Heart">Corazón (Confianza)</option>
+                        <option value="ThumbsUp">Pulgar arriba (Aprobación)</option>
+                        <option value="Award">Premio (Excelencia)</option>
+                        <option value="CheckCircle">Check (Verificado)</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-neutral-500 mb-1">Título</label>
+                      <input
+                        type="text"
+                        value={formData.whyUsFeature1Title}
+                        onChange={(e) => handleChange("whyUsFeature1Title", e.target.value)}
+                        placeholder="Compra segura"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <label className="block text-xs text-neutral-500 mb-1">Descripción</label>
+                    <textarea
+                      value={formData.whyUsFeature1Desc}
+                      onChange={(e) => handleChange("whyUsFeature1Desc", e.target.value)}
+                      placeholder="Descripción de la característica..."
+                      rows={2}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+
+                {/* Feature 2 */}
+                <div className="p-4 bg-neutral-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-neutral-700 mb-3">Característica 2</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs text-neutral-500 mb-1">Icono</label>
+                      <select
+                        value={formData.whyUsFeature2Icon}
+                        onChange={(e) => handleChange("whyUsFeature2Icon", e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      >
+                        <option value="Shield">Escudo (Seguridad)</option>
+                        <option value="Zap">Rayo (Rapidez)</option>
+                        <option value="Users">Usuarios (Comunidad)</option>
+                        <option value="Star">Estrella (Calidad)</option>
+                        <option value="Heart">Corazón (Confianza)</option>
+                        <option value="ThumbsUp">Pulgar arriba (Aprobación)</option>
+                        <option value="Award">Premio (Excelencia)</option>
+                        <option value="CheckCircle">Check (Verificado)</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-neutral-500 mb-1">Título</label>
+                      <input
+                        type="text"
+                        value={formData.whyUsFeature2Title}
+                        onChange={(e) => handleChange("whyUsFeature2Title", e.target.value)}
+                        placeholder="Vende rápido"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <label className="block text-xs text-neutral-500 mb-1">Descripción</label>
+                    <textarea
+                      value={formData.whyUsFeature2Desc}
+                      onChange={(e) => handleChange("whyUsFeature2Desc", e.target.value)}
+                      placeholder="Descripción de la característica..."
+                      rows={2}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      disabled={saving}
+                    />
+                  </div>
+                </div>
+
+                {/* Feature 3 */}
+                <div className="p-4 bg-neutral-50 rounded-lg">
+                  <h4 className="text-sm font-medium text-neutral-700 mb-3">Característica 3</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <label className="block text-xs text-neutral-500 mb-1">Icono</label>
+                      <select
+                        value={formData.whyUsFeature3Icon}
+                        onChange={(e) => handleChange("whyUsFeature3Icon", e.target.value)}
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      >
+                        <option value="Shield">Escudo (Seguridad)</option>
+                        <option value="Zap">Rayo (Rapidez)</option>
+                        <option value="Users">Usuarios (Comunidad)</option>
+                        <option value="Star">Estrella (Calidad)</option>
+                        <option value="Heart">Corazón (Confianza)</option>
+                        <option value="ThumbsUp">Pulgar arriba (Aprobación)</option>
+                        <option value="Award">Premio (Excelencia)</option>
+                        <option value="CheckCircle">Check (Verificado)</option>
+                      </select>
+                    </div>
+                    <div className="md:col-span-2">
+                      <label className="block text-xs text-neutral-500 mb-1">Título</label>
+                      <input
+                        type="text"
+                        value={formData.whyUsFeature3Title}
+                        onChange={(e) => handleChange("whyUsFeature3Title", e.target.value)}
+                        placeholder="Gran comunidad"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        disabled={saving}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-3">
+                    <label className="block text-xs text-neutral-500 mb-1">Descripción</label>
+                    <textarea
+                      value={formData.whyUsFeature3Desc}
+                      onChange={(e) => handleChange("whyUsFeature3Desc", e.target.value)}
+                      placeholder="Descripción de la característica..."
+                      rows={2}
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      disabled={saving}
+                    />
+                  </div>
                 </div>
               </div>
             </div>

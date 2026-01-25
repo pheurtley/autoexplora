@@ -384,6 +384,16 @@ model SiteConfig {
   topDealersLimit       Int      @default(6)
   whyChooseUsSubtitle   String   @default("Somos el marketplace de vehículos más confiable de Chile")
   whyChooseUsTitle      String   @default("¿Por qué elegir AutoExplora.cl?")
+  // Why Us Features (3 items)
+  whyUsFeature1Icon     String   @default("Shield")
+  whyUsFeature1Title    String   @default("Compra segura")
+  whyUsFeature1Desc     String   @default("Verificamos a los vendedores y te ayudamos en todo el proceso de compra para que sea una experiencia segura.")
+  whyUsFeature2Icon     String   @default("Zap")
+  whyUsFeature2Title    String   @default("Vende rápido")
+  whyUsFeature2Desc     String   @default("Publica tu vehículo en minutos y llega a miles de compradores potenciales en todo Chile.")
+  whyUsFeature3Icon     String   @default("Users")
+  whyUsFeature3Title    String   @default("Gran comunidad")
+  whyUsFeature3Desc     String   @default("Más de 50,000 vehículos disponibles y una comunidad activa de compradores y vendedores.")
 }
 
 enum Role {

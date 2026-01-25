@@ -37,6 +37,16 @@ export interface SiteConfig {
   ctaTitle: string;
   ctaSubtitle: string;
   ctaButtonText: string;
+  // Why Us Features
+  whyUsFeature1Icon: string;
+  whyUsFeature1Title: string;
+  whyUsFeature1Desc: string;
+  whyUsFeature2Icon: string;
+  whyUsFeature2Title: string;
+  whyUsFeature2Desc: string;
+  whyUsFeature3Icon: string;
+  whyUsFeature3Title: string;
+  whyUsFeature3Desc: string;
   // Visibility
   showFeaturedVehicles: boolean;
   showRecentVehicles: boolean;
@@ -89,6 +99,16 @@ const DEFAULT_CONFIG: SiteConfig = {
   ctaTitle: "¿Listo para vender tu vehículo?",
   ctaSubtitle: "Publica tu auto, moto o vehículo comercial en minutos y conecta con compradores interesados.",
   ctaButtonText: "Publicar mi vehículo",
+  // Why Us Features
+  whyUsFeature1Icon: "Shield",
+  whyUsFeature1Title: "Compra segura",
+  whyUsFeature1Desc: "Verificamos a los vendedores y te ayudamos en todo el proceso de compra para que sea una experiencia segura.",
+  whyUsFeature2Icon: "Zap",
+  whyUsFeature2Title: "Vende rápido",
+  whyUsFeature2Desc: "Publica tu vehículo en minutos y llega a miles de compradores potenciales en todo Chile.",
+  whyUsFeature3Icon: "Users",
+  whyUsFeature3Title: "Gran comunidad",
+  whyUsFeature3Desc: "Más de 50,000 vehículos disponibles y una comunidad activa de compradores y vendedores.",
   // Visibility
   showFeaturedVehicles: true,
   showRecentVehicles: true,

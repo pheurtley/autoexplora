@@ -84,6 +84,23 @@ export default async function HomePage() {
         <WhyChooseUs
           title={config.whyChooseUsTitle}
           subtitle={config.whyChooseUsSubtitle}
+          features={[
+            {
+              icon: config.whyUsFeature1Icon,
+              title: config.whyUsFeature1Title,
+              description: config.whyUsFeature1Desc,
+            },
+            {
+              icon: config.whyUsFeature2Icon,
+              title: config.whyUsFeature2Title,
+              description: config.whyUsFeature2Desc,
+            },
+            {
+              icon: config.whyUsFeature3Icon,
+              title: config.whyUsFeature3Title,
+              description: config.whyUsFeature3Desc,
+            },
+          ]}
         />
       )}
 
