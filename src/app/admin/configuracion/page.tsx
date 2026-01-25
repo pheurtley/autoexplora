@@ -341,7 +341,7 @@ export default function AdminConfigPage() {
                   value={formData.siteName}
                   onChange={(e) => handleChange("siteName", e.target.value)}
                   placeholder="AutoExplora.cl"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -354,7 +354,7 @@ export default function AdminConfigPage() {
                   value={formData.siteTagline}
                   onChange={(e) => handleChange("siteTagline", e.target.value)}
                   placeholder="Tu marketplace de vehículos en Chile"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -413,7 +413,7 @@ export default function AdminConfigPage() {
                 <select
                   value={formData.headerLogoSize}
                   onChange={(e) => handleChange("headerLogoSize", e.target.value)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 >
                   {LOGO_SIZES.map((size) => (
@@ -430,7 +430,7 @@ export default function AdminConfigPage() {
                 <select
                   value={formData.footerLogoSize}
                   onChange={(e) => handleChange("footerLogoSize", e.target.value)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 >
                   {LOGO_SIZES.map((size) => (
@@ -498,7 +498,7 @@ export default function AdminConfigPage() {
                     value={formData.primaryColor}
                     onChange={(e) => handleChange("primaryColor", e.target.value)}
                     placeholder="#2563eb"
-                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -520,7 +520,7 @@ export default function AdminConfigPage() {
                     value={formData.accentColor}
                     onChange={(e) => handleChange("accentColor", e.target.value)}
                     placeholder="#f97316"
-                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="flex-1 px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -546,7 +546,7 @@ export default function AdminConfigPage() {
                   value={formData.contactEmail}
                   onChange={(e) => handleChange("contactEmail", e.target.value)}
                   placeholder="contacto@autoexplora.cl"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -559,7 +559,7 @@ export default function AdminConfigPage() {
                   value={formData.contactPhone}
                   onChange={(e) => handleChange("contactPhone", e.target.value)}
                   placeholder="+56 9 1234 5678"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -575,7 +575,7 @@ export default function AdminConfigPage() {
                   value={formData.whatsapp}
                   onChange={(e) => handleChange("whatsapp", e.target.value)}
                   placeholder="+56912345678"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
                 <p className="text-xs text-neutral-500 mt-1">
@@ -591,7 +591,7 @@ export default function AdminConfigPage() {
                   value={formData.address}
                   onChange={(e) => handleChange("address", e.target.value)}
                   placeholder="Santiago, Chile"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -616,7 +616,7 @@ export default function AdminConfigPage() {
                   value={formData.facebook}
                   onChange={(e) => handleChange("facebook", e.target.value)}
                   placeholder="https://facebook.com/autoexplora"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -629,7 +629,7 @@ export default function AdminConfigPage() {
                   value={formData.instagram}
                   onChange={(e) => handleChange("instagram", e.target.value)}
                   placeholder="https://instagram.com/autoexplora"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -645,7 +645,7 @@ export default function AdminConfigPage() {
                   value={formData.twitter}
                   onChange={(e) => handleChange("twitter", e.target.value)}
                   placeholder="https://twitter.com/autoexplora"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -658,7 +658,7 @@ export default function AdminConfigPage() {
                   value={formData.youtube}
                   onChange={(e) => handleChange("youtube", e.target.value)}
                   placeholder="https://youtube.com/@autoexplora"
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -682,7 +682,7 @@ export default function AdminConfigPage() {
                 value={formData.heroTitle}
                 onChange={(e) => handleChange("heroTitle", e.target.value)}
                 placeholder="Encuentra tu vehículo ideal"
-                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                 disabled={saving}
               />
             </div>
@@ -696,7 +696,7 @@ export default function AdminConfigPage() {
                 value={formData.heroSubtitle}
                 onChange={(e) => handleChange("heroSubtitle", e.target.value)}
                 placeholder="Miles de autos, motos y comerciales te esperan en Chile"
-                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                 disabled={saving}
               />
             </div>
@@ -710,7 +710,7 @@ export default function AdminConfigPage() {
                 onChange={(e) => handleChange("footerText", e.target.value)}
                 placeholder="© 2024 AutoExplora.cl. Todos los derechos reservados."
                 rows={3}
-                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                 disabled={saving}
               />
             </div>
@@ -736,7 +736,7 @@ export default function AdminConfigPage() {
                     value={formData.whyChooseUsTitle}
                     onChange={(e) => handleChange("whyChooseUsTitle", e.target.value)}
                     placeholder="¿Por qué elegir AutoExplora.cl?"
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -749,7 +749,7 @@ export default function AdminConfigPage() {
                     value={formData.whyChooseUsSubtitle}
                     onChange={(e) => handleChange("whyChooseUsSubtitle", e.target.value)}
                     placeholder="Somos el marketplace de vehículos más confiable de Chile"
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -763,7 +763,7 @@ export default function AdminConfigPage() {
                       <select
                         value={formData.whyUsFeature1Icon}
                         onChange={(e) => handleChange("whyUsFeature1Icon", e.target.value)}
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       >
                         <option value="Shield">Escudo (Seguridad)</option>
@@ -783,7 +783,7 @@ export default function AdminConfigPage() {
                         value={formData.whyUsFeature1Title}
                         onChange={(e) => handleChange("whyUsFeature1Title", e.target.value)}
                         placeholder="Compra segura"
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       />
                     </div>
@@ -795,7 +795,7 @@ export default function AdminConfigPage() {
                       onChange={(e) => handleChange("whyUsFeature1Desc", e.target.value)}
                       placeholder="Descripción de la característica..."
                       rows={2}
-                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
                       disabled={saving}
                     />
                   </div>
@@ -810,7 +810,7 @@ export default function AdminConfigPage() {
                       <select
                         value={formData.whyUsFeature2Icon}
                         onChange={(e) => handleChange("whyUsFeature2Icon", e.target.value)}
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       >
                         <option value="Shield">Escudo (Seguridad)</option>
@@ -830,7 +830,7 @@ export default function AdminConfigPage() {
                         value={formData.whyUsFeature2Title}
                         onChange={(e) => handleChange("whyUsFeature2Title", e.target.value)}
                         placeholder="Vende rápido"
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       />
                     </div>
@@ -842,7 +842,7 @@ export default function AdminConfigPage() {
                       onChange={(e) => handleChange("whyUsFeature2Desc", e.target.value)}
                       placeholder="Descripción de la característica..."
                       rows={2}
-                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
                       disabled={saving}
                     />
                   </div>
@@ -857,7 +857,7 @@ export default function AdminConfigPage() {
                       <select
                         value={formData.whyUsFeature3Icon}
                         onChange={(e) => handleChange("whyUsFeature3Icon", e.target.value)}
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       >
                         <option value="Shield">Escudo (Seguridad)</option>
@@ -877,7 +877,7 @@ export default function AdminConfigPage() {
                         value={formData.whyUsFeature3Title}
                         onChange={(e) => handleChange("whyUsFeature3Title", e.target.value)}
                         placeholder="Gran comunidad"
-                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500"
+                        className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500"
                         disabled={saving}
                       />
                     </div>
@@ -889,7 +889,7 @@ export default function AdminConfigPage() {
                       onChange={(e) => handleChange("whyUsFeature3Desc", e.target.value)}
                       placeholder="Descripción de la característica..."
                       rows={2}
-                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
+                      className="w-full px-3 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 resize-none"
                       disabled={saving}
                     />
                   </div>
@@ -909,7 +909,7 @@ export default function AdminConfigPage() {
                     value={formData.ctaTitle}
                     onChange={(e) => handleChange("ctaTitle", e.target.value)}
                     placeholder="¿Listo para vender tu vehículo?"
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -922,7 +922,7 @@ export default function AdminConfigPage() {
                     onChange={(e) => handleChange("ctaSubtitle", e.target.value)}
                     placeholder="Publica tu auto, moto o vehículo comercial en minutos..."
                     rows={2}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                     disabled={saving}
                   />
                 </div>
@@ -935,7 +935,7 @@ export default function AdminConfigPage() {
                     value={formData.ctaButtonText}
                     onChange={(e) => handleChange("ctaButtonText", e.target.value)}
                     placeholder="Publicar mi vehículo"
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                     disabled={saving}
                   />
                 </div>
@@ -1063,7 +1063,7 @@ export default function AdminConfigPage() {
                   max={20}
                   value={formData.featuredVehiclesLimit}
                   onChange={(e) => handleChange("featuredVehiclesLimit", parseInt(e.target.value) || 8)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
                 <p className="text-xs text-neutral-500 mt-1">Cantidad de vehículos destacados a mostrar</p>
@@ -1079,7 +1079,7 @@ export default function AdminConfigPage() {
                   max={20}
                   value={formData.recentVehiclesLimit}
                   onChange={(e) => handleChange("recentVehiclesLimit", parseInt(e.target.value) || 8)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
                 <p className="text-xs text-neutral-500 mt-1">Cantidad de vehículos recientes a mostrar</p>
@@ -1095,7 +1095,7 @@ export default function AdminConfigPage() {
                   max={30}
                   value={formData.popularBrandsLimit}
                   onChange={(e) => handleChange("popularBrandsLimit", parseInt(e.target.value) || 12)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
                 <p className="text-xs text-neutral-500 mt-1">Cantidad de marcas a mostrar</p>
@@ -1111,7 +1111,7 @@ export default function AdminConfigPage() {
                   max={12}
                   value={formData.topDealersLimit}
                   onChange={(e) => handleChange("topDealersLimit", parseInt(e.target.value) || 6)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
                 <p className="text-xs text-neutral-500 mt-1">Cantidad de dealers a mostrar</p>
@@ -1136,7 +1136,7 @@ export default function AdminConfigPage() {
                 onChange={(e) => handleChange("metaDescription", e.target.value)}
                 placeholder="Descripción que aparece en los resultados de búsqueda de Google..."
                 rows={3}
-                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                 disabled={saving}
               />
               <p className="text-xs text-neutral-500 mt-1">
@@ -1153,7 +1153,7 @@ export default function AdminConfigPage() {
                 value={formData.googleAnalyticsId}
                 onChange={(e) => handleChange("googleAnalyticsId", e.target.value)}
                 placeholder="G-XXXXXXXXXX"
-                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                 disabled={saving}
               />
               <p className="text-xs text-neutral-500 mt-1">
@@ -1181,7 +1181,7 @@ export default function AdminConfigPage() {
                   max={20}
                   value={formData.maxImagesPerVehicle}
                   onChange={(e) => handleChange("maxImagesPerVehicle", parseInt(e.target.value) || 10)}
-                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
+                  className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500"
                   disabled={saving}
                 />
               </div>
@@ -1235,7 +1235,7 @@ export default function AdminConfigPage() {
                     onChange={(e) => handleChange("maintenanceMessage", e.target.value)}
                     placeholder="Estamos realizando mejoras en el sitio. Volvemos pronto..."
                     rows={3}
-                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
+                    className="w-full px-4 py-2 border border-neutral-300 rounded-lg text-sm text-neutral-900 focus:outline-none focus:ring-2 focus:ring-andino-500 focus:border-andino-500 resize-none"
                     disabled={saving}
                   />
                 </div>
