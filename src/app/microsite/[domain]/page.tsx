@@ -6,6 +6,7 @@ import prisma from "@/lib/prisma";
 import { getDealerConfigByDomain } from "@/lib/microsite/get-dealer-config";
 import { getOptimizedUrl } from "@/lib/cloudinary";
 import { MicrositeLocalBusinessJsonLd } from "@/components/microsite/MicrositeJsonLd";
+import { PageViewTracker } from "@/components/tracking";
 
 const defaultWhyUsFeatures = [
   { icon: "check", title: "Garantía", description: "Vehículos con garantía y respaldo profesional." },
@@ -83,6 +84,13 @@ export default async function MicrositeHomePage({ params }: PageProps) {
 
   return (
     <div>
+      {/* Page View Tracking */}
+      <PageViewTracker
+        pageType="MICROSITE_HOME_VIEW"
+        dealerId={dealer.id}
+        source="microsite"
+      />
+
       <MicrositeLocalBusinessJsonLd config={config} url={siteUrl} />
 
       {/* Hero Section */}

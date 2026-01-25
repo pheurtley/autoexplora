@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
+import { useTracking } from "@/hooks";
 import {
   Search,
   Car,
@@ -62,6 +63,7 @@ interface Region {
 
 export function SearchWidget() {
   const router = useRouter();
+  const { trackSearch } = useTracking();
   const [selectedType, setSelectedType] = useState("");
   const [brandId, setBrandId] = useState("");
   const [modelId, setModelId] = useState("");
@@ -149,6 +151,25 @@ export function SearchWidget() {
     if (transmission) params.set("transmission", transmission);
     if (sellerType) params.set("sellerType", sellerType);
     if (regionId) params.set("regionId", regionId);
+
+    // Track search
+    trackSearch({
+      filters: {
+        vehicleType: selectedType || undefined,
+        brandId: brandId || undefined,
+        modelId: modelId || undefined,
+        category: category || undefined,
+        condition: condition || undefined,
+        priceMax: priceMax || undefined,
+        yearMin: yearMin || undefined,
+        maxMileage: maxMileage || undefined,
+        fuelType: fuelType || undefined,
+        transmission: transmission || undefined,
+        sellerType: sellerType || undefined,
+        regionId: regionId || undefined,
+      },
+    });
+
     router.push(`/vehiculos?${params.toString()}`);
   };
 

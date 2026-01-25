@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui";
+import { useTracking } from "@/hooks";
 import {
   Share2,
   Link2,
@@ -14,11 +15,13 @@ interface ShareButtonsProps {
   title: string;
   url: string;
   description?: string;
+  vehicleId?: string;
 }
 
-export function ShareButtons({ title, url, description }: ShareButtonsProps) {
+export function ShareButtons({ title, url, description, vehicleId }: ShareButtonsProps) {
   const [copied, setCopied] = useState(false);
   const [showOptions, setShowOptions] = useState(false);
+  const { trackShare } = useTracking();
 
   const fullUrl = typeof window !== "undefined"
     ? `${window.location.origin}${url}`
@@ -30,6 +33,7 @@ export function ShareButtons({ title, url, description }: ShareButtonsProps) {
     try {
       await navigator.clipboard.writeText(fullUrl);
       setCopied(true);
+      trackShare("copy", { vehicleId });
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
       console.error("Error copying to clipboard:", error);
@@ -38,11 +42,13 @@ export function ShareButtons({ title, url, description }: ShareButtonsProps) {
 
   const handleWhatsAppShare = () => {
     const message = encodeURIComponent(`${shareText}\n${fullUrl}`);
+    trackShare("whatsapp", { vehicleId });
     window.open(`https://wa.me/?text=${message}`, "_blank");
   };
 
   const handleFacebookShare = () => {
     const fbUrl = encodeURIComponent(fullUrl);
+    trackShare("facebook", { vehicleId });
     window.open(`https://www.facebook.com/sharer/sharer.php?u=${fbUrl}`, "_blank", "width=600,height=400");
   };
 

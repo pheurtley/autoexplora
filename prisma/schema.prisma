@@ -77,6 +77,7 @@ model Dealer {
   siteConfig      DealerSiteConfig?
   leads           DealerLead[]
   contactEvents   ContactEvent[]
+  trackingEvents  TrackingEvent[]
 
   @@index([status])
   @@index([type])
@@ -172,6 +173,7 @@ model Vehicle {
   images          VehicleImage[]
   dealerLeads     DealerLead[]
   contactEvents   ContactEvent[]
+  trackingEvents  TrackingEvent[]
 
   @@index([userId])
   @@index([brandId])
@@ -244,13 +246,14 @@ model Version {
 }
 
 model Region {
-  id       String    @id @default(cuid())
-  name     String    @unique
-  slug     String    @unique
-  order    Int
-  comunas  Comuna[]
-  dealers  Dealer[]
-  vehicles Vehicle[]
+  id             String          @id @default(cuid())
+  name           String          @unique
+  slug           String          @unique
+  order          Int
+  comunas        Comuna[]
+  dealers        Dealer[]
+  vehicles       Vehicle[]
+  trackingEvents TrackingEvent[]
 
   @@index([slug])
 }
@@ -649,9 +652,68 @@ enum LeadStatus {
 }
 
 // ============================================================================
-// Contact Events (Tracking de clicks en botones de contacto)
+// Tracking Events (Analytics y tracking de interacciones)
 // ============================================================================
 
+model TrackingEvent {
+  id        String            @id @default(cuid())
+  eventType TrackingEventType
+
+  // Contexto
+  vehicleId String?
+  dealerId  String?
+  source    String            @default("marketplace") // "marketplace" | "microsite"
+
+  // Metadata de sesión
+  userAgent  String?
+  ipHash     String?  // Hash para anonimizar IP
+  sessionId  String?  // Para agrupar eventos de misma sesión
+  referrer   String?  // URL de referencia
+  device     String?  // "mobile" | "tablet" | "desktop"
+  regionId   String?  // Región del visitante (si se puede detectar)
+
+  // Datos adicionales según tipo de evento
+  metadata Json? // Para datos flexibles: { query, filters, platform, imageIndex, etc. }
+
+  createdAt DateTime @default(now())
+
+  vehicle Vehicle? @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  dealer  Dealer?  @relation(fields: [dealerId], references: [id], onDelete: SetNull)
+  region  Region?  @relation(fields: [regionId], references: [id], onDelete: SetNull)
+
+  @@index([vehicleId])
+  @@index([dealerId])
+  @@index([eventType])
+  @@index([createdAt])
+  @@index([source])
+  @@index([sessionId])
+  @@index([ipHash])
+}
+
+enum TrackingEventType {
+  // Eventos de contacto
+  WHATSAPP_CLICK
+  PHONE_REVEAL
+  PHONE_CALL
+  CHAT_START
+  CONTACT_FORM
+
+  // Eventos de visualización
+  PAGE_VIEW
+  VEHICLE_VIEW
+  DEALER_PROFILE_VIEW
+  MICROSITE_HOME_VIEW
+  IMAGE_GALLERY_VIEW
+
+  // Eventos de interacción
+  SEARCH_PERFORMED
+  FILTER_APPLIED
+  FAVORITE_ADDED
+  FAVORITE_REMOVED
+  SHARE_CLICK
+}
+
+// Mantener modelo anterior para compatibilidad (migración gradual)
 model ContactEvent {
   id        String           @id @default(cuid())
   eventType ContactEventType

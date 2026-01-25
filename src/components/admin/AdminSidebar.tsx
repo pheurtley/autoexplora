@@ -20,6 +20,7 @@ import {
   Layers,
   Tags,
   Database,
+  BarChart3,
 } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
@@ -46,6 +47,11 @@ const mainNavigation: NavItem[] = [
     name: "Dashboard",
     href: "/admin",
     icon: LayoutDashboard,
+  },
+  {
+    name: "Analytics",
+    href: "/admin/analytics",
+    icon: BarChart3,
   },
   {
     name: "Vehículos",

@@ -11,6 +11,7 @@ import { ShareButtons } from "@/components/vehicles/ShareButtons";
 import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
 import { MobileStickyContact } from "@/components/vehicles/MobileStickyContact";
 import { VehicleJsonLd, BreadcrumbJsonLd } from "@/components/seo";
+import { PageViewTracker } from "@/components/tracking";
 import { Badge } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, formatKilometers, isCuid } from "@/lib/utils";
@@ -175,6 +176,14 @@ export default async function VehicleDetailPage({ params }: PageProps) {
 
   return (
     <>
+      {/* Page View Tracking */}
+      <PageViewTracker
+        pageType="VEHICLE_VIEW"
+        vehicleId={vehicle.id}
+        dealerId={vehicle.dealerId || undefined}
+        source="marketplace"
+      />
+
       {/* Structured Data */}
       <VehicleJsonLd
         name={vehicle.title}
@@ -250,6 +259,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                       title={vehicle.title}
                       url={`/vehiculos/${vehicle.slug}`}
                       description={`${vehicle.brand.name} ${vehicle.model.name} ${vehicle.year} - ${formatPrice(vehicle.price)}`}
+                      vehicleId={vehicle.id}
                     />
                     <FavoriteButton
                       vehicleId={vehicle.id}
@@ -310,6 +320,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
                       title={vehicle.title}
                       url={`/vehiculos/${vehicle.slug}`}
                       description={`${vehicle.brand.name} ${vehicle.model.name} ${vehicle.year} - ${formatPrice(vehicle.price)}`}
+                      vehicleId={vehicle.id}
                     />
                     <FavoriteButton
                       vehicleId={vehicle.id}

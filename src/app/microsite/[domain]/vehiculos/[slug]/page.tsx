@@ -7,6 +7,7 @@ import { ImageGallery } from "@/components/vehicles/ImageGallery";
 import { VehicleSpecs } from "@/components/vehicles/VehicleSpecs";
 import { MicrositeVehicleJsonLd } from "@/components/microsite/MicrositeJsonLd";
 import { MicrositeVehicleContactButtons } from "@/components/microsite/MicrositeVehicleContactButtons";
+import { PageViewTracker } from "@/components/tracking";
 import { formatPrice, formatKilometers } from "@/lib/utils";
 import type { Metadata } from "next";
 
@@ -97,6 +98,14 @@ export default async function MicrositeVehicleDetailPage({ params }: PageProps) 
 
   return (
     <div className="min-h-screen bg-neutral-50 pb-12">
+      {/* Page View Tracking */}
+      <PageViewTracker
+        pageType="VEHICLE_VIEW"
+        vehicleId={vehicle.id}
+        dealerId={dealer.id}
+        source="microsite"
+      />
+
       <MicrositeVehicleJsonLd
         vehicle={vehicle}
         dealerName={dealer.tradeName}

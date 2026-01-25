@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
+import { PageViewTracker } from "@/components/tracking";
 import {
   Building2,
   MapPin,
@@ -106,6 +107,13 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
 
   return (
     <main className="min-h-screen bg-neutral-50">
+      {/* Page View Tracking */}
+      <PageViewTracker
+        pageType="DEALER_PROFILE_VIEW"
+        dealerId={dealer.id}
+        source="marketplace"
+      />
+
       {/* Header / Banner */}
       <div className="bg-white border-b border-neutral-200">
         {dealer.banner && (

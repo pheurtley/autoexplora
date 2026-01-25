@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useTracking } from "@/hooks";
 import { Heart, Loader2 } from "lucide-react";
 
 interface FavoriteButtonProps {
@@ -18,6 +19,7 @@ export function FavoriteButton({
   isLoggedIn,
 }: FavoriteButtonProps) {
   const router = useRouter();
+  const { trackFavorite } = useTracking();
   const [isFavorited, setIsFavorited] = useState(initialFavorited);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,6 +40,7 @@ export function FavoriteButton({
 
         if (response.ok) {
           setIsFavorited(false);
+          trackFavorite("remove", { vehicleId });
         }
       } else {
         // Add to favorites
@@ -49,6 +52,7 @@ export function FavoriteButton({
 
         if (response.ok) {
           setIsFavorited(true);
+          trackFavorite("add", { vehicleId });
         }
       }
     } catch (error) {
