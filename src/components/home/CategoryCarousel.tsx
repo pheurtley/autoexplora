@@ -74,7 +74,7 @@ function CategoryItem({ category }: { category: (typeof categories)[number] }) {
 
 export function CategoryCarousel() {
   return (
-    <section className="py-12 bg-neutral-50">
+    <section className="py-12 bg-neutral-50 overflow-hidden">
       <Container>
         <h2 className="text-2xl font-bold text-neutral-900 mb-6">
           Explorar por categoría
