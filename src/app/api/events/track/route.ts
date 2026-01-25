@@ -1,7 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
-import { TrackingEventType } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import crypto from "crypto";
+
+// Valid tracking event types (must match TrackingEventType enum in schema.prisma)
+const VALID_EVENT_TYPES = [
+  "WHATSAPP_CLICK",
+  "PHONE_REVEAL",
+  "PHONE_CALL",
+  "CHAT_START",
+  "CONTACT_FORM",
+  "PAGE_VIEW",
+  "VEHICLE_VIEW",
+  "DEALER_PROFILE_VIEW",
+  "MICROSITE_HOME_VIEW",
+  "IMAGE_GALLERY_VIEW",
+  "SEARCH_PERFORMED",
+  "FILTER_APPLIED",
+  "FAVORITE_ADDED",
+  "FAVORITE_REMOVED",
+  "SHARE_CLICK",
+] as const;
 
 /**
  * POST /api/events/track
@@ -20,8 +38,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate eventType
-    const validEventTypes = Object.values(TrackingEventType);
-    if (!eventType || !validEventTypes.includes(eventType)) {
+    if (!eventType || !(VALID_EVENT_TYPES as readonly string[]).includes(eventType)) {
       return NextResponse.json(
         { error: "Invalid eventType" },
         { status: 400 }
@@ -44,7 +61,7 @@ export async function POST(request: NextRequest) {
     // Create the event
     const event = await prisma.trackingEvent.create({
       data: {
-        eventType: eventType as TrackingEventType,
+        eventType,
         vehicleId: vehicleId || null,
         dealerId: dealerId || null,
         source,
