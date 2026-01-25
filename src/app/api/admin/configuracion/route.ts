@@ -64,6 +64,16 @@ export async function PATCH(request: NextRequest) {
       "ctaTitle",
       "ctaSubtitle",
       "ctaButtonText",
+      // Why Us Features
+      "whyUsFeature1Icon",
+      "whyUsFeature1Title",
+      "whyUsFeature1Desc",
+      "whyUsFeature2Icon",
+      "whyUsFeature2Title",
+      "whyUsFeature2Desc",
+      "whyUsFeature3Icon",
+      "whyUsFeature3Title",
+      "whyUsFeature3Desc",
       // SEO
       "metaDescription",
       "googleAnalyticsId",
