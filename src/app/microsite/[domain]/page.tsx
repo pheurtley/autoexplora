@@ -174,7 +174,7 @@ export default async function MicrositeHomePage({ params }: PageProps) {
                           alt={vehicle.title}
                           fill
                           priority={index === 0}
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover object-[center_70%] group-hover:scale-105 transition-transform duration-300"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         />
                       ) : (

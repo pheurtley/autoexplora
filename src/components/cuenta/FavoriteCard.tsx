@@ -71,7 +71,7 @@ export function FavoriteCard({ vehicle, onRemove }: FavoriteCardProps) {
               src={primaryImage.url}
               alt={vehicle.title}
               fill
-              className="object-cover group-hover:scale-105 transition-transform duration-300"
+              className="object-cover object-[center_70%] group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
           ) : (
