@@ -19,6 +19,17 @@ export interface CloudinaryUploadResult {
   bytes: number;
 }
 
+export interface PlateRegion {
+  xmin: number;
+  ymin: number;
+  xmax: number;
+  ymax: number;
+}
+
+/**
+ * Upload image to Cloudinary
+ * Note: Image processing (blur, watermark) is done with Sharp before upload
+ */
 export async function uploadToCloudinary(
   file: Buffer,
   folder: string = "vehicles"
@@ -31,7 +42,6 @@ export async function uploadToCloudinary(
           resource_type: "image",
           transformation: [
             { quality: "auto", fetch_format: "auto" },
-            { width: 1920, height: 1080, crop: "limit" },
           ],
         },
         (error, result) => {
