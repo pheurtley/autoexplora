@@ -99,6 +99,9 @@ export function Step1Type({ data, onChange, errors }: Step1TypeProps) {
                 onClick={() => {
                   onChange("vehicleType", type.value);
                   onChange("category", ""); // Reset category
+                  onChange("brandId", ""); // Reset brand
+                  onChange("modelId", ""); // Reset model
+                  onChange("versionId", ""); // Reset version
                   scrollToCategories();
                 }}
                 className={`

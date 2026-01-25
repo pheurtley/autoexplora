@@ -47,11 +47,13 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
   const [loadingModels, setLoadingModels] = useState(false);
   const [loadingVersions, setLoadingVersions] = useState(false);
 
-  // Cargar marcas
+  // Cargar marcas filtradas por tipo de vehículo
   useEffect(() => {
     async function fetchBrands() {
+      setLoadingBrands(true);
       try {
-        const response = await fetch("/api/marcas");
+        const params = data.vehicleType ? `?vehicleType=${data.vehicleType}` : "";
+        const response = await fetch(`/api/marcas${params}`);
         const json = await response.json();
         setBrands(json.brands || []);
       } catch (error) {
@@ -61,7 +63,7 @@ export function Step2Details({ data, onChange, errors }: Step2DetailsProps) {
       }
     }
     fetchBrands();
-  }, []);
+  }, [data.vehicleType]);
 
   // Cargar modelos cuando cambia la marca
   useEffect(() => {
