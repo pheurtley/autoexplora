@@ -90,10 +90,13 @@ interface PlateRecognizerResponse {
  * Detect license plates using Plate Recognizer API
  * https://platerecognizer.com/
  * Free tier: 2,500 lookups/month
+ * Includes retry logic for rate limiting (429 errors)
  */
 async function detectWithPlateRecognizer(
-  imageBuffer: Buffer
+  imageBuffer: Buffer,
+  retryCount = 0
 ): Promise<PlateRegion[]> {
+  const MAX_RETRIES = 3;
   const apiToken = process.env.PLATE_RECOGNIZER_API_TOKEN;
 
   if (!apiToken) {
@@ -118,6 +121,14 @@ async function detectWithPlateRecognizer(
         },
       }),
     });
+
+    // Handle rate limiting with retry
+    if (response.status === 429 && retryCount < MAX_RETRIES) {
+      const waitTime = Math.pow(2, retryCount) * 1000; // Exponential backoff: 1s, 2s, 4s
+      console.log(`[PlateRecognizer] Rate limited, retrying in ${waitTime}ms (attempt ${retryCount + 1}/${MAX_RETRIES})`);
+      await new Promise(resolve => setTimeout(resolve, waitTime));
+      return detectWithPlateRecognizer(imageBuffer, retryCount + 1);
+    }
 
     if (!response.ok) {
       const errorText = await response.text();

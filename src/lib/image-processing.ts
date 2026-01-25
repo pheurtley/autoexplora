@@ -12,39 +12,62 @@ export async function processVehicleImage(
 
   let image = sharp(imageBuffer);
 
-  // Get image metadata for positioning
+  // Get original image metadata
   const metadata = await image.metadata();
-  const width = metadata.width || 1920;
-  const height = metadata.height || 1080;
-  console.log("[ImageProcessing] Image size:", width, "x", height);
+  const originalWidth = metadata.width || 1920;
+  const originalHeight = metadata.height || 1080;
+  console.log("[ImageProcessing] Original size:", originalWidth, "x", originalHeight);
 
-  // Resize if too large (max 1920x1080)
-  if (width > 1920 || height > 1080) {
-    image = image.resize(1920, 1080, { fit: "inside", withoutEnlargement: true });
+  // Calculate resize dimensions (max 1920x1080)
+  let width = originalWidth;
+  let height = originalHeight;
+  let scaleRatio = 1;
+
+  if (originalWidth > 1920 || originalHeight > 1080) {
+    scaleRatio = Math.min(1920 / originalWidth, 1080 / originalHeight);
+    width = Math.round(originalWidth * scaleRatio);
+    height = Math.round(originalHeight * scaleRatio);
+    image = image.resize(width, height, { fit: "fill" });
+    console.log("[ImageProcessing] Resized to:", width, "x", height, "scale:", scaleRatio);
   }
+
+  // Get the base image as buffer for compositing
+  const baseBuffer = await image.toBuffer();
+  image = sharp(baseBuffer);
 
   // Apply blur to plate regions
   if (plateRegions.length > 0) {
-    // Get the base image as buffer for compositing
-    const baseBuffer = await image.toBuffer();
-    image = sharp(baseBuffer);
-
     // Create blur overlays for each plate region
     const composites: sharp.OverlayOptions[] = [];
 
     for (const region of plateRegions) {
-      const regionWidth = Math.max(1, region.xmax - region.xmin);
-      const regionHeight = Math.max(1, region.ymax - region.ymin);
+      // Scale region coordinates if image was resized
+      const scaledRegion = {
+        xmin: Math.floor(region.xmin * scaleRatio),
+        ymin: Math.floor(region.ymin * scaleRatio),
+        xmax: Math.floor(region.xmax * scaleRatio),
+        ymax: Math.floor(region.ymax * scaleRatio),
+      };
+
+      const regionWidth = Math.max(1, scaledRegion.xmax - scaledRegion.xmin);
+      const regionHeight = Math.max(1, scaledRegion.ymax - scaledRegion.ymin);
 
       // Ensure region is within bounds
-      const left = Math.max(0, Math.min(region.xmin, width - regionWidth));
-      const top = Math.max(0, Math.min(region.ymin, height - regionHeight));
+      const left = Math.max(0, Math.min(scaledRegion.xmin, width - regionWidth));
+      const top = Math.max(0, Math.min(scaledRegion.ymin, height - regionHeight));
 
       const extractWidth = Math.floor(Math.min(regionWidth, width - left));
       const extractHeight = Math.floor(Math.min(regionHeight, height - top));
 
+      // Skip if region is too small or invalid
+      if (extractWidth < 5 || extractHeight < 5) {
+        console.log("[ImageProcessing] Skipping small region:", extractWidth, "x", extractHeight);
+        continue;
+      }
+
       console.log("[ImageProcessing] Blurring region:", {
         original: region,
+        scaled: scaledRegion,
         adjusted: { left: Math.floor(left), top: Math.floor(top), width: extractWidth, height: extractHeight }
       });
 
@@ -61,7 +84,7 @@ export async function processVehicleImage(
           .blur(20)
           .toBuffer();
 
-        console.log("[ImageProcessing] Blurred region size:", blurredRegion.length, "bytes, position:", left, top);
+        console.log("[ImageProcessing] Blurred region size:", blurredRegion.length, "bytes");
 
         composites.push({
           input: blurredRegion,
@@ -76,12 +99,8 @@ export async function processVehicleImage(
 
     if (composites.length > 0) {
       console.log("[ImageProcessing] Applying", composites.length, "blur regions");
-      // Apply blur composites and convert to buffer immediately
       const blurredBuffer = await image.composite(composites).toBuffer();
       image = sharp(blurredBuffer);
-      console.log("[ImageProcessing] Blur applied, buffer size:", blurredBuffer.length);
-    } else {
-      console.log("[ImageProcessing] No blur composites created");
     }
   }
 
