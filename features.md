@@ -377,12 +377,49 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - Autofact API (para verificación vehicular)
 - Mercado Libre API (para multi-plataforma)
 
-### Decisiones Pendientes
-- Sistema de pagos para dealers premium
-- Planes de suscripción y precios
-- Límites de publicaciones por plan
-- Precios de promociones (Destacado, TopSpot)
-- Integración con pasarelas de pago (Transbank, MercadoPago)
+### Sistema de Tiers de Dealers (Propuesta)
+
+#### Tabla Comparativa
+
+| Feature | Free | Bronce | Plata | Oro |
+|---------|------|--------|-------|-----|
+| **Precio mensual** | $0 | $29.990 | $59.990 | $119.990 |
+| **Precio anual** (2 meses gratis) | $0 | $299.900 | $599.900 | $1.199.900 |
+| **Vehículos activos** | 3 | 10 | 25 | Ilimitados |
+| **Fotos por vehículo** | 5 | 10 | 15 | 20 |
+| **Perfil en marketplace** | Básico | Completo | Completo | Destacado |
+| **Micrositio propio** | No | No | Básico | Completo |
+| **Dominio personalizado** | No | No | No | Sí |
+| **Páginas custom** | 0 | 0 | 2 | Ilimitadas |
+| **Analytics** | No | Básico | Completo | Completo + Export |
+| **Dashboard de leads** | No | Sí | Sí | Sí |
+| **Destacados/mes** | 0 | 1 | 3 | 10 |
+| **TopSpot/mes** | 0 | 0 | 0 | 2 |
+| **Match (exclusivo)** | No | No | No | Ilimitado |
+| **Usuarios del equipo** | 1 | 2 | 3 | Ilimitados |
+| **Badge verificado** | No | Sí | Sí | Premium |
+| **Soporte** | FAQ | Email | Email + Chat | Prioritario |
+
+#### Feature Match (Solo Oro)
+
+Sistema para conectar compradores que no encuentran lo que buscan con automotoras que pueden tener el vehículo ideal.
+
+**Flujo:**
+1. Comprador busca vehículo → No encuentra → Completa formulario Match (anónimo)
+2. AutoExplora muestra Match solo a dealers Oro (sin datos del comprador)
+3. Dealer Oro responde con propuesta (vehículo de inventario o que puede conseguir)
+4. Comprador ve propuestas y decide si revelar sus datos de contacto
+
+**Beneficios:**
+- Para comprador: Recibe propuestas sin esfuerzo, control de privacidad
+- Para dealer Oro: Leads de alta intención, diferenciador competitivo
+- Para AutoExplora: Feature único en Chile, incentivo para tier Oro
+
+### Decisiones Pendientes de Implementación
+- Pasarela de pago (Transbank o MercadoPago)
+- Modelo de datos para tiers y Match
+- UI de página de precios
+- Middleware de validación de límites por tier
 
 ---
 
