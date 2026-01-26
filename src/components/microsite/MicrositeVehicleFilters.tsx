@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { SlidersHorizontal } from "lucide-react";
+import { Combobox } from "@/components/ui/Combobox";
 
 interface Brand {
   id: string;
@@ -48,18 +49,14 @@ export function MicrositeVehicleFilters({
         <SlidersHorizontal className="h-4 w-4 text-neutral-400 hidden sm:block" />
 
         {/* Brand */}
-        <select
-          value={searchParams.get("brandId") || ""}
-          onChange={(e) => updateParam("brandId", e.target.value)}
-          className={selectClass}
-        >
-          <option value="">Todas las marcas</option>
-          {brands.map((b) => (
-            <option key={b.id} value={b.id}>
-              {b.name}
-            </option>
-          ))}
-        </select>
+        <div className="w-48">
+          <Combobox
+            options={brands.map((b) => ({ value: b.id, label: b.name }))}
+            value={searchParams.get("brandId") || ""}
+            onChange={(value) => updateParam("brandId", value)}
+            placeholder="Todas las marcas"
+          />
+        </div>
 
         {/* Condition */}
         <select

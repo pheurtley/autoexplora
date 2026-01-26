@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui";
+import { Combobox } from "@/components/ui/Combobox";
 import { useTracking } from "@/hooks";
 import {
   Search,
@@ -204,48 +205,34 @@ export function SearchWidget() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Brand */}
           <div>
-            <label htmlFor="search-brand" className="block text-xs font-medium text-neutral-600 mb-1">
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
               <Tag className="h-3 w-3 inline mr-1 text-neutral-400" />
               Marca
             </label>
-            <select
-              id="search-brand"
+            <Combobox
+              options={brands.map((b) => ({ value: b.id, label: b.name }))}
               value={brandId}
-              onChange={(e) => setBrandId(e.target.value)}
-              className={selectClass}
+              onChange={setBrandId}
+              placeholder="Todas las marcas"
+              loading={loadingBrands}
               disabled={loadingBrands}
-            >
-              <option value="">Todas las marcas</option>
-              {brands.map((b) => (
-                <option key={b.id} value={b.id}>
-                  {b.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           {/* Model */}
           <div>
-            <label htmlFor="search-model" className="block text-xs font-medium text-neutral-600 mb-1">
+            <label className="block text-xs font-medium text-neutral-600 mb-1">
               <Layers className="h-3 w-3 inline mr-1 text-neutral-400" />
               Modelo
             </label>
-            <select
-              id="search-model"
+            <Combobox
+              options={models.map((m) => ({ value: m.id, label: m.name }))}
               value={modelId}
-              onChange={(e) => setModelId(e.target.value)}
-              className={selectClass}
+              onChange={setModelId}
+              placeholder={!brandId ? "Selecciona marca" : "Todos los modelos"}
+              loading={loadingModels}
               disabled={!brandId || loadingModels}
-            >
-              <option value="">
-                {!brandId ? "Selecciona marca" : loadingModels ? "Cargando..." : "Todos los modelos"}
-              </option>
-              {models.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
 
           {/* Max Price */}

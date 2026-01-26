@@ -3,6 +3,7 @@
 import { useState, useMemo } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { Button, Input, Select } from "@/components/ui";
+import { Combobox } from "@/components/ui/Combobox";
 import {
   VEHICLE_TYPES,
   VEHICLE_CATEGORIES,
@@ -68,20 +69,14 @@ export function VehicleFilters({
   const selectedBrand = brands.find((b) => b.id === currentFilters.brandId);
   const models = selectedBrand?.models || [];
 
-  // Prepare options for Select components
+  // Prepare options for Combobox components
   const brandOptions = useMemo(
-    () => [
-      { value: "", label: "Todas las marcas" },
-      ...brands.map((b) => ({ value: b.id, label: b.name })),
-    ],
+    () => brands.map((b) => ({ value: b.id, label: b.name })),
     [brands]
   );
 
   const modelOptions = useMemo(
-    () => [
-      { value: "", label: "Todos los modelos" },
-      ...models.map((m) => ({ value: m.id, label: m.name })),
-    ],
+    () => models.map((m) => ({ value: m.id, label: m.name })),
     [models]
   );
 
@@ -258,17 +253,19 @@ export function VehicleFilters({
       {/* Brand & Model */}
       <FilterSection title="Marca y Modelo">
         <div className="space-y-3">
-          <Select
-            value={currentFilters.brandId || ""}
-            onChange={(e) => updateFilter("brandId", e.target.value || null)}
+          <Combobox
             options={brandOptions}
+            value={currentFilters.brandId || ""}
+            onChange={(value) => updateFilter("brandId", value || null)}
+            placeholder="Todas las marcas"
           />
 
-          <Select
-            value={currentFilters.modelId || ""}
-            onChange={(e) => updateFilter("modelId", e.target.value || null)}
-            disabled={!currentFilters.brandId}
+          <Combobox
             options={modelOptions}
+            value={currentFilters.modelId || ""}
+            onChange={(value) => updateFilter("modelId", value || null)}
+            placeholder="Todos los modelos"
+            disabled={!currentFilters.brandId}
           />
         </div>
       </FilterSection>
