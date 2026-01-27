@@ -473,6 +473,42 @@ export function VehicleFilters({
           options={regionOptions}
         />
       </FilterSection>
+
+      {/* Seller Type */}
+      <FilterSection title="Vendedor" defaultOpen={false}>
+        <div className="space-y-2">
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="sellerType"
+              checked={!currentFilters.sellerType}
+              onChange={() => updateFilter("sellerType", null)}
+              className="h-4 w-4 text-andino-600 focus:ring-andino-500 border-neutral-300"
+            />
+            <span className="text-sm text-neutral-700">Todos</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="sellerType"
+              checked={currentFilters.sellerType === "particular"}
+              onChange={() => updateFilter("sellerType", "particular")}
+              className="h-4 w-4 text-andino-600 focus:ring-andino-500 border-neutral-300"
+            />
+            <span className="text-sm text-neutral-700">Particular</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer">
+            <input
+              type="radio"
+              name="sellerType"
+              checked={currentFilters.sellerType === "dealer"}
+              onChange={() => updateFilter("sellerType", "dealer")}
+              className="h-4 w-4 text-andino-600 focus:ring-andino-500 border-neutral-300"
+            />
+            <span className="text-sm text-neutral-700">Automotora</span>
+          </label>
+        </div>
+      </FilterSection>
     </>
   );
 

@@ -185,6 +185,14 @@ export function ActiveFilters({
     });
   }
 
+  if (filters.sellerType) {
+    pills.push({
+      key: "sellerType",
+      label: "Vendedor",
+      value: filters.sellerType === "dealer" ? "Automotora" : "Particular",
+    });
+  }
+
   if (pills.length === 0) {
     return null;
   }
