@@ -119,31 +119,32 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 #### Directorio de Dealers
 - [x] Página `/automotoras` con listado de todos los dealers activos
-- [ ] Filtros por tipo (Automotora, Rent a Car)
-- [ ] Filtros por región
-- [ ] Búsqueda por nombre
-- [ ] Ordenamiento (más recientes, más vehículos, alfabético)
-- [ ] Paginación
+- [x] Filtros por tipo (Automotora, Rent a Car)
+- [x] Filtros por región
+- [x] Búsqueda por nombre
+- [x] Ordenamiento (más recientes, más vehículos, alfabético)
+- [x] Paginación
 
 #### Filtro de Vendedor en Búsqueda
-- [ ] Agregar filtro "Tipo de vendedor" en `/vehiculos`
-- [ ] Opciones: Todos, Particular, Automotora, Rent a Car
-- [ ] Actualizar API de búsqueda para soportar filtro
+- [x] Agregar filtro "Tipo de vendedor" en `/vehiculos`
+- [x] Opciones: Todos, Particular, Automotora
+- [x] Actualizar API de búsqueda para soportar filtro
 
 #### Info de Dealer en Detalle de Vehículo
-- [ ] Cuando el vehículo pertenece a un dealer, mostrar tarjeta con:
-  - Logo del dealer
-  - Nombre comercial
-  - Tipo (badge)
-  - Badge de verificado
-  - Link al perfil del dealer
-  - Botón de contacto directo
+- [x] Cuando el vehículo pertenece a un dealer, mostrar tarjeta con:
+  - [x] Logo del dealer
+  - [x] Nombre comercial
+  - [x] Tipo (badge)
+  - [x] Badge de verificado
+  - [x] Link al perfil del dealer
+  - [x] Botón de contacto directo (WhatsApp)
+  - [x] Horarios de atención
 
 #### Upload de Logo/Banner
-- [ ] Componente de upload de imagen para logo en registro
-- [ ] Componente de upload de banner en perfil de dealer
-- [ ] Integración con Cloudinary
-- [ ] Preview y crop de imágenes
+- [x] Componente de upload de imagen para logo en registro
+- [x] Componente de upload de banner en perfil de dealer
+- [x] Integración con Cloudinary
+- [x] Preview de imágenes
 
 ### Media Prioridad
 
@@ -172,32 +173,32 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 ### Notificaciones
 
 #### Sistema de Email con Resend
-- [ ] Configurar Resend como servicio de email transaccional
+- [x] Configurar Resend como servicio de email transaccional
 - [ ] OTP (One-Time Password)
   - [ ] Envío de código OTP para verificación
   - [ ] Validación de código con expiración (5 min)
   - [ ] Rate limiting para evitar abuso
-- [ ] Verificación de Email
-  - [ ] Email de verificación al registrar cuenta
-  - [ ] Link de verificación con token seguro
-  - [ ] Reenvío de email de verificación
-  - [ ] Marcar cuenta como verificada
-- [ ] Password Reset
-  - [ ] Solicitud de recuperación de contraseña
-  - [ ] Email con link de reset (token con expiración)
-  - [ ] Formulario de nueva contraseña
-  - [ ] Invalidar token después de uso
-- [ ] Emails Transaccionales
-  - [ ] Email de bienvenida al registrar usuario/dealer
-  - [ ] Email de aprobación de dealer
-  - [ ] Email de rechazo de dealer con motivo
-  - [ ] Email de nuevo mensaje recibido
+- [x] Verificación de Email
+  - [x] Email de verificación al registrar cuenta
+  - [x] Link de verificación con token seguro
+  - [x] Reenvío de email de verificación
+  - [x] Marcar cuenta como verificada
+- [x] Password Reset
+  - [x] Solicitud de recuperación de contraseña
+  - [x] Email con link de reset (token con expiración)
+  - [x] Formulario de nueva contraseña
+  - [x] Invalidar token después de uso
+- [x] Emails Transaccionales (parcial)
+  - [x] Email de bienvenida al registrar usuario/dealer
+  - [x] Email de aprobación de dealer
+  - [x] Email de rechazo de dealer con motivo
+  - [x] Email de nuevo mensaje recibido (plantilla lista)
   - [ ] Email de vehículo próximo a expirar
   - [ ] Email de vehículo expirado
 - [ ] Notificaciones del Sitio
   - [ ] Preferencias de notificación por usuario
   - [ ] Configuración de frecuencia de emails
-- [ ] Plantillas de email con branding AutoExplora.cl
+- [x] Plantillas de email con branding AutoExplora.cl
 
 #### Notificaciones In-App
 - [ ] Modelo de Notification en base de datos
@@ -317,7 +318,7 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Reportes automáticos semanales/mensuales
 
 #### Seguridad
-- [ ] Rate limiting en APIs
+- [x] Rate limiting en APIs (documentación Cloudflare en `cloudflare.md`)
 - [ ] Captcha en formularios públicos
 - [ ] Detección de spam en mensajes
 - [ ] Logs de auditoría para admin
