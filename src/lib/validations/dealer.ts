@@ -70,6 +70,8 @@ export const dealerStep3Schema = z.object({
 export const dealerStep4Schema = z.object({
   logo: z.string().url().optional().or(z.literal("")),
   logoPublicId: z.string().optional(),
+  banner: z.string().url().optional().or(z.literal("")),
+  bannerPublicId: z.string().optional(),
   description: z
     .string()
     .max(2000, "La descripción no puede exceder 2000 caracteres")
@@ -117,6 +119,8 @@ export const dealerRegistrationSchema = z.object({
   // Paso 4
   logo: z.string().url().optional().or(z.literal("")),
   logoPublicId: z.string().optional(),
+  banner: z.string().url().optional().or(z.literal("")),
+  bannerPublicId: z.string().optional(),
   description: z.string().max(2000).optional(),
   // Paso 5 - Usuario admin
   userName: z.string().min(2).max(50),
@@ -186,6 +190,8 @@ export interface DealerRegistrationFormData {
   // Paso 4
   logo: string;
   logoPublicId: string;
+  banner: string;
+  bannerPublicId: string;
   description: string;
   // Paso 5
   userName: string;
@@ -208,6 +214,8 @@ export const initialDealerFormData: DealerRegistrationFormData = {
   website: "",
   logo: "",
   logoPublicId: "",
+  banner: "",
+  bannerPublicId: "",
   description: "",
   userName: "",
   userEmail: "",

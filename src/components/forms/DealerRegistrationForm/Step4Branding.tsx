@@ -59,6 +59,36 @@ export function Step4Branding({
           )}
         </div>
 
+        {/* Banner Upload */}
+        <div>
+          <label className="mb-1.5 block text-sm font-medium text-neutral-700">
+            Banner de Portada (opcional)
+          </label>
+          <p className="text-xs text-neutral-500 mb-3">
+            Recomendado: 1200×400px, formato horizontal
+          </p>
+
+          <div className="max-w-full mx-auto">
+            <SingleImageUpload
+              value={formData.banner}
+              publicId={formData.bannerPublicId}
+              onChange={(url, publicId) => {
+                updateFormData({ banner: url, bannerPublicId: publicId });
+                clearError("banner");
+              }}
+              onRemove={() => {
+                updateFormData({ banner: "", bannerPublicId: "" });
+              }}
+              folder="dealers/banners"
+              aspectRatio="banner"
+            />
+          </div>
+
+          {errors.banner && (
+            <p className="mt-2 text-sm text-error text-center">{errors.banner}</p>
+          )}
+        </div>
+
         {/* Description */}
         <div>
           <label

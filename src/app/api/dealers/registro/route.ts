@@ -70,6 +70,8 @@ export async function POST(request: NextRequest) {
           comunaId: data.comunaId || null,
           logo: data.logo || null,
           logoPublicId: data.logoPublicId || null,
+          banner: data.banner || null,
+          bannerPublicId: data.bannerPublicId || null,
           description: data.description || null,
           status: "PENDING",
         },
