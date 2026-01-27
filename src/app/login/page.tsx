@@ -14,6 +14,7 @@ function LoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
   const error = searchParams.get("error");
+  const success = searchParams.get("success");
 
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
@@ -95,11 +96,18 @@ function LoginForm() {
             </p>
           </div>
 
+          {/* Success Message */}
+          {success && (
+            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+              <p className="text-green-600 text-sm">{success}</p>
+            </div>
+          )}
+
           {/* Error Messages */}
           {(error || formError) && (
             <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
               <p className="text-red-600 text-sm">
-                {formError || "Error al iniciar sesión. Intenta nuevamente."}
+                {formError || error || "Error al iniciar sesión. Intenta nuevamente."}
               </p>
             </div>
           )}
@@ -183,6 +191,15 @@ function LoginForm() {
               required
               disabled={isLoading}
             />
+
+            <div className="flex justify-end">
+              <Link
+                href="/recuperar-contrasena"
+                className="text-sm font-medium text-andino-600 hover:text-andino-700"
+              >
+                ¿Olvidaste tu contraseña?
+              </Link>
+            </div>
 
             <Button
               type="submit"

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
+import { randomBytes } from "crypto";
 import { prisma } from "@/lib/prisma";
+import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(request: NextRequest) {
   try {
@@ -95,7 +97,30 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    return NextResponse.json({ user }, { status: 201 });
+    // Generate verification token
+    const verificationToken = randomBytes(32).toString("hex");
+    const tokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    // Create verification token in database
+    await prisma.emailVerificationToken.create({
+      data: {
+        email: trimmedEmail,
+        token: verificationToken,
+        expires: tokenExpires,
+      },
+    });
+
+    // Send verification email (don't block on this)
+    sendVerificationEmail(trimmedEmail, verificationToken, trimmedName).catch(
+      (error) => {
+        console.error("Failed to send verification email:", error);
+      }
+    );
+
+    return NextResponse.json({
+      user,
+      message: "Cuenta creada. Revisa tu email para verificar tu cuenta."
+    }, { status: 201 });
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
