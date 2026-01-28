@@ -35,21 +35,21 @@ const footerLinks = {
   marcas: {
     title: "Marcas Populares",
     links: [
-      { name: "Toyota", href: "/vehiculos?brand=toyota" },
-      { name: "Chevrolet", href: "/vehiculos?brand=chevrolet" },
-      { name: "Hyundai", href: "/vehiculos?brand=hyundai" },
-      { name: "Kia", href: "/vehiculos?brand=kia" },
-      { name: "Nissan", href: "/vehiculos?brand=nissan" },
+      { name: "Toyota", href: "/vehiculos/marca/toyota" },
+      { name: "Chevrolet", href: "/vehiculos/marca/chevrolet" },
+      { name: "Hyundai", href: "/vehiculos/marca/hyundai" },
+      { name: "Kia", href: "/vehiculos/marca/kia" },
+      { name: "Nissan", href: "/vehiculos/marca/nissan" },
     ],
   },
   regiones: {
     title: "Por Región",
     links: [
-      { name: "Santiago", href: "/vehiculos?region=metropolitana" },
-      { name: "Valparaíso", href: "/vehiculos?region=valparaiso" },
-      { name: "Concepción", href: "/vehiculos?region=biobio" },
-      { name: "La Serena", href: "/vehiculos?region=coquimbo" },
-      { name: "Temuco", href: "/vehiculos?region=la-araucania" },
+      { name: "Santiago", href: "/vehiculos/region/metropolitana" },
+      { name: "Valparaíso", href: "/vehiculos/region/valparaiso" },
+      { name: "Concepción", href: "/vehiculos/region/biobio" },
+      { name: "La Serena", href: "/vehiculos/region/coquimbo" },
+      { name: "Temuco", href: "/vehiculos/region/la-araucania" },
     ],
   },
   ayuda: {

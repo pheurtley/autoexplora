@@ -9,6 +9,7 @@ import type { VehicleCard as VehicleCardType } from "@/types";
 interface RelatedVehiclesProps {
   currentVehicleId: string;
   brandId: string;
+  brandSlug: string;
   price: number;
   vehicleType: string;
   limit?: number;
@@ -161,6 +162,7 @@ async function getRelatedVehicles(
 export async function RelatedVehicles({
   currentVehicleId,
   brandId,
+  brandSlug,
   price,
   vehicleType,
   limit = 4,
@@ -184,7 +186,7 @@ export async function RelatedVehicles({
           <h2 className="text-2xl font-bold text-neutral-900">
             Vehículos similares
           </h2>
-          <Link href={`/vehiculos?brandId=${brandId}`}>
+          <Link href={`/vehiculos/marca/${brandSlug}`}>
             <Button variant="ghost" size="sm">
               Ver más de esta marca
               <ArrowRight className="h-4 w-4 ml-1" />

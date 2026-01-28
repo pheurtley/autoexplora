@@ -28,7 +28,7 @@ export function AnimatedBrandsGrid({ brands }: AnimatedBrandsGridProps) {
       {brands.map((brand, index) => (
         <Link
           key={brand.id}
-          href={`/vehiculos?marca=${brand.slug}`}
+          href={`/vehiculos/marca/${brand.slug}`}
           className={`group flex flex-col items-center p-4 bg-white rounded-xl border border-neutral-200 hover:border-andino-300 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 ${
             isVisible
               ? "opacity-100 scale-100"

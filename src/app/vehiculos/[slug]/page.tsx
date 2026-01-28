@@ -209,7 +209,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         items={[
           { name: "Inicio", url: SITE_URL },
           { name: "Vehículos", url: `${SITE_URL}/vehiculos` },
-          { name: vehicle.brand.name, url: `${SITE_URL}/vehiculos?brand=${vehicle.brand.slug}` },
+          { name: vehicle.brand.name, url: `${SITE_URL}/vehiculos/marca/${vehicle.brand.slug}` },
           { name: vehicle.model.name },
         ]}
       />
@@ -384,6 +384,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         <RelatedVehicles
           currentVehicleId={vehicle.id}
           brandId={vehicle.brandId}
+          brandSlug={vehicle.brand.slug}
           price={vehicle.price}
           vehicleType={vehicle.vehicleType}
         />
