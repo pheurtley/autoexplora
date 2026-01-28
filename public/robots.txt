@@ -6,3 +6,4 @@ Disallow: /cuenta/
 Disallow: /dealer/
 
 Sitemap: https://autoexplora.cl/sitemap.xml
+Sitemap: https://autoexplora.cl/image-sitemap.xml

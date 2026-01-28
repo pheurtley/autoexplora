@@ -16,6 +16,7 @@ import {
   LogOut,
   X,
   Globe,
+  Search,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
@@ -38,6 +39,7 @@ const navItems = [
   { href: "/dealer/mensajes", label: "Mensajes", icon: MessageCircle },
   { href: "/dealer/leads", label: "Leads", icon: MessageSquare, micrositeOnly: true },
   { href: "/dealer/estadisticas", label: "Estadísticas", icon: BarChart3 },
+  { href: "/dealer/seo", label: "SEO", icon: Search },
   { href: "/dealer/microsite", label: "Mi Sitio Web", icon: Globe },
   { href: "/dealer/equipo", label: "Equipo", icon: Users, ownerOnly: true },
   { href: "/dealer/perfil", label: "Perfil", icon: Settings },
