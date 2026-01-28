@@ -7,6 +7,7 @@ import { AdminLayoutClient } from "@/components/admin";
 export const metadata: Metadata = {
   title: "Panel de Administración | AutoExplora.cl",
   description: "Panel de administración de AutoExplora.cl",
+  robots: { index: false, follow: false },
 };
 
 export default async function AdminLayout({

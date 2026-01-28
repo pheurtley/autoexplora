@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: "Registrar Automotora | AutoExplora.cl",
   description:
     "Registra tu automotora en AutoExplora.cl y llega a miles de compradores.",
+  robots: { index: false, follow: false },
 };
 
 export default function RegistroAutomotoraPage() {

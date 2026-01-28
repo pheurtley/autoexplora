@@ -8,11 +8,7 @@ import { DealerSort } from "@/components/dealers/DealerSort";
 import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { DealerType } from "@prisma/client";
 
-export const metadata: Metadata = {
-  title: "Automotoras | AutoExplora.cl",
-  description:
-    "Encuentra automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
-};
+const BASE_URL = "https://autoexplora.cl";
 
 type SortOption = "recent" | "name" | "vehicles";
 
@@ -24,6 +20,37 @@ interface PageProps {
     type?: string;
     regionId?: string;
   }>;
+}
+
+function buildCanonicalUrl(params: Record<string, string | undefined>): string {
+  const normalized = new URLSearchParams();
+  const canonicalKeys = ["type", "regionId", "search", "page"];
+
+  for (const key of canonicalKeys) {
+    const value = params[key];
+    if (value) {
+      normalized.set(key, value);
+    }
+  }
+
+  const qs = normalized.toString();
+  return `${BASE_URL}/automotoras${qs ? `?${qs}` : ""}`;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: PageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const canonical = buildCanonicalUrl(params);
+
+  return {
+    title: "Automotoras | AutoExplora.cl",
+    description:
+      "Encuentra automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
+    alternates: {
+      canonical,
+    },
+  };
 }
 
 const SORT_OPTIONS: Record<SortOption, { label: string; orderBy: object }> = {
