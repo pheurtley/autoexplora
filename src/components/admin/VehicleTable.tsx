@@ -14,6 +14,7 @@ import {
   Play,
   Trash2,
   Building2,
+  Heart,
 } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -33,7 +34,7 @@ interface Vehicle {
   user: { id: string; name: string | null; email: string | null };
   dealer: { id: string; tradeName: string; slug: string } | null;
   images: { url: string; isPrimary: boolean }[];
-  _count: { reports: number };
+  _count: { reports: number; favorites: number };
 }
 
 interface VehicleTableProps {
@@ -171,6 +172,9 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                 Vistas
               </th>
               <th className="text-center px-4 py-3 text-sm font-medium text-neutral-600">
+                Favoritos
+              </th>
+              <th className="text-center px-4 py-3 text-sm font-medium text-neutral-600">
                 Reportes
               </th>
               <th className="text-right px-4 py-3 text-sm font-medium text-neutral-600">
@@ -259,6 +263,16 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                     <span className="text-sm text-neutral-600">
                       {vehicle.views}
                     </span>
+                  </td>
+                  <td className="px-4 py-3 text-center">
+                    {vehicle._count.favorites > 0 ? (
+                      <span className="inline-flex items-center gap-1 text-sm text-red-500">
+                        <Heart className="w-4 h-4" />
+                        {vehicle._count.favorites}
+                      </span>
+                    ) : (
+                      <span className="text-sm text-neutral-400">0</span>
+                    )}
                   </td>
                   <td className="px-4 py-3 text-center">
                     {vehicle._count.reports > 0 ? (

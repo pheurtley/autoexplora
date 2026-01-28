@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
             take: 1,
           },
           moderatedBy: { select: { id: true, name: true, email: true } },
-          _count: { select: { reports: true } },
+          _count: { select: { reports: true, favorites: true } },
         },
       }),
       prisma.vehicle.count({ where }),

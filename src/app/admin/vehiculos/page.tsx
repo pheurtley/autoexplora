@@ -20,7 +20,7 @@ interface Vehicle {
   user: { id: string; name: string | null; email: string | null };
   dealer: { id: string; tradeName: string; slug: string } | null;
   images: { url: string; isPrimary: boolean }[];
-  _count: { reports: number };
+  _count: { reports: number; favorites: number };
 }
 
 interface Dealer {
