@@ -22,6 +22,7 @@ interface VehicleCardProps {
 export function VehicleCard({ vehicle }: VehicleCardProps) {
   const primaryImage = vehicle.images.find((img) => img.isPrimary) || vehicle.images[0];
   const whatsappMessage = `Hola, me interesa el ${vehicle.title} publicado en AutoExplora.cl`;
+  const imageAlt = `${vehicle.year} ${vehicle.brand.name} ${vehicle.model.name} en venta - ${vehicle.region.name}`;
 
   return (
     <Card hover padding="none" className="overflow-hidden group">
@@ -32,7 +33,7 @@ export function VehicleCard({ vehicle }: VehicleCardProps) {
             <>
               <Image
                 src={primaryImage.url}
-                alt={vehicle.title}
+                alt={imageAlt}
                 fill
                 className="object-cover object-[center_70%] group-hover:scale-105 transition-transform duration-300"
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"

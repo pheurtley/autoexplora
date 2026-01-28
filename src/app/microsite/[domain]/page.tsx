@@ -102,7 +102,7 @@ export default async function MicrositeHomePage({ params }: PageProps) {
           <>
             <Image
               src={config.heroImage}
-              alt=""
+              alt={`${dealer.tradeName} - Automotora en Chile`}
               fill
               className="object-cover"
               priority
