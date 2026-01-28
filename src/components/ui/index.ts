@@ -30,3 +30,6 @@ export type { WeekSchedule, BusinessHoursEditorProps } from "./BusinessHoursEdit
 
 export { BusinessHoursDisplay } from "./BusinessHoursDisplay";
 export type { BusinessHoursDisplayProps } from "./BusinessHoursDisplay";
+
+export { Breadcrumbs } from "./Breadcrumbs";
+export type { BreadcrumbItem } from "./Breadcrumbs";

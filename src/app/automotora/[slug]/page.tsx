@@ -17,7 +17,7 @@ import {
   Car,
   ExternalLink,
 } from "lucide-react";
-import { Button, BusinessHoursDisplay } from "@/components/ui";
+import { Button, BusinessHoursDisplay, Breadcrumbs } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { Clock } from "lucide-react";
 
@@ -181,6 +181,18 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
           dealerId={dealer.id}
           source="marketplace"
         />
+
+      {/* Breadcrumb */}
+      <Container>
+        <div className="py-4">
+          <Breadcrumbs
+            items={[
+              { label: "Automotoras", href: "/automotoras" },
+              { label: dealer.tradeName },
+            ]}
+          />
+        </div>
+      </Container>
 
       {/* Header / Banner */}
       <div className="bg-white border-b border-neutral-200">

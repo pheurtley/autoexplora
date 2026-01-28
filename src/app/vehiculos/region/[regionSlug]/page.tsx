@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
+import { Breadcrumbs } from "@/components/ui";
 import { VehicleGrid } from "@/components/vehicles/VehicleGrid";
 import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { VehicleSort } from "@/components/vehicles/VehicleSort";
@@ -249,11 +250,14 @@ export default async function RegionVehiclesPage({ params, searchParams }: PageP
         <Container className="py-6">
           {/* Header */}
           <div className="mb-6">
-            <nav className="text-sm text-neutral-500 mb-2">
-              <span>Vehículos</span>
-              <span className="mx-2">/</span>
-              <span className="text-neutral-900">{region.name}</span>
-            </nav>
+            <div className="mb-2">
+              <Breadcrumbs
+                items={[
+                  { label: "Vehículos", href: "/vehiculos" },
+                  { label: region.name },
+                ]}
+              />
+            </div>
             <h1 className="text-2xl font-bold text-neutral-900">
               Vehículos en Venta en {region.name}
             </h1>

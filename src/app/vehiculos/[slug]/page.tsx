@@ -12,7 +12,7 @@ import { RelatedVehicles } from "@/components/vehicles/RelatedVehicles";
 import { MobileStickyContact } from "@/components/vehicles/MobileStickyContact";
 import { VehicleJsonLd, BreadcrumbJsonLd } from "@/components/seo";
 import { PageViewTracker } from "@/components/tracking";
-import { Badge } from "@/components/ui";
+import { Badge, Breadcrumbs } from "@/components/ui";
 import type { WeekSchedule } from "@/components/ui";
 import { formatPrice, formatKilometers, isCuid } from "@/lib/utils";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
@@ -218,13 +218,16 @@ export default async function VehicleDetailPage({ params }: PageProps) {
         <Container>
           <div className="py-6">
             {/* Breadcrumb */}
-            <nav className="text-sm text-neutral-500 mb-4">
-              <span>Vehículos</span>
-              <span className="mx-2">/</span>
-              <span>{vehicle.brand.name}</span>
-              <span className="mx-2">/</span>
-              <span className="text-neutral-900">{vehicle.model.name}</span>
-            </nav>
+            <div className="mb-4">
+              <Breadcrumbs
+                items={[
+                  { label: "Vehículos", href: "/vehiculos" },
+                  { label: vehicle.brand.name, href: `/vehiculos/marca/${vehicle.brand.slug}` },
+                  { label: vehicle.model.name, href: `/vehiculos/marca/${vehicle.brand.slug}/${vehicle.model.slug}` },
+                  { label: `${vehicle.year}` },
+                ]}
+              />
+            </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Left Column - Images and Details */}
