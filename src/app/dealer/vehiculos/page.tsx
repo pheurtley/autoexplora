@@ -12,6 +12,7 @@ import {
   MoreVertical,
   ChevronLeft,
   ChevronRight,
+  Heart,
 } from "lucide-react";
 import { Button } from "@/components/ui";
 
@@ -27,6 +28,7 @@ interface Vehicle {
   model: { name: string };
   year: number;
   images: { url: string }[];
+  _count: { favorites: number };
 }
 
 const statusConfig: Record<string, { label: string; bg: string; color: string }> = {
@@ -190,6 +192,9 @@ export default function DealerVehiclesPage() {
                   <th className="text-center px-4 py-3 text-sm font-medium text-neutral-600">
                     Visitas
                   </th>
+                  <th className="text-center px-4 py-3 text-sm font-medium text-neutral-600">
+                    Favoritos
+                  </th>
                   <th className="text-left px-4 py-3 text-sm font-medium text-neutral-600">
                     Estado
                   </th>
@@ -243,6 +248,12 @@ export default function DealerVehiclesPage() {
                         <div className="flex items-center justify-center gap-1 text-neutral-600">
                           <Eye className="w-4 h-4" />
                           <span>{vehicle.views}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <div className="flex items-center justify-center gap-1 text-red-500">
+                          <Heart className="w-4 h-4" />
+                          <span>{vehicle._count?.favorites || 0}</span>
                         </div>
                       </td>
                       <td className="px-4 py-3">

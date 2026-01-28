@@ -80,6 +80,9 @@ export async function GET(request: NextRequest) {
             orderBy: { order: "asc" },
             take: 1,
           },
+          _count: {
+            select: { favorites: true },
+          },
         },
       }),
       prisma.vehicle.count({ where }),
