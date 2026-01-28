@@ -208,14 +208,30 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Marcar como leídas
 - [ ] Tipos: mensaje, aprobación, expiración, etc.
 
+#### Alertas de Baja de Precio
+- [ ] Detectar cuando una automotora baja el precio de un vehículo
+- [ ] Notificar a usuarios que tienen el vehículo en favoritos:
+  - [ ] Mensaje interno (notificación in-app)
+  - [ ] Email con el nuevo precio y link al vehículo
+- [ ] Mostrar badge "Precio rebajado" en tarjeta del vehículo
+- [ ] Historial de cambios de precio en detalle del vehículo
+- [ ] Configuración de preferencias de alertas por usuario
+
 ### SEO y Marketing
 
 #### Meta Tags Dinámicos
-- [ ] Open Graph tags para páginas de dealers
-- [ ] Twitter cards
-- [ ] Schema.org markup para dealers (LocalBusiness)
-- [ ] Schema.org markup para vehículos (Vehicle, Product)
-- [ ] Sitemap dinámico incluyendo dealers
+- [x] Open Graph tags para páginas de dealers
+- [x] Twitter cards
+- [x] Schema.org markup para dealers (LocalBusiness JSON-LD)
+- [x] Schema.org markup para vehículos (Vehicle JSON-LD)
+- [x] Sitemap dinámico incluyendo dealers, marcas, modelos y regiones
+- [x] URLs SEO-friendly por marca (`/vehiculos/marca/toyota`)
+- [x] URLs SEO-friendly por modelo (`/vehiculos/marca/toyota/corolla`)
+- [x] URLs SEO-friendly por región (`/vehiculos/region/metropolitana`)
+- [x] Canonical URLs para evitar contenido duplicado
+- [x] Redirects automáticos de query params a URLs amigables
+- [x] Feed Google Merchant Center (`/api/feeds/google-merchant`)
+- [x] Dashboard SEO en admin (`/admin/seo`)
 
 #### Dealers Destacados
 - [ ] Campo `featured` en modelo Dealer
@@ -227,8 +243,8 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 
 #### Vehículos
 - [ ] Comparador de vehículos (hasta 3)
-- [ ] Historial de precios
-- [ ] Alertas de precio
+- [ ] Historial de precios (ver "Alertas de Baja de Precio")
+- [ ] Alertas de precio (ver "Alertas de Baja de Precio")
 - [ ] Compartir en redes sociales
 - [ ] Imprimir ficha de vehículo
 - [ ] QR code para cada vehículo
@@ -424,4 +440,4 @@ Sistema para conectar compradores que no encuentran lo que buscan con automotora
 
 ---
 
-*Última actualización: 25 Enero 2026*
+*Última actualización: 27 Enero 2026*
