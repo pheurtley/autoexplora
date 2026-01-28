@@ -4,6 +4,8 @@ import Link from "next/link";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
 import { PageViewTracker } from "@/components/tracking";
+import { LocalBusinessJsonLd, BreadcrumbJsonLd } from "@/components/seo";
+import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import {
   Building2,
   MapPin,
@@ -30,11 +32,19 @@ export async function generateMetadata({
 
   const dealer = await prisma.dealer.findFirst({
     where: { slug, status: "ACTIVE" },
-    select: { tradeName: true, description: true, type: true },
+    select: {
+      tradeName: true,
+      description: true,
+      type: true,
+      slug: true,
+      logo: true,
+      banner: true,
+      region: { select: { name: true } },
+    },
   });
 
   if (!dealer) {
-    return { title: "Automotora no encontrada | AutoExplora.cl" };
+    return { title: `Automotora no encontrada | ${SITE_NAME}` };
   }
 
   const typeLabel =
@@ -42,11 +52,43 @@ export async function generateMetadata({
       ? "Automotora"
       : "Rent a Car";
 
+  const title = `${dealer.tradeName} - ${typeLabel}`;
+  const description =
+    dealer.description?.slice(0, 160) ||
+    `Encuentra vehículos en ${dealer.tradeName}. ${typeLabel} en ${dealer.region.name}.`;
+  const url = `${SITE_URL}/automotora/${dealer.slug}`;
+  const image = dealer.banner || dealer.logo;
+
   return {
-    title: `${dealer.tradeName} - ${typeLabel} | AutoExplora.cl`,
-    description:
-      dealer.description?.slice(0, 160) ||
-      `Encuentra vehículos en ${dealer.tradeName}`,
+    title: `${title} | ${SITE_NAME}`,
+    description,
+    alternates: {
+      canonical: `/automotora/${dealer.slug}`,
+    },
+    openGraph: {
+      title,
+      description,
+      url,
+      siteName: SITE_NAME,
+      type: "website",
+      locale: "es_CL",
+      ...(image && {
+        images: [
+          {
+            url: image,
+            width: 1200,
+            height: 630,
+            alt: dealer.tradeName,
+          },
+        ],
+      }),
+    },
+    twitter: {
+      card: image ? "summary_large_image" : "summary",
+      title,
+      description,
+      ...(image && { images: [image] }),
+    },
   };
 }
 
@@ -106,13 +148,39 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
       : "Rent a Car";
 
   return (
-    <main className="min-h-screen bg-neutral-50">
-      {/* Page View Tracking */}
-      <PageViewTracker
-        pageType="DEALER_PROFILE_VIEW"
-        dealerId={dealer.id}
-        source="marketplace"
+    <>
+      {/* Structured Data */}
+      <LocalBusinessJsonLd
+        name={dealer.tradeName}
+        slug={slug}
+        description={dealer.description}
+        type={dealer.type}
+        address={dealer.address}
+        region={dealer.region.name}
+        comuna={dealer.comuna?.name}
+        phone={dealer.phone}
+        email={dealer.email}
+        website={dealer.website}
+        logo={dealer.logo}
+        image={dealer.banner}
+        schedule={dealer.schedule as WeekSchedule | null}
+        isVerified={!!dealer.verifiedAt}
       />
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Inicio", url: SITE_URL },
+          { name: "Automotoras", url: `${SITE_URL}/automotoras` },
+          { name: dealer.tradeName },
+        ]}
+      />
+
+      <main className="min-h-screen bg-neutral-50">
+        {/* Page View Tracking */}
+        <PageViewTracker
+          pageType="DEALER_PROFILE_VIEW"
+          dealerId={dealer.id}
+          source="marketplace"
+        />
 
       {/* Header / Banner */}
       <div className="bg-white border-b border-neutral-200">
@@ -383,6 +451,7 @@ export default async function DealerPublicPage({ params }: DealerPageProps) {
           </div>
         </div>
       </Container>
-    </main>
+      </main>
+    </>
   );
 }
