@@ -2,12 +2,13 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
+import { Breadcrumbs } from "@/components/ui";
 import { VehicleGrid } from "@/components/vehicles/VehicleGrid";
 import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { VehicleSort } from "@/components/vehicles/VehicleSort";
 import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
-import { BreadcrumbJsonLd } from "@/components/seo";
+import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import {
   VehicleType,
@@ -239,6 +240,26 @@ export default async function BrandVehiclesPage({ params, searchParams }: PagePr
     brandId: brand.id,
   };
 
+  // Generate FAQ items for SEO
+  const faqItems = [
+    {
+      question: `¿Dónde puedo comprar un ${brand.name} usado en Chile?`,
+      answer: `En AutoExplora.cl encontrarás ${total} vehículos ${brand.name} en venta de particulares y automotoras en todo Chile. Puedes filtrar por modelo, año, precio y ubicación para encontrar el ${brand.name} ideal para ti.`,
+    },
+    {
+      question: `¿Cuánto cuesta un ${brand.name} usado?`,
+      answer: `Los precios de vehículos ${brand.name} usados varían según el modelo, año y kilometraje. En AutoExplora.cl puedes comparar precios y encontrar las mejores ofertas de ${brand.name} en Chile.`,
+    },
+    {
+      question: `¿Qué modelos de ${brand.name} están disponibles?`,
+      answer: `Tenemos ${brand.models.length} modelos de ${brand.name} disponibles: ${brand.models.slice(0, 5).map(m => m.name).join(", ")}${brand.models.length > 5 ? " y más" : ""}. Explora todas las opciones en nuestra plataforma.`,
+    },
+    {
+      question: `¿Cómo contactar a un vendedor de ${brand.name}?`,
+      answer: `Cada publicación de ${brand.name} en AutoExplora.cl incluye un botón de WhatsApp para contactar directamente al vendedor. Puedes hacer consultas, solicitar más fotos o coordinar una prueba de manejo.`,
+    },
+  ];
+
   return (
     <>
       <BreadcrumbJsonLd
@@ -248,16 +269,20 @@ export default async function BrandVehiclesPage({ params, searchParams }: PagePr
           { name: brand.name },
         ]}
       />
+      <FAQJsonLd items={faqItems} />
 
       <div className="min-h-screen bg-neutral-50">
         <Container className="py-6">
           {/* Header */}
           <div className="mb-6">
-            <nav className="text-sm text-neutral-500 mb-2">
-              <span>Vehículos</span>
-              <span className="mx-2">/</span>
-              <span className="text-neutral-900">{brand.name}</span>
-            </nav>
+            <div className="mb-2">
+              <Breadcrumbs
+                items={[
+                  { label: "Vehículos", href: "/vehiculos" },
+                  { label: brand.name },
+                ]}
+              />
+            </div>
             <h1 className="text-2xl font-bold text-neutral-900">
               {brand.name} en Venta
             </h1>

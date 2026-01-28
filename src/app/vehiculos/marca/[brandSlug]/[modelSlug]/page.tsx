@@ -2,12 +2,13 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
+import { Breadcrumbs } from "@/components/ui";
 import { VehicleGrid } from "@/components/vehicles/VehicleGrid";
 import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { VehicleSort } from "@/components/vehicles/VehicleSort";
 import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
-import { BreadcrumbJsonLd } from "@/components/seo";
+import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import {
   VehicleType,
@@ -252,6 +253,26 @@ export default async function BrandModelVehiclesPage({ params, searchParams }: P
     modelId: model.id,
   };
 
+  // Generate FAQ items for SEO
+  const faqItems = [
+    {
+      question: `¿Cuánto cuesta un ${brand.name} ${model.name} usado en Chile?`,
+      answer: `Los precios de ${brand.name} ${model.name} usados varían según el año, kilometraje y equipamiento. En AutoExplora.cl encontrarás ${total} unidades disponibles para comparar precios y elegir la mejor opción.`,
+    },
+    {
+      question: `¿Es buena opción comprar un ${brand.name} ${model.name} usado?`,
+      answer: `El ${brand.name} ${model.name} es un modelo popular en Chile. Te recomendamos verificar el historial del vehículo, kilometraje y estado general. En AutoExplora.cl puedes contactar directamente a los vendedores para resolver tus dudas.`,
+    },
+    {
+      question: `¿Dónde encuentro repuestos para ${brand.name} ${model.name}?`,
+      answer: `Los repuestos de ${brand.name} ${model.name} están disponibles en concesionarios oficiales y tiendas de repuestos automotrices en todo Chile. Al ser un modelo comercializado en el país, encontrar piezas no debería ser un problema.`,
+    },
+    {
+      question: `¿Cómo puedo verificar el estado de un ${brand.name} ${model.name} antes de comprarlo?`,
+      answer: `Te recomendamos solicitar una inspección mecánica profesional, revisar el informe de la patente en el Registro Civil, y verificar que los documentos estén en regla. Los vendedores en AutoExplora.cl pueden coordinar contigo una visita para revisar el vehículo.`,
+    },
+  ];
+
   return (
     <>
       <BreadcrumbJsonLd
@@ -262,20 +283,21 @@ export default async function BrandModelVehiclesPage({ params, searchParams }: P
           { name: model.name },
         ]}
       />
+      <FAQJsonLd items={faqItems} />
 
       <div className="min-h-screen bg-neutral-50">
         <Container className="py-6">
           {/* Header */}
           <div className="mb-6">
-            <nav className="text-sm text-neutral-500 mb-2">
-              <span>Vehículos</span>
-              <span className="mx-2">/</span>
-              <a href={`/vehiculos/marca/${brand.slug}`} className="hover:text-neutral-700">
-                {brand.name}
-              </a>
-              <span className="mx-2">/</span>
-              <span className="text-neutral-900">{model.name}</span>
-            </nav>
+            <div className="mb-2">
+              <Breadcrumbs
+                items={[
+                  { label: "Vehículos", href: "/vehiculos" },
+                  { label: brand.name, href: `/vehiculos/marca/${brand.slug}` },
+                  { label: model.name },
+                ]}
+              />
+            </div>
             <h1 className="text-2xl font-bold text-neutral-900">
               {brand.name} {model.name} en Venta
             </h1>
