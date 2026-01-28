@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { Container } from "@/components/layout";
 import { VehicleGrid } from "@/components/vehicles/VehicleGrid";
@@ -6,6 +7,7 @@ import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { VehicleSort } from "@/components/vehicles/VehicleSort";
 import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
+import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import {
   VehicleType,
   VehicleCategory,
@@ -14,20 +16,51 @@ import {
   Transmission,
 } from "@prisma/client";
 
-export const metadata: Metadata = {
-  title: "Buscar Vehículos | AutoExplora.cl",
-  description:
-    "Encuentra autos, motos y vehículos comerciales en venta en Chile. Filtra por marca, modelo, precio, año y más.",
-};
+// Parameters that affect content (should be included in canonical)
+const CONTENT_PARAMS = [
+  "vehicleType",
+  "type",
+  "category",
+  "brandId",
+  "modelId",
+  "regionId",
+  "condition",
+  "fuelType",
+  "transmission",
+  "minPrice",
+  "maxPrice",
+  "minYear",
+  "maxYear",
+  "minMileage",
+  "maxMileage",
+  "color",
+  "doors",
+  "sellerType",
+  "search",
+];
 
-type SortOption = "recent" | "price_asc" | "price_desc" | "year_desc" | "mileage_asc";
+// Build canonical URL by normalizing parameters
+function buildCanonicalUrl(params: Record<string, string | undefined>): string {
+  const normalized = new URLSearchParams();
+
+  // Sort parameters alphabetically and only include content-affecting ones
+  CONTENT_PARAMS.sort().forEach((key) => {
+    const value = params[key];
+    if (value) {
+      normalized.append(key, value);
+    }
+  });
+
+  const queryString = normalized.toString();
+  return queryString ? `/vehiculos?${queryString}` : "/vehiculos";
+}
 
 interface PageProps {
   searchParams: Promise<{
     page?: string;
-    sort?: SortOption;
+    sort?: string;
     search?: string;
-    type?: string; // Alias for vehicleType (backwards compatibility)
+    type?: string;
     vehicleType?: string;
     category?: string;
     brandId?: string;
@@ -48,6 +81,31 @@ interface PageProps {
   }>;
 }
 
+export async function generateMetadata({ searchParams }: PageProps): Promise<Metadata> {
+  const params = await searchParams;
+  const canonical = buildCanonicalUrl(params);
+
+  return {
+    title: `Buscar Vehículos | ${SITE_NAME}`,
+    description:
+      "Encuentra autos, motos y vehículos comerciales en venta en Chile. Filtra por marca, modelo, precio, año y más.",
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title: `Buscar Vehículos | ${SITE_NAME}`,
+      description:
+        "Encuentra autos, motos y vehículos comerciales en venta en Chile. Filtra por marca, modelo, precio, año y más.",
+      url: `${SITE_URL}${canonical}`,
+      siteName: SITE_NAME,
+      type: "website",
+      locale: "es_CL",
+    },
+  };
+}
+
+type SortOption = "recent" | "price_asc" | "price_desc" | "year_desc" | "mileage_asc";
+
 const SORT_OPTIONS: Record<SortOption, { label: string; orderBy: object }> = {
   recent: { label: "Más recientes", orderBy: { publishedAt: "desc" } },
   price_asc: { label: "Precio: menor a mayor", orderBy: { price: "asc" } },
@@ -56,8 +114,100 @@ const SORT_OPTIONS: Record<SortOption, { label: string; orderBy: object }> = {
   mileage_asc: { label: "Menor kilometraje", orderBy: { mileage: "asc" } },
 };
 
+// Check if we should redirect to a SEO-friendly URL
+async function checkSeoRedirect(params: Record<string, string | undefined>) {
+  // Only redirect when filtering by single brand or region (without other major filters)
+  const hasOnlyBrandFilter =
+    params.brandId &&
+    !params.modelId &&
+    !params.regionId &&
+    !params.search &&
+    !params.vehicleType &&
+    !params.type &&
+    !params.category;
+
+  const hasOnlyRegionFilter =
+    params.regionId &&
+    !params.brandId &&
+    !params.modelId &&
+    !params.search &&
+    !params.vehicleType &&
+    !params.type &&
+    !params.category;
+
+  const hasBrandAndModelFilter =
+    params.brandId &&
+    params.modelId &&
+    !params.regionId &&
+    !params.search &&
+    !params.vehicleType &&
+    !params.type &&
+    !params.category;
+
+  if (hasOnlyBrandFilter) {
+    const brand = await prisma.brand.findUnique({
+      where: { id: params.brandId },
+      select: { slug: true },
+    });
+    if (brand) {
+      // Preserve other query params (sort, page, price filters, etc.)
+      const queryParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (key !== "brandId" && value) {
+          queryParams.append(key, value);
+        }
+      });
+      const query = queryParams.toString();
+      redirect(`/vehiculos/marca/${brand.slug}${query ? `?${query}` : ""}`);
+    }
+  }
+
+  if (hasBrandAndModelFilter) {
+    const [brand, model] = await Promise.all([
+      prisma.brand.findUnique({
+        where: { id: params.brandId },
+        select: { slug: true },
+      }),
+      prisma.model.findUnique({
+        where: { id: params.modelId },
+        select: { slug: true },
+      }),
+    ]);
+    if (brand && model) {
+      const queryParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (key !== "brandId" && key !== "modelId" && value) {
+          queryParams.append(key, value);
+        }
+      });
+      const query = queryParams.toString();
+      redirect(`/vehiculos/marca/${brand.slug}/${model.slug}${query ? `?${query}` : ""}`);
+    }
+  }
+
+  if (hasOnlyRegionFilter) {
+    const region = await prisma.region.findUnique({
+      where: { id: params.regionId },
+      select: { slug: true },
+    });
+    if (region) {
+      const queryParams = new URLSearchParams();
+      Object.entries(params).forEach(([key, value]) => {
+        if (key !== "regionId" && value) {
+          queryParams.append(key, value);
+        }
+      });
+      const query = queryParams.toString();
+      redirect(`/vehiculos/region/${region.slug}${query ? `?${query}` : ""}`);
+    }
+  }
+}
+
 export default async function VehiculosPage({ searchParams }: PageProps) {
   const params = await searchParams;
+
+  // Check for SEO redirects
+  await checkSeoRedirect(params);
 
   const page = parseInt(params.page || "1");
   const limit = 12;
