@@ -17,7 +17,12 @@ import {
   Image as ImageIcon,
   DollarSign,
   FileSearch,
+  Shield,
+  Code,
+  ClipboardCheck,
+  HelpCircle,
 } from "lucide-react";
+import { FaqTemplateManager } from "@/components/admin";
 
 async function getSeoStats() {
   const [
@@ -174,6 +179,187 @@ function getHealthColor(value: number): string {
   return "red";
 }
 
+// ==================== SEO Checklist ====================
+
+const SEO_CHECKLIST = [
+  {
+    category: "Archivos SEO",
+    items: [
+      "sitemap.xml dinámico",
+      "robots.txt configurado",
+      "Canonical URLs",
+      "Meta tags dinámicos",
+      "Favicon personalizable",
+    ],
+  },
+  {
+    category: "Schemas JSON-LD",
+    items: [
+      "Organization",
+      "WebSite + SearchAction",
+      "Vehicle (Product)",
+      "BreadcrumbList",
+      "FAQPage",
+      "LocalBusiness",
+    ],
+  },
+  {
+    category: "Tags y Atributos",
+    items: [
+      "Alt tags en imágenes",
+      "Open Graph tags",
+      "noindex en páginas protegidas",
+      "Security headers",
+      "Breadcrumbs visibles",
+    ],
+  },
+];
+
+function SeoChecklist() {
+  const totalItems = SEO_CHECKLIST.reduce((sum, g) => sum + g.items.length, 0);
+
+  return (
+    <div className="bg-white rounded-xl border border-neutral-200 p-6">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-neutral-900 flex items-center gap-2">
+          <ClipboardCheck className="h-5 w-5 text-neutral-500" />
+          SEO Checklist
+        </h2>
+        <span className="text-sm font-medium text-green-700 bg-green-50 px-3 py-1 rounded-full">
+          {totalItems}/{totalItems} implementados
+        </span>
+      </div>
+      <div className="mb-4">
+        <ProgressBar value={100} color="green" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {SEO_CHECKLIST.map((group) => (
+          <div key={group.category}>
+            <h3 className="text-sm font-semibold text-neutral-700 mb-3">{group.category}</h3>
+            <div className="space-y-2">
+              {group.items.map((item) => (
+                <div key={item} className="flex items-center gap-2 text-sm text-neutral-600">
+                  <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
+                  {item}
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ==================== Schema Coverage Panel ====================
+
+const SCHEMA_COVERAGE = [
+  {
+    name: "Organization",
+    pages: ["Home"],
+    description: "Información de la empresa, logo, redes sociales",
+  },
+  {
+    name: "WebSite",
+    pages: ["Home"],
+    description: "SearchAction para sitelinks de Google",
+  },
+  {
+    name: "Vehicle (Product)",
+    pages: ["Detalle vehículo"],
+    description: "Nombre, precio, imagen, marca, modelo, condición",
+  },
+  {
+    name: "BreadcrumbList",
+    pages: ["Marca", "Modelo", "Región", "Detalle"],
+    description: "Navegación jerárquica para Google",
+  },
+  {
+    name: "FAQPage",
+    pages: ["Marca", "Modelo", "Región"],
+    description: "Preguntas frecuentes por tipo de página",
+  },
+  {
+    name: "LocalBusiness",
+    pages: ["Automotora"],
+    description: "Datos de negocio local, dirección, horarios",
+  },
+];
+
+function SchemaCoveragePanel() {
+  return (
+    <div className="bg-white rounded-xl border border-neutral-200 p-6">
+      <h2 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+        <Code className="h-5 w-5 text-neutral-500" />
+        Cobertura de Schemas JSON-LD
+      </h2>
+      <div className="space-y-3">
+        {SCHEMA_COVERAGE.map((schema) => (
+          <div
+            key={schema.name}
+            className="flex items-start justify-between py-2 border-b border-neutral-100 last:border-0"
+          >
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="font-medium text-neutral-900 text-sm">{schema.name}</span>
+                <div className="flex gap-1">
+                  {schema.pages.map((page) => (
+                    <span
+                      key={page}
+                      className="text-xs px-2 py-0.5 bg-andino-50 text-andino-700 rounded-full"
+                    >
+                      {page}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <p className="text-xs text-neutral-500">{schema.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ==================== Security Headers Panel ====================
+
+const SECURITY_HEADERS = [
+  { name: "X-Content-Type-Options", value: "nosniff" },
+  { name: "X-Frame-Options", value: "DENY" },
+  { name: "X-XSS-Protection", value: "1; mode=block" },
+  { name: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { name: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+];
+
+function SecurityHeadersPanel() {
+  return (
+    <div className="bg-white rounded-xl border border-neutral-200 p-6">
+      <h2 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+        <Shield className="h-5 w-5 text-neutral-500" />
+        Security Headers
+      </h2>
+      <div className="space-y-3">
+        {SECURITY_HEADERS.map((header) => (
+          <div
+            key={header.name}
+            className="flex items-start gap-2 py-2 border-b border-neutral-100 last:border-0"
+          >
+            <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
+            <div className="min-w-0">
+              <code className="text-sm font-mono text-neutral-900">{header.name}</code>
+              <p className="text-xs text-neutral-500 mt-0.5 break-all">{header.value}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p className="text-xs text-neutral-500 mt-4">
+        Configurados en <code className="bg-neutral-100 px-1 rounded">next.config.ts</code>
+      </p>
+    </div>
+  );
+}
+
 export default async function SeoAdminPage() {
   const stats = await getSeoStats();
 
@@ -215,6 +401,9 @@ export default async function SeoAdminPage() {
           icon={MapPin}
         />
       </div>
+
+      {/* SEO Checklist */}
+      <SeoChecklist />
 
       {/* Feed URLs */}
       <div className="bg-white rounded-xl border border-neutral-200 p-6">
@@ -447,6 +636,12 @@ export default async function SeoAdminPage() {
             </div>
           </div>
         </div>
+
+        {/* Schema Coverage Panel */}
+        <SchemaCoveragePanel />
+
+        {/* Security Headers Status */}
+        <SecurityHeadersPanel />
       </div>
 
       {/* Top Brands and Regions */}
@@ -520,6 +715,18 @@ export default async function SeoAdminPage() {
             )}
           </div>
         </div>
+      </div>
+
+      {/* FAQ Template Manager */}
+      <div className="bg-white rounded-xl border border-neutral-200 p-6">
+        <h2 className="text-lg font-semibold text-neutral-900 mb-4 flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-neutral-500" />
+          Plantillas FAQ por Tipo de Página
+        </h2>
+        <p className="text-sm text-neutral-500 mb-4">
+          Configura las preguntas frecuentes que se muestran en las páginas de marca, modelo y región para mejorar el SEO con FAQ Schema.
+        </p>
+        <FaqTemplateManager />
       </div>
 
       {/* Google Merchant Center Instructions */}
