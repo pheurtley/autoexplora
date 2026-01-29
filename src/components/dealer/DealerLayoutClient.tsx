@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import { Menu, Building2 } from "lucide-react";
 import { DealerSidebar } from "./DealerSidebar";
+import { NotificationBell } from "@/components/layout/NotificationBell";
 
 interface DealerLayoutClientProps {
   dealer: {
@@ -57,12 +58,18 @@ export function DealerLayoutClient({
               <Building2 className="w-4 h-4 text-andino-600" />
             )}
           </div>
-          <span className="font-semibold text-neutral-900 truncate">
+          <span className="font-semibold text-neutral-900 truncate flex-1">
             {dealer.tradeName}
           </span>
+          <NotificationBell />
         </div>
 
-        <div className="p-6 lg:p-8">{children}</div>
+        {/* Desktop notification bell */}
+        <div className="hidden lg:flex justify-end p-4 pb-0">
+          <NotificationBell />
+        </div>
+
+        <div className="p-6 lg:p-8 lg:pt-4">{children}</div>
       </main>
     </div>
   );

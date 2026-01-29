@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -13,10 +14,17 @@ import {
   Settings,
   Building2,
   ChevronRight,
+  ChevronDown,
   LogOut,
   X,
   Globe,
   Search,
+  CheckSquare,
+  DollarSign,
+  Calendar,
+  FileText,
+  Zap,
+  Briefcase,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { signOut } from "next-auth/react";
@@ -33,11 +41,41 @@ interface DealerSidebarProps {
   onClose?: () => void;
 }
 
-const navItems = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  ownerOnly?: boolean;
+  micrositeOnly?: boolean;
+}
+
+interface NavSection {
+  id: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+  items: NavItem[];
+  collapsible?: boolean;
+}
+
+// Main navigation items (always visible)
+const mainNavItems: NavItem[] = [
   { href: "/dealer", label: "Dashboard", icon: LayoutDashboard },
   { href: "/dealer/vehiculos", label: "Vehículos", icon: Car },
   { href: "/dealer/mensajes", label: "Mensajes", icon: MessageCircle },
-  { href: "/dealer/leads", label: "Leads", icon: MessageSquare, micrositeOnly: true },
+];
+
+// CRM section items
+const crmItems: NavItem[] = [
+  { href: "/dealer/leads", label: "Leads", icon: MessageSquare },
+  { href: "/dealer/leads/tareas", label: "Tareas", icon: CheckSquare },
+  { href: "/dealer/leads/oportunidades", label: "Oportunidades", icon: DollarSign },
+  { href: "/dealer/leads/test-drives", label: "Test Drives", icon: Calendar },
+  { href: "/dealer/configuracion/templates", label: "Plantillas", icon: FileText },
+  { href: "/dealer/configuracion/respuesta-automatica", label: "Auto-respuesta", icon: Zap },
+];
+
+// Other navigation items
+const otherNavItems: NavItem[] = [
   { href: "/dealer/estadisticas", label: "Estadísticas", icon: BarChart3 },
   { href: "/dealer/seo", label: "SEO", icon: Search },
   { href: "/dealer/microsite", label: "Mi Sitio Web", icon: Globe },
@@ -53,11 +91,54 @@ export function DealerSidebar({
   onClose,
 }: DealerSidebarProps) {
   const pathname = usePathname();
+  const [crmExpanded, setCrmExpanded] = useState(() => {
+    // Start expanded if we're on a CRM page
+    return pathname.startsWith("/dealer/leads") ||
+           pathname.startsWith("/dealer/configuracion/templates") ||
+           pathname.startsWith("/dealer/configuracion/respuesta-automatica");
+  });
 
   const isOwner = userRole === "OWNER";
 
   const handleLinkClick = () => {
     onClose?.();
+  };
+
+  const isItemActive = (href: string) => {
+    return pathname === href || (href !== "/dealer" && pathname.startsWith(href));
+  };
+
+  const isCrmSectionActive = crmItems.some(item => isItemActive(item.href));
+
+  const renderNavItem = (item: NavItem) => {
+    // Skip owner-only items for non-owners
+    if (item.ownerOnly && !isOwner) return null;
+    // Skip microsite-only items when microsite is inactive
+    if (item.micrositeOnly && !micrositeActive) return null;
+
+    const isActive = isItemActive(item.href);
+    const Icon = item.icon;
+
+    return (
+      <li key={item.href}>
+        <Link
+          href={item.href}
+          onClick={handleLinkClick}
+          className={cn(
+            "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+            isActive
+              ? "bg-andino-50 text-andino-700"
+              : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+          )}
+        >
+          <Icon className="w-5 h-5" />
+          {item.label}
+          {isActive && (
+            <ChevronRight className="w-4 h-4 ml-auto" />
+          )}
+        </Link>
+      </li>
+    );
   };
 
   return (
@@ -128,40 +209,63 @@ export function DealerSidebar({
         )}
 
         {/* Navigation */}
-        <nav className="flex-1 p-4">
+        <nav className="flex-1 p-4 overflow-y-auto">
+          {/* Main Items */}
           <ul className="space-y-1">
-            {navItems.map((item) => {
-              // Skip owner-only items for non-owners
-              if (item.ownerOnly && !isOwner) return null;
-              // Skip microsite-only items when microsite is inactive
-              if (item.micrositeOnly && !micrositeActive) return null;
+            {mainNavItems.map(renderNavItem)}
+          </ul>
 
-              const isActive =
-                pathname === item.href ||
-                (item.href !== "/dealer" && pathname.startsWith(item.href));
-              const Icon = item.icon;
+          {/* CRM Section */}
+          <div className="mt-4">
+            <button
+              onClick={() => setCrmExpanded(!crmExpanded)}
+              className={cn(
+                "w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                isCrmSectionActive
+                  ? "bg-andino-50 text-andino-700"
+                  : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+              )}
+            >
+              <Briefcase className="w-5 h-5" />
+              <span className="flex-1 text-left">CRM</span>
+              {crmExpanded ? (
+                <ChevronDown className="w-4 h-4" />
+              ) : (
+                <ChevronRight className="w-4 h-4" />
+              )}
+            </button>
 
-              return (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    onClick={handleLinkClick}
-                    className={cn(
-                      "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
-                      isActive
-                        ? "bg-andino-50 text-andino-700"
-                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
-                    )}
-                  >
-                    <Icon className="w-5 h-5" />
-                    {item.label}
-                    {isActive && (
-                      <ChevronRight className="w-4 h-4 ml-auto" />
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
+            {crmExpanded && (
+              <ul className="mt-1 ml-4 pl-4 border-l border-neutral-200 space-y-1">
+                {crmItems.map((item) => {
+                  const isActive = isItemActive(item.href);
+                  const Icon = item.icon;
+
+                  return (
+                    <li key={item.href}>
+                      <Link
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className={cn(
+                          "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors",
+                          isActive
+                            ? "bg-andino-50 text-andino-700"
+                            : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900"
+                        )}
+                      >
+                        <Icon className="w-4 h-4" />
+                        {item.label}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
+          </div>
+
+          {/* Other Items */}
+          <ul className="mt-4 space-y-1">
+            {otherNavItems.map(renderNavItem)}
           </ul>
         </nav>
 

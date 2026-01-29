@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { LeadSource } from "@prisma/client";
+import { notifyNewLead } from "@/lib/notifications";
+import { sendNewLeadNotification } from "@/lib/lead-notifications";
 
 export async function POST(request: NextRequest) {
   try {
@@ -23,10 +26,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify dealer exists
+    // Verify dealer exists and get users for notifications
     const dealer = await prisma.dealer.findUnique({
       where: { id: dealerId },
-      select: { id: true, status: true },
+      select: {
+        id: true,
+        status: true,
+        users: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            dealerRole: true,
+          },
+        },
+      },
     });
 
     if (!dealer || dealer.status !== "ACTIVE") {
@@ -37,10 +51,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify vehicle belongs to dealer if provided
+    let vehicleTitle: string | null = null;
     if (vehicleId) {
       const vehicle = await prisma.vehicle.findFirst({
         where: { id: vehicleId, dealerId },
-        select: { id: true },
+        select: { id: true, title: true },
       });
 
       if (!vehicle) {
@@ -49,7 +64,28 @@ export async function POST(request: NextRequest) {
           { status: 404 }
         );
       }
+      vehicleTitle = vehicle.title;
     }
+
+    // Check for potential duplicates (same email or phone in last 30 days)
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedPhone = phone?.trim() || null;
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const duplicateCheck = await prisma.dealerLead.findFirst({
+      where: {
+        dealerId,
+        createdAt: { gte: thirtyDaysAgo },
+        OR: [
+          { email: normalizedEmail },
+          ...(normalizedPhone ? [{ phone: normalizedPhone }] : []),
+        ],
+      },
+      select: { id: true },
+    });
+
+    const isDuplicate = !!duplicateCheck;
 
     // Create lead
     const lead = await prisma.dealerLead.create({
@@ -57,15 +93,58 @@ export async function POST(request: NextRequest) {
         dealerId,
         vehicleId: vehicleId || null,
         name: name.trim(),
-        email: email.trim().toLowerCase(),
-        phone: phone?.trim() || null,
+        email: normalizedEmail,
+        phone: normalizedPhone,
         message: message.trim(),
-        source: "microsite",
+        source: LeadSource.MICROSITE,
+        isDuplicate,
       },
     });
 
-    return NextResponse.json({ success: true, id: lead.id }, { status: 201 });
-  } catch {
+    // Send notifications to dealer team (in background, don't block response)
+    const notifyTeam = async () => {
+      try {
+        // Get team member IDs for in-app notifications
+        const userIds = dealer.users.map((u) => u.id);
+        if (userIds.length > 0) {
+          await notifyNewLead(userIds, name.trim(), vehicleTitle, lead.id);
+        }
+
+        // Send email to owners and managers
+        const ownersAndManagers = dealer.users.filter(
+          (u) => u.dealerRole === "OWNER" || u.dealerRole === "MANAGER"
+        );
+
+        for (const user of ownersAndManagers) {
+          if (user.email) {
+            await sendNewLeadNotification(
+              user.email,
+              user.name || "Usuario",
+              {
+                id: lead.id,
+                name: name.trim(),
+                email: normalizedEmail,
+                phone: normalizedPhone,
+                message: message.trim(),
+                vehicleTitle,
+              }
+            );
+          }
+        }
+      } catch (error) {
+        console.error("Error sending lead notifications:", error);
+      }
+    };
+
+    // Don't await - run in background
+    notifyTeam();
+
+    return NextResponse.json(
+      { success: true, id: lead.id, isDuplicate },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("Error creating lead:", error);
     return NextResponse.json(
       { error: "Error al enviar la consulta" },
       { status: 500 }

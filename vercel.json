@@ -4,5 +4,10 @@
   "regions": ["gru1"],
   "buildCommand": "prisma generate && next build",
   "installCommand": "npm install",
-  "crons": []
+  "crons": [
+    {
+      "path": "/api/cron/reminders",
+      "schedule": "0 * * * *"
+    }
+  ]
 }

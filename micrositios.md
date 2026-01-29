@@ -96,38 +96,47 @@
 ## CRM
 
 ### Pipeline y Gestion de Leads
-- Kanban visual del pipeline (drag & drop: Nuevo → Contactado → Calificado → En negociacion → Convertido/Perdido)
-- Asignacion de leads a miembros del equipo
-- Lead scoring automatico (basado en engagement: visitas, vehiculos vistos, formularios)
-- Origen del lead (micrositio, marketplace, Instagram, referido)
-- Deteccion de duplicados por email/telefono
+- [x] Kanban visual del pipeline (drag & drop: Nuevo → Contactado → Calificado → Convertido/Perdido)
+- [x] Asignacion de leads a miembros del equipo
+- [ ] Lead scoring automatico (basado en engagement: visitas, vehiculos vistos, formularios)
+- [x] Origen del lead (micrositio, marketplace, chat, manual, whatsapp, telefono)
+- [x] Deteccion de duplicados por email/telefono (ultimos 30 dias)
 
 ### Seguimiento y Comunicacion
-- Recordatorios de follow-up (agendar tareas: "llamar en 2 dias")
-- Historial de interacciones (log de llamadas, mensajes, emails por contacto)
-- Respuesta automatica configurable cuando llega un lead nuevo
-- Templates de mensajes predefinidos para WhatsApp/email
-- Integracion WhatsApp Business API (enviar/recibir desde el panel)
+- [x] Recordatorios de follow-up (sistema de tareas con fecha de vencimiento)
+- [x] Historial de interacciones (timeline de actividades: notas, llamadas, emails, whatsapp)
+- [x] Respuesta automatica configurable cuando llega un lead nuevo
+- [x] Templates de mensajes predefinidos para WhatsApp/email con variables dinamicas
+- [ ] Integracion WhatsApp Business API (enviar/recibir desde el panel)
 
 ### Oportunidades y Ventas
-- Tracking de oportunidades (asociar lead a vehiculo con monto estimado)
-- Match de inventario (notificar cuando entra un vehiculo que coincide con busqueda del lead)
-- Agenda de test drives (reservar pruebas de manejo desde el micrositio)
-- Cotizador integrado (generar cotizaciones con financiamiento desde el panel)
+- [x] Tracking de oportunidades (asociar lead a vehiculo con monto estimado y probabilidad)
+- [x] Match de inventario (sugerencias de vehiculos que coinciden con preferencias del lead)
+- [x] Agenda de test drives (reservar pruebas de manejo con calendario visual)
+- [ ] Cotizador integrado (generar cotizaciones con financiamiento desde el panel)
+
+### Notificaciones
+- [x] Notificaciones in-app (badge en header, dropdown con lista)
+- [x] Email de nuevo lead al equipo del dealer
+- [x] Email cuando se asigna un lead
+- [x] Recordatorios de tareas proximas a vencer (cron job)
+- [x] Recordatorios de test drives (cron job)
 
 ### Post-venta
-- Seguimiento post-venta (encuesta de satisfaccion automatica)
-- Solicitud de resena en Google automatica post-compra
-- Recordatorios de servicio (mantenimientos, vencimiento de documentos)
-- Historial del cliente (vehiculos comprados, servicios realizados)
+- [ ] Seguimiento post-venta (encuesta de satisfaccion automatica)
+- [ ] Solicitud de resena en Google automatica post-compra
+- [ ] Recordatorios de servicio (mantenimientos, vencimiento de documentos)
+- [ ] Historial del cliente (vehiculos comprados, servicios realizados)
 
 ### Reportes CRM
-- Embudo de conversion (tasa por etapa)
-- Tiempo promedio de cierre (cuanto tarda un lead en convertir)
-- Rendimiento por vendedor (leads atendidos, convertidos, tiempo de respuesta)
-- Fuentes mas efectivas (que canal trae leads que convierten mas)
+- [x] Pipeline total y ponderado (valor * probabilidad)
+- [x] Ventas cerradas (oportunidades ganadas)
+- [ ] Embudo de conversion (tasa por etapa)
+- [ ] Tiempo promedio de cierre (cuanto tarda un lead en convertir)
+- [ ] Rendimiento por vendedor (leads atendidos, convertidos, tiempo de respuesta)
+- [ ] Fuentes mas efectivas (que canal trae leads que convierten mas)
 
 ### Integraciones
-- Sync con HubSpot/Pipedrive/Salesforce
-- Webhook para eventos (notificar sistemas externos cuando un lead cambia de estado)
-- API publica para que el dealer conecte sus herramientas
+- [ ] Sync con HubSpot/Pipedrive/Salesforce
+- [ ] Webhook para eventos (notificar sistemas externos cuando un lead cambia de estado)
+- [ ] API publica para que el dealer conecte sus herramientas

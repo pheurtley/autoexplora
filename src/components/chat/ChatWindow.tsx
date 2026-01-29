@@ -207,6 +207,8 @@ export function ChatWindow({
         otherUser={otherUser}
         vehicle={conversationData.vehicle}
         basePath={basePath}
+        isDealer={isDealer}
+        conversationId={conversationId}
       />
 
       <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-neutral-50">

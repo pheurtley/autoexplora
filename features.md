@@ -201,12 +201,12 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Plantillas de email con branding AutoExplora.cl
 
 #### Notificaciones In-App
-- [ ] Modelo de Notification en base de datos
-- [ ] API de notificaciones
-- [ ] Badge de notificaciones en header
-- [ ] Dropdown/página de notificaciones
-- [ ] Marcar como leídas
-- [ ] Tipos: mensaje, aprobación, expiración, etc.
+- [x] Modelo de Notification en base de datos
+- [x] API de notificaciones (GET, mark as read, read all)
+- [x] Badge de notificaciones en header del dealer
+- [x] Dropdown de notificaciones con lista
+- [x] Marcar como leídas (individual y todas)
+- [x] Tipos: nuevo lead, lead asignado, cambio de estado, recordatorios
 
 #### Alertas de Baja de Precio
 - [ ] Detectar cuando una automotora baja el precio de un vehículo
@@ -290,18 +290,78 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Admin: gestionar planes y cupos
 - [ ] Contador de días restantes de promoción
 
-#### Leads y CRM Básico
+#### Sistema CRM Completo para Dealers
+- [x] **Kanban de Leads** (`/dealer/leads`)
+  - [x] Vista Kanban con drag & drop (@dnd-kit)
+  - [x] Columnas: Nuevo, Contactado, Calificado, Convertido, Perdido
+  - [x] Filtros por asignado y búsqueda
+  - [x] Detección de leads duplicados (email/teléfono en últimos 30 días)
+  - [x] Badge de alerta en leads duplicados
+- [x] **Detalle de Lead** (modal)
+  - [x] Info de contacto con links directos (email, teléfono)
+  - [x] Cambio de estado inline
+  - [x] Asignación a miembros del equipo
+  - [x] Notas internas editables
+  - [x] Valor estimado de la venta
+  - [x] Timeline de actividades
+  - [x] Formulario para agregar actividades (Nota, Llamada, Email, WhatsApp)
+- [x] **Sistema de Tareas** (`/dealer/leads/tareas`)
+  - [x] Crear tareas asociadas a leads
+  - [x] Asignar a miembros del equipo
+  - [x] Fecha de vencimiento con indicador de vencidas
+  - [x] Prioridad (Alta, Media, Baja)
+  - [x] Marcar como completadas
+  - [x] Vista general de todas las tareas pendientes
+- [x] **Oportunidades de Venta** (`/dealer/leads/oportunidades`)
+  - [x] Crear oportunidades desde el detalle del lead
+  - [x] Asociar vehículo del inventario
+  - [x] Valor estimado y probabilidad de cierre
+  - [x] Fecha esperada de cierre
+  - [x] Estados: Abierta, Ganada, Perdida
+  - [x] Pipeline total y ponderado en dashboard
+  - [x] Actualización automática del lead al ganar/perder
+- [x] **Test Drives** (`/dealer/leads/test-drives`)
+  - [x] Agendar pruebas de manejo desde leads
+  - [x] Calendario visual de test drives
+  - [x] Estados: Agendado, Completado, Cancelado, No Show
+  - [x] Duración configurable
+  - [x] Notas del test drive
+- [x] **Plantillas de Mensajes** (`/dealer/configuracion/templates`)
+  - [x] Crear plantillas para Email y WhatsApp
+  - [x] Variables dinámicas: {nombre}, {vehiculo}, {precio}, {marca}, {modelo}, {ano}
+  - [x] Preview en tiempo real
+  - [x] Activar/desactivar plantillas
+- [x] **Auto-respuesta** (`/dealer/configuracion/respuesta-automatica`)
+  - [x] Habilitar respuesta automática para nuevos leads
+  - [x] Seleccionar plantilla de email
+  - [x] Mensaje de WhatsApp personalizado
+  - [x] Delay configurable antes de enviar
+- [x] **Conversión Chat → Lead**
+  - [x] Botón "Agregar a CRM" en conversaciones del dealer
+  - [x] Creación automática de lead desde datos de la conversación
+  - [x] Detección de duplicados
+  - [x] Fuente marcada como CHAT
+- [x] **Match de Inventario**
+  - [x] Preferencias de búsqueda por lead (marcas, modelos, precio, año)
+  - [x] Algoritmo de matching con scoring
+  - [x] Sugerencias de vehículos que coinciden
+- [x] **Cron Jobs**
+  - [x] Recordatorios de tareas próximas a vencer
+  - [x] Recordatorios de test drives
+  - [x] Match de inventario al publicar vehículo
+
+#### Leads y CRM Básico (Tracking)
 - [x] Tracking de contactos por vehículo:
   - [x] Tipo: WhatsApp, Llamada, Chat, Formulario
-  - [ ] Nombre del lead (si disponible)
+  - [x] Nombre del lead (si disponible)
   - [x] Fecha y hora
-  - [ ] Link "Ir al evento" (ver conversación)
+  - [x] Link "Ir al evento" (ver conversación)
 - [x] Métricas agregadas en dashboard:
   - [x] Total leads por período
   - [x] Leads por canal (WhatsApp vs Llamada vs Chat vs Form)
   - [x] Tasa de conversión (leads/vistas) - Funnel de conversión
 - [x] Export de leads a CSV
-- [ ] Notas internas por lead
+- [x] Notas internas por lead
 
 #### Métricas por Vehículo
 - [x] Contador de vistas totales
@@ -456,4 +516,4 @@ Sistema para conectar compradores que no encuentran lo que buscan con automotora
 
 ---
 
-*Última actualización: 28 Enero 2026*
+*Última actualización: 29 Enero 2026*
