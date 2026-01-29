@@ -1,7 +1,8 @@
 # Auditoría SEO y Performance - AutoExplora.cl
 
-**Fecha:** 2026-01-18
-**Branch:** `analysis/seo-performance-audit`
+**Fecha inicial:** 2026-01-18
+**Última actualización:** 2026-01-28
+**Branch:** `fix/seo-audit-critical`
 
 ---
 
@@ -11,12 +12,52 @@
 |-----------|--------|-----------|
 | Metadata básico | ✅ Bueno | - |
 | Open Graph / Twitter Cards | ✅ Bueno | - |
-| Structured Data (JSON-LD) | ❌ Faltante | Alta |
-| robots.txt | ❌ Faltante | Alta |
-| sitemap.xml | ❌ Faltante | Alta |
+| Structured Data (JSON-LD) | ✅ Implementado | - |
+| robots.txt | ✅ Implementado | - |
+| sitemap.xml | ✅ Implementado | - |
+| Canonical URLs | ✅ Implementado | - |
+| Breadcrumbs (visual + JSON-LD) | ✅ Implementado | - |
+| FAQ Schema | ✅ Implementado | - |
+| noindex en páginas protegidas | ✅ Implementado | - |
+| Página 404 personalizada | ✅ Implementado | - |
+| Security Headers | ✅ Implementado | - |
+| rel="noopener noreferrer" | ✅ Corregido | - |
+| Home page metadata explícito | ✅ Implementado | - |
 | Imágenes optimizadas | ⚠️ Parcial | Media |
 | Caching / Revalidation | ⚠️ Parcial | Media |
 | Core Web Vitals | ⚠️ Por mejorar | Media |
+
+---
+
+## Historial de Cambios
+
+### 2026-01-28 - Segunda ronda de auditoría
+
+**Implementado:**
+1. **Automotoras listing page** - Open Graph tags, BreadcrumbJsonLd, visual Breadcrumbs
+2. **Region pages** - FAQ schema (FAQJsonLd) con 4 preguntas en español
+3. **Home page** - `generateMetadata()` explícito con canonical, OG image, locale `es_CL`
+4. **Página 404 personalizada** - `src/app/not-found.tsx` con links internos y `robots: { index: false }`
+5. **Microsite canonical URLs** - layout y contacto con `alternates.canonical`
+6. **rel="noopener noreferrer"** - Corregido en 6 archivos con `target="_blank"`
+7. **Security headers** - `next.config.ts` con X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy
+
+**Diferido (decisión del usuario):**
+- Footer broken links (`/ayuda/*`, `/contacto`, `/terminos`, `/privacidad`, `/cookies`)
+- Hardcoded social links (`href="#"`)
+
+### 2026-01-18 → 2026-01-27 - Primera ronda de auditoría
+
+**Implementado:**
+- robots.txt con rutas de auth bloqueadas
+- sitemap.xml dinámico
+- JSON-LD: Organization, WebSite, Vehicle, BreadcrumbList, LocalBusiness, FAQ
+- Breadcrumbs visuales en páginas principales
+- Canonical URLs en vehículos, marcas, modelos, regiones, automotoras
+- noindex en páginas protegidas (admin, dealer, cuenta)
+- Alt tags mejorados en imágenes
+- Internal links con URLs SEO-friendly
+- FAQ Schema en páginas de marca y modelo
 
 ---
 
@@ -29,33 +70,22 @@
    - Open Graph y Twitter Cards configurados
    - `lang="es-CL"` correcto en HTML
 
-2. **Estructura semántica**
+2. **Metadata explícito en page.tsx** (nuevo)
+   - `generateMetadata()` con canonical `/`
+   - OG image, locale `es_CL`
+
+3. **Estructura semántica**
    - Uso correcto de `<h1>` en HeroBanner
    - Uso de `<h2>` en secciones
    - Uso de `<section>` para agrupar contenido
 
-3. **Font optimization**
+4. **Font optimization**
    - Inter font con `display: swap`
    - Variable font para mejor rendimiento
 
-### ❌ Problemas encontrados
-
-1. **Sin robots.txt**
-   - No existe archivo `robots.txt` ni `src/app/robots.ts`
-   - Los crawlers no tienen guía de qué indexar
-
-2. **Sin sitemap.xml**
-   - No existe sitemap dinámico
-   - Dificulta indexación de vehículos y páginas
-
-3. **Sin Structured Data (JSON-LD)**
-   - No hay schema.org para Organization
-   - No hay schema.org para WebSite con SearchAction
-   - Impacta rich snippets en Google
-
-4. **Home page sin metadata propio**
-   - Depende completamente del layout
-   - No tiene canonical URL explícita
+5. **Structured Data**
+   - OrganizationJsonLd
+   - WebSiteJsonLd con SearchAction
 
 ---
 
@@ -63,40 +93,12 @@
 
 ### ✅ Lo que está bien
 
-1. **Open Graph completo** (recién implementado)
-   ```typescript
-   openGraph: {
-     title: "Toyota Corolla 2024",
-     description: "Usado · 15.000 km · $12.500.000...",
-     images: [{ url: imageUrl, width: 1200, height: 630 }],
-   }
-   ```
-
+1. **Open Graph completo**
 2. **Twitter Cards** con `summary_large_image`
-
 3. **Canonical URL** configurada
-
 4. **Alt text** en imágenes
-
-### ❌ Problemas encontrados
-
-1. **Sin Structured Data para Vehicle**
-   ```json
-   // Debería tener:
-   {
-     "@context": "https://schema.org",
-     "@type": "Vehicle",
-     "name": "Toyota Corolla 2024",
-     "brand": { "@type": "Brand", "name": "Toyota" },
-     "model": "Corolla",
-     "vehicleModelDate": "2024",
-     "mileageFromOdometer": { "@type": "QuantitativeValue", "value": "15000", "unitCode": "KMT" },
-     "offers": { "@type": "Offer", "price": "12500000", "priceCurrency": "CLP" }
-   }
-   ```
-
-2. **Sin BreadcrumbList schema**
-   - Breadcrumb visual existe pero sin markup
+5. **VehicleJsonLd** schema
+6. **BreadcrumbJsonLd** schema
 
 ---
 
@@ -120,7 +122,14 @@
 4. **Preloading de imágenes**
    - ImageGallery precarga imágenes adyacentes
 
-### ⚠️ Problemas de Performance
+5. **Security Headers** (nuevo)
+   - X-Content-Type-Options: nosniff
+   - X-Frame-Options: DENY
+   - X-XSS-Protection: 1; mode=block
+   - Referrer-Policy: strict-origin-when-cross-origin
+   - Permissions-Policy (camera, microphone, geolocation disabled)
+
+### ⚠️ Problemas de Performance pendientes
 
 1. **Imágenes con `<img>` nativo** (7 instancias)
    ```
@@ -134,229 +143,40 @@
    ```
    **Impacto:** Sin optimización de formato (WebP/AVIF), sin lazy loading nativo
 
-2. **Sin caching en getSiteConfig()**
-   - Se llama en cada request
-   - Debería usar `unstable_cache` o revalidación
-
-3. **Múltiples queries en HeroBanner**
-   - 3 queries separadas para stats
-   - Podrían combinarse o cachearse
-
-4. **Sin revalidation en pages**
-   - Home page no tiene `revalidate` export
-   - Se regenera en cada request
+2. **Preconnect a Cloudinary**
+   - Pendiente agregar `<link rel="preconnect" href="https://res.cloudinary.com" />`
 
 ---
 
-## 4. Recomendaciones por Prioridad
+## 4. Checklist de Implementación
 
-### Alta Prioridad
-
-#### 4.1 Crear robots.txt
-```typescript
-// src/app/robots.ts
-import { MetadataRoute } from 'next'
-
-export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: ['/admin/', '/api/', '/cuenta/', '/dealer/'],
-    },
-    sitemap: 'https://autoexplora.cl/sitemap.xml',
-  }
-}
-```
-
-#### 4.2 Crear sitemap.xml dinámico
-```typescript
-// src/app/sitemap.ts
-import { MetadataRoute } from 'next'
-import prisma from '@/lib/prisma'
-
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const vehicles = await prisma.vehicle.findMany({
-    where: { status: 'ACTIVE' },
-    select: { slug: true, updatedAt: true },
-  })
-
-  const brands = await prisma.brand.findMany({
-    select: { slug: true },
-  })
-
-  const dealers = await prisma.dealer.findMany({
-    where: { status: 'ACTIVE' },
-    select: { slug: true },
-  })
-
-  return [
-    { url: 'https://autoexplora.cl', lastModified: new Date(), changeFrequency: 'daily', priority: 1 },
-    { url: 'https://autoexplora.cl/vehiculos', lastModified: new Date(), changeFrequency: 'hourly', priority: 0.9 },
-    ...vehicles.map((v) => ({
-      url: `https://autoexplora.cl/vehiculos/${v.slug}`,
-      lastModified: v.updatedAt,
-      changeFrequency: 'weekly' as const,
-      priority: 0.8,
-    })),
-    ...brands.map((b) => ({
-      url: `https://autoexplora.cl/vehiculos?brand=${b.slug}`,
-      changeFrequency: 'weekly' as const,
-      priority: 0.7,
-    })),
-    ...dealers.map((d) => ({
-      url: `https://autoexplora.cl/automotora/${d.slug}`,
-      changeFrequency: 'weekly' as const,
-      priority: 0.6,
-    })),
-  ]
-}
-```
-
-#### 4.3 Agregar JSON-LD Structured Data
-
-**Para Home (Organization + WebSite):**
-```typescript
-// src/components/seo/HomeJsonLd.tsx
-export function HomeJsonLd({ siteName, siteUrl, logo }: Props) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": `${siteUrl}/#organization`,
-        "name": siteName,
-        "url": siteUrl,
-        "logo": logo,
-      },
-      {
-        "@type": "WebSite",
-        "@id": `${siteUrl}/#website`,
-        "url": siteUrl,
-        "name": siteName,
-        "potentialAction": {
-          "@type": "SearchAction",
-          "target": `${siteUrl}/vehiculos?q={search_term_string}`,
-          "query-input": "required name=search_term_string"
-        }
-      }
-    ]
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
-  )
-}
-```
-
-**Para Vehicle Detail:**
-```typescript
-// src/components/seo/VehicleJsonLd.tsx
-export function VehicleJsonLd({ vehicle }: Props) {
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Vehicle",
-    "name": vehicle.title,
-    "brand": { "@type": "Brand", "name": vehicle.brand.name },
-    "model": vehicle.model.name,
-    "vehicleModelDate": String(vehicle.year),
-    "mileageFromOdometer": {
-      "@type": "QuantitativeValue",
-      "value": vehicle.mileage,
-      "unitCode": "KMT"
-    },
-    "fuelType": vehicle.fuelType,
-    "vehicleTransmission": vehicle.transmission,
-    "image": vehicle.images[0]?.url,
-    "offers": {
-      "@type": "Offer",
-      "price": vehicle.price,
-      "priceCurrency": "CLP",
-      "availability": "https://schema.org/InStock",
-      "seller": {
-        "@type": vehicle.dealer ? "AutoDealer" : "Person",
-        "name": vehicle.dealer?.tradeName || vehicle.user.name
-      }
-    }
-  }
-
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
-  )
-}
-```
-
-### Media Prioridad
-
-#### 4.4 Reemplazar `<img>` por `next/image`
-- Header logo
-- Footer logo
-- VehicleCard dealer logo
-- Dealer sidebars
-
-#### 4.5 Agregar caching a getSiteConfig
-```typescript
-import { unstable_cache } from 'next/cache'
-
-export const getSiteConfig = unstable_cache(
-  async () => {
-    // ... existing code
-  },
-  ['site-config'],
-  { revalidate: 300 } // 5 minutes
-)
-```
-
-#### 4.6 Agregar revalidation a Home page
-```typescript
-// src/app/page.tsx
-export const revalidate = 60 // Revalidate every 60 seconds
-```
-
-### Baja Prioridad
-
-#### 4.7 Agregar BreadcrumbList JSON-LD
-```typescript
-{
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://autoexplora.cl" },
-    { "@type": "ListItem", "position": 2, "name": "Toyota", "item": "https://autoexplora.cl/vehiculos?brand=toyota" },
-    { "@type": "ListItem", "position": 3, "name": "Corolla" }
-  ]
-}
-```
-
-#### 4.8 Preconnect a Cloudinary
-```html
-<link rel="preconnect" href="https://res.cloudinary.com" />
-```
-
----
-
-## 5. Checklist de Implementación
-
-- [ ] Crear `src/app/robots.ts`
-- [ ] Crear `src/app/sitemap.ts`
-- [ ] Crear `src/components/seo/HomeJsonLd.tsx`
-- [ ] Crear `src/components/seo/VehicleJsonLd.tsx`
-- [ ] Crear `src/components/seo/BreadcrumbJsonLd.tsx`
-- [ ] Agregar JSON-LD a Home page
-- [ ] Agregar JSON-LD a Vehicle detail page
+- [x] Crear `src/app/robots.ts`
+- [x] Crear `src/app/sitemap.ts`
+- [x] Crear JSON-LD components (Organization, WebSite, Vehicle, Breadcrumb, LocalBusiness, FAQ)
+- [x] Agregar JSON-LD a Home page
+- [x] Agregar JSON-LD a Vehicle detail page
+- [x] Agregar BreadcrumbJsonLd a todas las páginas públicas
+- [x] Agregar Breadcrumbs visuales
+- [x] Canonical URLs en todas las páginas públicas
+- [x] noindex en páginas protegidas
+- [x] Mejorar alt tags en imágenes
+- [x] Internal links con URLs SEO-friendly
+- [x] FAQ Schema en marcas y modelos
+- [x] FAQ Schema en regiones
+- [x] Open Graph tags en automotoras listing
+- [x] Home page metadata explícito (canonical, OG image, locale)
+- [x] Página 404 personalizada con noindex
+- [x] Microsite canonical URLs
+- [x] `rel="noopener noreferrer"` en links `target="_blank"`
+- [x] Security headers en next.config.ts
 - [ ] Reemplazar `<img>` por `next/image` (7 archivos)
-- [ ] Agregar `unstable_cache` a `getSiteConfig`
-- [ ] Agregar `revalidate` a Home page
 - [ ] Agregar preconnect a Cloudinary en layout
+- [ ] Footer links rotos (`/ayuda/*`, `/contacto`, etc.) - diferido
+- [ ] Social links hardcoded (`href="#"`) - diferido
 
 ---
 
-## 6. Herramientas de Validación
+## 5. Herramientas de Validación
 
 Después de implementar, validar con:
 
@@ -380,3 +200,4 @@ Después de implementar, validar con:
 ---
 
 *Generado el: 2026-01-18*
+*Actualizado el: 2026-01-28*

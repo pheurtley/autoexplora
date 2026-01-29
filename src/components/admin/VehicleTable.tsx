@@ -289,6 +289,7 @@ export function VehicleTable({ vehicles, onRefresh }: VehicleTableProps) {
                       <Link
                         href={`/vehiculo/${vehicle.slug}`}
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="p-2 text-neutral-400 hover:text-neutral-600 rounded-lg hover:bg-neutral-100"
                         title="Ver publicación"
                       >

@@ -1,7 +1,13 @@
+import { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { Container } from "@/components/layout";
 import { AccountSidebar } from "@/components/cuenta/AccountSidebar";
+
+export const metadata: Metadata = {
+  title: "Mi Cuenta | AutoExplora.cl",
+  robots: { index: false, follow: false },
+};
 
 export default async function CuentaLayout({
   children,

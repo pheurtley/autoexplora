@@ -36,6 +36,9 @@ export async function generateMetadata({
       template: `%s | ${config.dealer.tradeName}`,
     },
     description,
+    alternates: {
+      canonical: `/microsite/${domain}`,
+    },
     icons: config.favicon
       ? { icon: [{ url: config.favicon }], apple: config.favicon }
       : undefined,

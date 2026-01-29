@@ -61,6 +61,7 @@ export interface SiteConfig {
   topDealersLimit: number;
   // SEO
   metaDescription: string | null;
+  ogImage: string | null;
   googleAnalyticsId: string | null;
   // Features
   maxImagesPerVehicle: number;
@@ -123,6 +124,7 @@ const DEFAULT_CONFIG: SiteConfig = {
   topDealersLimit: 6,
   // SEO & Features
   metaDescription: null,
+  ogImage: null,
   googleAnalyticsId: null,
   maxImagesPerVehicle: 10,
   showWhatsAppButton: true,

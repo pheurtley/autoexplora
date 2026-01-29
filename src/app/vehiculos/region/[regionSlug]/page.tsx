@@ -8,8 +8,9 @@ import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
 import { VehicleSort } from "@/components/vehicles/VehicleSort";
 import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
-import { BreadcrumbJsonLd } from "@/components/seo";
+import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
+import { getFaqTemplates, interpolateFaq } from "@/lib/faq";
 import {
   VehicleType,
   VehicleCategory,
@@ -236,6 +237,13 @@ export default async function RegionVehiclesPage({ params, searchParams }: PageP
     regionId: region.id,
   };
 
+  // Generate FAQ items for SEO
+  const faqTemplates = await getFaqTemplates("region");
+  const faqItems = interpolateFaq(faqTemplates, {
+    nombre: region.name,
+    total: total.toString(),
+  });
+
   return (
     <>
       <BreadcrumbJsonLd
@@ -245,6 +253,7 @@ export default async function RegionVehiclesPage({ params, searchParams }: PageP
           { name: region.name },
         ]}
       />
+      <FAQJsonLd items={faqItems} />
 
       <div className="min-h-screen bg-neutral-50">
         <Container className="py-6">

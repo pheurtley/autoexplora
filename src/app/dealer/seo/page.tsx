@@ -299,7 +299,7 @@ function VehicleSeoCard({ vehicle, expanded, onToggle }: {
                 Editar publicacion
               </Button>
             </Link>
-            <Link href={`/vehiculos/${vehicle.slug}`} target="_blank">
+            <Link href={`/vehiculos/${vehicle.slug}`} target="_blank" rel="noopener noreferrer">
               <Button variant="ghost" size="sm">
                 <ExternalLink className="w-4 h-4 mr-1" />
                 Ver publicacion

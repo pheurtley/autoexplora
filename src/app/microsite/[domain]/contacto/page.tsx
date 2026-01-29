@@ -23,6 +23,9 @@ export async function generateMetadata({
   return {
     title: `Contacto | ${config.dealer.tradeName}`,
     description: `Contáctanos en ${config.dealer.tradeName}. Estamos para ayudarte a encontrar tu vehículo ideal.`,
+    alternates: {
+      canonical: `/microsite/${domain}/contacto`,
+    },
   };
 }
 

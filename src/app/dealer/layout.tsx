@@ -7,6 +7,7 @@ import { DealerLayoutClient } from "@/components/dealer/DealerLayoutClient";
 export const metadata: Metadata = {
   title: "Panel de Automotora | AutoExplora.cl",
   description: "Gestiona tu automotora en AutoExplora.cl",
+  robots: { index: false, follow: false },
 };
 
 export default async function DealerLayout({

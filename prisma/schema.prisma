@@ -396,6 +396,7 @@ model SiteConfig {
   maintenanceMode       Boolean  @default(false)
   maxImagesPerVehicle   Int      @default(10)
   metaDescription       String?
+  ogImage               String?
   primaryColor          String   @default("#2563eb")
   showSiteNameInFooter  Boolean  @default(true)
   showSiteNameInHeader  Boolean  @default(true)
@@ -425,6 +426,20 @@ model SiteConfig {
   whyUsFeature3Icon     String   @default("Users")
   whyUsFeature3Title    String   @default("Gran comunidad")
   whyUsFeature3Desc     String   @default("Más de 50,000 vehículos disponibles y una comunidad activa de compradores y vendedores.")
+}
+
+model FaqTemplate {
+  id        String   @id @default(cuid())
+  pageType  String   // "brand" | "model" | "region"
+  question  String
+  answer    String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([pageType])
+  @@index([pageType, order])
 }
 
 enum Role {

@@ -4,6 +4,11 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /cuenta/
 Disallow: /dealer/
+Disallow: /login
+Disallow: /registro/
+Disallow: /recuperar-contrasena
+Disallow: /reset-password
+Disallow: /publicar
 
 Sitemap: https://autoexplora.cl/sitemap.xml
 Sitemap: https://autoexplora.cl/image-sitemap.xml

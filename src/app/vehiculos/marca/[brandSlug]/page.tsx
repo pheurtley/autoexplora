@@ -10,6 +10,7 @@ import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
 import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
+import { getFaqTemplates, interpolateFaq } from "@/lib/faq";
 import {
   VehicleType,
   VehicleCategory,
@@ -241,24 +242,14 @@ export default async function BrandVehiclesPage({ params, searchParams }: PagePr
   };
 
   // Generate FAQ items for SEO
-  const faqItems = [
-    {
-      question: `¿Dónde puedo comprar un ${brand.name} usado en Chile?`,
-      answer: `En AutoExplora.cl encontrarás ${total} vehículos ${brand.name} en venta de particulares y automotoras en todo Chile. Puedes filtrar por modelo, año, precio y ubicación para encontrar el ${brand.name} ideal para ti.`,
-    },
-    {
-      question: `¿Cuánto cuesta un ${brand.name} usado?`,
-      answer: `Los precios de vehículos ${brand.name} usados varían según el modelo, año y kilometraje. En AutoExplora.cl puedes comparar precios y encontrar las mejores ofertas de ${brand.name} en Chile.`,
-    },
-    {
-      question: `¿Qué modelos de ${brand.name} están disponibles?`,
-      answer: `Tenemos ${brand.models.length} modelos de ${brand.name} disponibles: ${brand.models.slice(0, 5).map(m => m.name).join(", ")}${brand.models.length > 5 ? " y más" : ""}. Explora todas las opciones en nuestra plataforma.`,
-    },
-    {
-      question: `¿Cómo contactar a un vendedor de ${brand.name}?`,
-      answer: `Cada publicación de ${brand.name} en AutoExplora.cl incluye un botón de WhatsApp para contactar directamente al vendedor. Puedes hacer consultas, solicitar más fotos o coordinar una prueba de manejo.`,
-    },
-  ];
+  const faqTemplates = await getFaqTemplates("brand");
+  const modelsList = brand.models.slice(0, 5).map(m => m.name).join(", ") + (brand.models.length > 5 ? " y más" : "");
+  const faqItems = interpolateFaq(faqTemplates, {
+    nombre: brand.name,
+    total: total.toString(),
+    totalModelos: brand.models.length.toString(),
+    listaModelos: modelsList,
+  });
 
   return (
     <>

@@ -71,6 +71,7 @@ interface SiteConfig {
   topDealersLimit: number;
   // SEO & Features
   metaDescription: string | null;
+  ogImage: string | null;
   googleAnalyticsId: string | null;
   maxImagesPerVehicle: number;
   showWhatsAppButton: boolean;
@@ -153,6 +154,7 @@ export default function AdminConfigPage() {
     topDealersLimit: 6,
     // SEO & Features
     metaDescription: "",
+    ogImage: "",
     googleAnalyticsId: "",
     maxImagesPerVehicle: 10,
     showWhatsAppButton: true,
@@ -219,6 +221,7 @@ export default function AdminConfigPage() {
           topDealersLimit: data.topDealersLimit || 6,
           // SEO & Features
           metaDescription: data.metaDescription || "",
+          ogImage: data.ogImage || "",
           googleAnalyticsId: data.googleAnalyticsId || "",
           maxImagesPerVehicle: data.maxImagesPerVehicle || 10,
           showWhatsAppButton: data.showWhatsAppButton ?? true,
@@ -1158,6 +1161,24 @@ export default function AdminConfigPage() {
               />
               <p className="text-xs text-neutral-500 mt-1">
                 ID de medición de Google Analytics 4
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-neutral-700 mb-2">
+                Imagen Open Graph (OG Image)
+              </label>
+              <SingleImageUpload
+                value={formData.ogImage}
+                onChange={(url) => handleChange("ogImage", url)}
+                onRemove={() => handleChange("ogImage", "")}
+                folder="site"
+                aspectRatio="banner"
+                placeholder="OG Image (1200×630px recomendado)"
+                disabled={saving}
+              />
+              <p className="text-xs text-neutral-500 mt-2">
+                Imagen que aparece al compartir el sitio en redes sociales. Tamaño recomendado: 1200×630px
               </p>
             </div>
           </div>

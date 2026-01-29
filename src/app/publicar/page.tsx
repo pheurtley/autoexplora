@@ -7,6 +7,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Publicar Vehículo | AutoExplora.cl",
   description: "Publica tu vehículo en AutoExplora.cl y llega a miles de compradores en Chile.",
+  robots: { index: false, follow: false },
 };
 
 export default async function PublicarPage() {
