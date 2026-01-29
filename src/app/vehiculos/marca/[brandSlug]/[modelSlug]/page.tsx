@@ -10,6 +10,7 @@ import { VehicleFilters } from "@/components/vehicles/VehicleFilters";
 import { ActiveFilters } from "@/components/vehicles/ActiveFilters";
 import { BreadcrumbJsonLd, FAQJsonLd } from "@/components/seo";
 import { SITE_URL, SITE_NAME } from "@/lib/constants";
+import { getFaqTemplates, interpolateFaq } from "@/lib/faq";
 import {
   VehicleType,
   VehicleCategory,
@@ -254,24 +255,12 @@ export default async function BrandModelVehiclesPage({ params, searchParams }: P
   };
 
   // Generate FAQ items for SEO
-  const faqItems = [
-    {
-      question: `¿Cuánto cuesta un ${brand.name} ${model.name} usado en Chile?`,
-      answer: `Los precios de ${brand.name} ${model.name} usados varían según el año, kilometraje y equipamiento. En AutoExplora.cl encontrarás ${total} unidades disponibles para comparar precios y elegir la mejor opción.`,
-    },
-    {
-      question: `¿Es buena opción comprar un ${brand.name} ${model.name} usado?`,
-      answer: `El ${brand.name} ${model.name} es un modelo popular en Chile. Te recomendamos verificar el historial del vehículo, kilometraje y estado general. En AutoExplora.cl puedes contactar directamente a los vendedores para resolver tus dudas.`,
-    },
-    {
-      question: `¿Dónde encuentro repuestos para ${brand.name} ${model.name}?`,
-      answer: `Los repuestos de ${brand.name} ${model.name} están disponibles en concesionarios oficiales y tiendas de repuestos automotrices en todo Chile. Al ser un modelo comercializado en el país, encontrar piezas no debería ser un problema.`,
-    },
-    {
-      question: `¿Cómo puedo verificar el estado de un ${brand.name} ${model.name} antes de comprarlo?`,
-      answer: `Te recomendamos solicitar una inspección mecánica profesional, revisar el informe de la patente en el Registro Civil, y verificar que los documentos estén en regla. Los vendedores en AutoExplora.cl pueden coordinar contigo una visita para revisar el vehículo.`,
-    },
-  ];
+  const faqTemplates = await getFaqTemplates("model");
+  const faqItems = interpolateFaq(faqTemplates, {
+    marca: brand.name,
+    nombre: model.name,
+    total: total.toString(),
+  });
 
   return (
     <>
