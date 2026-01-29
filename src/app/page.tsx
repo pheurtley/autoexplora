@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import {
   HeroBanner,
   CategoryCarousel,
@@ -12,10 +13,40 @@ import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/seo";
 import { Suspense } from "react";
 import { Container } from "@/components/layout";
 import { getSiteConfig } from "@/lib/config";
-import { SITE_URL } from "@/lib/constants";
+import { SITE_URL, SITE_NAME, SITE_DESCRIPTION } from "@/lib/constants";
 
 // Revalidate home page every 5 minutes
 export const revalidate = 300;
+
+export async function generateMetadata(): Promise<Metadata> {
+  const config = await getSiteConfig();
+  const description = config.metaDescription || SITE_DESCRIPTION;
+  const ogImageUrl = config.ogImage || `${SITE_URL}/og-image.png`;
+
+  return {
+    title: `${SITE_NAME} - Compra y Vende Vehículos en Chile`,
+    description,
+    alternates: {
+      canonical: "/",
+    },
+    openGraph: {
+      title: `${SITE_NAME} - Compra y Vende Vehículos en Chile`,
+      description,
+      url: SITE_URL,
+      siteName: SITE_NAME,
+      type: "website",
+      locale: "es_CL",
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: SITE_NAME,
+        },
+      ],
+    },
+  };
+}
 
 export default async function HomePage() {
   const config = await getSiteConfig();

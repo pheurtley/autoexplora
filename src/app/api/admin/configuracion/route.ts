@@ -76,6 +76,7 @@ export async function PATCH(request: NextRequest) {
       "whyUsFeature3Desc",
       // SEO
       "metaDescription",
+      "ogImage",
       "googleAnalyticsId",
       "maintenanceMessage",
     ];
@@ -153,7 +154,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     // Validate URLs if provided
-    const urlFields = ["logo", "favicon", "facebook", "instagram", "twitter", "youtube"];
+    const urlFields = ["logo", "favicon", "ogImage", "facebook", "instagram", "twitter", "youtube"];
     for (const field of urlFields) {
       const value = updateData[field];
       if (value && typeof value === "string") {
