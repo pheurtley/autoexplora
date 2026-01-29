@@ -291,6 +291,7 @@ export default function DealerVehiclesPage() {
                                 <Link
                                   href={`/vehiculos/${vehicle.slug}`}
                                   target="_blank"
+                                  rel="noopener noreferrer"
                                   className="block px-4 py-2 text-sm text-neutral-600 hover:bg-neutral-50"
                                 >
                                   Ver publicación

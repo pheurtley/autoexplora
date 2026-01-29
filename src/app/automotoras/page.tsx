@@ -6,9 +6,10 @@ import { DealerFilters } from "@/components/dealers/DealerFilters";
 import { ActiveDealerFilters } from "@/components/dealers/ActiveDealerFilters";
 import { DealerSort } from "@/components/dealers/DealerSort";
 import { VehiclePagination } from "@/components/vehicles/VehiclePagination";
+import { Breadcrumbs } from "@/components/ui";
+import { BreadcrumbJsonLd } from "@/components/seo";
+import { SITE_URL, SITE_NAME } from "@/lib/constants";
 import { DealerType } from "@prisma/client";
-
-const BASE_URL = "https://autoexplora.cl";
 
 type SortOption = "recent" | "name" | "vehicles";
 
@@ -34,7 +35,7 @@ function buildCanonicalUrl(params: Record<string, string | undefined>): string {
   }
 
   const qs = normalized.toString();
-  return `${BASE_URL}/automotoras${qs ? `?${qs}` : ""}`;
+  return `${SITE_URL}/automotoras${qs ? `?${qs}` : ""}`;
 }
 
 export async function generateMetadata({
@@ -43,12 +44,23 @@ export async function generateMetadata({
   const params = await searchParams;
   const canonical = buildCanonicalUrl(params);
 
+  const title = "Automotoras en Chile";
+  const description =
+    "Encuentra automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.";
+
   return {
-    title: "Automotoras | AutoExplora.cl",
-    description:
-      "Encuentra automotoras y rent a car en Chile. Descubre los mejores negocios de venta de vehículos cerca de ti.",
+    title: `${title} | ${SITE_NAME}`,
+    description,
     alternates: {
       canonical,
+    },
+    openGraph: {
+      title,
+      description,
+      url: canonical,
+      siteName: SITE_NAME,
+      type: "website",
+      locale: "es_CL",
     },
   };
 }
@@ -127,54 +139,70 @@ export default async function AutomotorasPage({ searchParams }: PageProps) {
     : null;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <Container className="py-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-neutral-900">
-            Automotoras
-          </h1>
-          <p className="text-neutral-600 mt-1">
-            {total} {total === 1 ? "negocio encontrado" : "negocios encontrados"}
-          </p>
-        </div>
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Inicio", url: SITE_URL },
+          { name: "Automotoras" },
+        ]}
+      />
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Filters Sidebar */}
-          <aside className="w-full lg:w-72 flex-shrink-0">
-            <DealerFilters
-              regions={regions}
-              currentFilters={params}
-            />
-          </aside>
-
-          {/* Main Content */}
-          <main className="flex-1 min-w-0">
-            {/* Active Filters & Sort */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-              <ActiveDealerFilters
-                filters={params}
-                regionName={selectedRegion?.name}
+      <div className="min-h-screen bg-neutral-50">
+        <Container className="py-6">
+          {/* Header */}
+          <div className="mb-6">
+            <div className="mb-2">
+              <Breadcrumbs
+                items={[
+                  { label: "Automotoras" },
+                ]}
               />
-              <DealerSort currentSort={sort} />
             </div>
+            <h1 className="text-2xl font-bold text-neutral-900">
+              Automotoras
+            </h1>
+            <p className="text-neutral-600 mt-1">
+              {total} {total === 1 ? "negocio encontrado" : "negocios encontrados"}
+            </p>
+          </div>
 
-            {/* Dealer Grid */}
-            <DealerGrid dealers={dealers} />
+          <div className="flex flex-col lg:flex-row gap-6">
+            {/* Filters Sidebar */}
+            <aside className="w-full lg:w-72 flex-shrink-0">
+              <DealerFilters
+                regions={regions}
+                currentFilters={params}
+              />
+            </aside>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="mt-8">
-                <VehiclePagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  total={total}
+            {/* Main Content */}
+            <main className="flex-1 min-w-0">
+              {/* Active Filters & Sort */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <ActiveDealerFilters
+                  filters={params}
+                  regionName={selectedRegion?.name}
                 />
+                <DealerSort currentSort={sort} />
               </div>
-            )}
-          </main>
-        </div>
-      </Container>
-    </div>
+
+              {/* Dealer Grid */}
+              <DealerGrid dealers={dealers} />
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="mt-8">
+                  <VehiclePagination
+                    currentPage={page}
+                    totalPages={totalPages}
+                    total={total}
+                  />
+                </div>
+              )}
+            </main>
+          </div>
+        </Container>
+      </div>
+    </>
   );
 }

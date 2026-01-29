@@ -236,6 +236,7 @@ export default function AdminVehicleDetailPage({
         <Link
           href={`/vehiculo/${vehicle.slug}`}
           target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-700 bg-white border border-neutral-300 rounded-lg hover:bg-neutral-50"
         >
           <Eye className="h-4 w-4" />

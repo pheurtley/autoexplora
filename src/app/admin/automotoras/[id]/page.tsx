@@ -446,6 +446,7 @@ export default function AdminDealerDetailPage({
               <Link
                 href={`/automotora/${dealer.slug}`}
                 target="_blank"
+                rel="noopener noreferrer"
                 className="text-andino-600 hover:underline text-sm flex items-center gap-1"
               >
                 Ver página pública

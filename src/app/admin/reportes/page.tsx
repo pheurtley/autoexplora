@@ -261,6 +261,7 @@ export default function AdminReportsPage() {
                     <Link
                       href={`/vehiculo/${report.vehicle.slug}`}
                       target="_blank"
+                      rel="noopener noreferrer"
                       className="flex items-center gap-1 px-3 py-1.5 text-sm text-neutral-600 bg-neutral-100 rounded-lg hover:bg-neutral-200"
                     >
                       <Eye className="h-4 w-4" />
