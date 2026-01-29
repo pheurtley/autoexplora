@@ -232,6 +232,18 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [x] Redirects automáticos de query params a URLs amigables
 - [x] Feed Google Merchant Center (`/api/feeds/google-merchant`)
 - [x] Dashboard SEO en admin (`/admin/seo`)
+- [x] SEO Checklist widget en panel admin
+- [x] Panel de cobertura de Schemas JSON-LD
+- [x] Panel de Security Headers
+- [x] OG Image configurable desde admin (`/admin/configuracion`)
+- [x] Plantillas FAQ editables por tipo de página (marca, modelo, región)
+- [x] API CRUD de plantillas FAQ (`/api/admin/faq-templates`)
+- [x] Variables dinámicas en FAQ (`{nombre}`, `{total}`, `{marca}`, etc.)
+- [x] FAQ por defecto cuando no hay plantillas personalizadas
+- [x] Image sitemap (`/image-sitemap.xml`)
+- [x] Breadcrumbs visibles en páginas de marca, modelo, región
+- [x] `noindex` en páginas protegidas (admin, dealer, cuenta)
+- [x] Alt tags mejorados en imágenes de vehículos
 
 #### Dealers Destacados
 - [ ] Campo `featured` en modelo Dealer
@@ -326,6 +338,10 @@ Este documento rastrea todas las funcionalidades implementadas y pendientes del 
 - [ ] Export de inventario a CSV/Excel
 - [ ] Filtros en export (por estado, fecha, etc.)
 - [ ] Sincronización con otros portales
+
+#### Seguridad Web
+- [x] Security headers configurados (X-Content-Type-Options, X-Frame-Options, X-XSS-Protection, Referrer-Policy, Permissions-Policy)
+- [x] robots.txt bloquea rutas de autenticación y admin
 
 #### Analytics
 - [ ] Integración con Google Analytics
@@ -440,4 +456,4 @@ Sistema para conectar compradores que no encuentran lo que buscan con automotora
 
 ---
 
-*Última actualización: 27 Enero 2026*
+*Última actualización: 28 Enero 2026*

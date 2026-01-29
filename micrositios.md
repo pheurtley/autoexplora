@@ -85,6 +85,7 @@
 - [x] Meta title y meta description configurables
 - [x] Google Analytics ID y Meta Pixel ID
 - [x] JSON-LD (LocalBusiness, Vehicle)
+- [x] OG Image configurable (marketplace global desde `/admin/configuracion`)
 - Editor de OG image con template visual (texto sobre imagen)
 - Sugerencias automaticas de meta description
 - Validador de SEO (chequear que todo este completo)
