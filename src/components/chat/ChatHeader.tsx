@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, User, ExternalLink } from "lucide-react";
 import { formatPrice } from "@/lib/utils";
+import { ConvertToLeadButton } from "./ConvertToLeadButton";
 import type { User as UserType, Vehicle, VehicleImage, Brand, Model } from "@prisma/client";
 
 interface ChatHeaderProps {
@@ -14,9 +15,17 @@ interface ChatHeaderProps {
     model: Pick<Model, "name">;
   };
   basePath?: string;
+  isDealer?: boolean;
+  conversationId?: string;
 }
 
-export function ChatHeader({ otherUser, vehicle, basePath = "/cuenta/mensajes" }: ChatHeaderProps) {
+export function ChatHeader({
+  otherUser,
+  vehicle,
+  basePath = "/cuenta/mensajes",
+  isDealer = false,
+  conversationId,
+}: ChatHeaderProps) {
   const vehicleImage = vehicle.images[0]?.url;
 
   return (
@@ -53,6 +62,11 @@ export function ChatHeader({ otherUser, vehicle, basePath = "/cuenta/mensajes" }
           </p>
         </div>
       </div>
+
+      {/* CRM Button for dealers */}
+      {isDealer && conversationId && (
+        <ConvertToLeadButton conversationId={conversationId} />
+      )}
 
       {/* Vehicle preview */}
       <Link

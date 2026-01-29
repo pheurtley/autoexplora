@@ -104,6 +104,9 @@ model Dealer {
   leads           DealerLead[]
   contactEvents   ContactEvent[]
   trackingEvents  TrackingEvent[]
+  // CRM Relations
+  messageTemplates   MessageTemplate[]
+  autoResponseConfig AutoResponseConfig?
 
   @@index([status])
   @@index([type])
@@ -138,6 +141,11 @@ model User {
   dealer              Dealer?        @relation(fields: [dealerId], references: [id])
   moderatedVehicles   Vehicle[]      @relation("ModeratedBy")
   vehicles            Vehicle[]
+  // CRM Relations
+  assignedLeads       DealerLead[]   @relation("AssignedLeads")
+  leadActivities      LeadActivity[] @relation("LeadActivities")
+  notifications       Notification[]
+  assignedTasks       LeadTask[]     @relation("AssignedTasks")
 
   @@index([email])
   @@index([role])
@@ -200,6 +208,9 @@ model Vehicle {
   dealerLeads     DealerLead[]
   contactEvents   ContactEvent[]
   trackingEvents  TrackingEvent[]
+  // CRM Relations
+  opportunities   Opportunity[]
+  testDrives      TestDrive[]
 
   @@index([userId])
   @@index([brandId])
@@ -326,6 +337,7 @@ model Conversation {
   seller             User      @relation("SellerConversations", fields: [sellerId], references: [id], onDelete: Cascade)
   vehicle            Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
   messages           Message[]
+  lead               DealerLead?
 
   @@unique([buyerId, vehicleId])
   @@index([buyerId])
@@ -651,37 +663,65 @@ model DealerPage {
 }
 
 model DealerLead {
-  id          String     @id @default(cuid())
-  dealerId    String
-  vehicleId   String?
+  id             String     @id @default(cuid())
+  dealerId       String
+  vehicleId      String?
+  conversationId String?    @unique
 
   name        String
   email       String
   phone       String?
   message     String
 
-  source      String     @default("microsite")
+  source      LeadSource @default(MICROSITE)
   status      LeadStatus @default(NEW)
   readAt      DateTime?
   respondedAt DateTime?
   notes       String?
 
+  // CRM Fields
+  assignedToId   String?
+  assignedTo     User?      @relation("AssignedLeads", fields: [assignedToId], references: [id])
+  estimatedValue Int?
+  lastContactAt  DateTime?
+  nextFollowUp   DateTime?
+  isDuplicate    Boolean    @default(false)
+
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
 
-  dealer      Dealer     @relation(fields: [dealerId], references: [id], onDelete: Cascade)
-  vehicle     Vehicle?   @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  dealer       Dealer        @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  vehicle      Vehicle?      @relation(fields: [vehicleId], references: [id], onDelete: SetNull)
+  conversation Conversation? @relation(fields: [conversationId], references: [id], onDelete: SetNull)
+
+  // CRM Relations
+  activities     LeadActivity[]
+  tasks          LeadTask[]
+  opportunities  Opportunity[]
+  testDrives     TestDrive[]
+  preferences    LeadPreferences?
 
   @@index([dealerId])
   @@index([vehicleId])
   @@index([status])
   @@index([createdAt])
+  @@index([assignedToId])
+  @@index([conversationId])
 }
 
 enum DomainStatus {
   PENDING
   VERIFIED
   FAILED
+}
+
+enum LeadSource {
+  MICROSITE
+  PORTAL
+  CHAT
+  MANUAL
+  WHATSAPP
+  PHONE
 }
 
 enum LeadStatus {
@@ -787,4 +827,186 @@ enum ContactEventType {
   PHONE_CALL
   CHAT_START
   CONTACT_FORM
+}
+
+// ============================================================================
+// CRM System
+// ============================================================================
+
+model LeadActivity {
+  id        String           @id @default(cuid())
+  leadId    String
+  lead      DealerLead       @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User             @relation("LeadActivities", fields: [userId], references: [id])
+  type      LeadActivityType
+  content   String?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([leadId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+enum LeadActivityType {
+  NOTE
+  CALL
+  EMAIL
+  WHATSAPP
+  STATUS_CHANGE
+  ASSIGNMENT
+  TEST_DRIVE
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  metadata  Json?
+  createdAt DateTime         @default(now())
+
+  @@index([userId])
+  @@index([userId, isRead])
+  @@index([createdAt])
+}
+
+enum NotificationType {
+  NEW_LEAD
+  LEAD_ASSIGNED
+  LEAD_STATUS_CHANGE
+  NEW_MESSAGE
+  FOLLOW_UP_REMINDER
+  TEST_DRIVE_REMINDER
+}
+
+model LeadTask {
+  id           String       @id @default(cuid())
+  leadId       String
+  lead         DealerLead   @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  assignedToId String
+  assignedTo   User         @relation("AssignedTasks", fields: [assignedToId], references: [id])
+  title        String
+  description  String?
+  dueAt        DateTime
+  completedAt  DateTime?
+  priority     TaskPriority @default(MEDIUM)
+  notifiedAt   DateTime?
+  createdAt    DateTime     @default(now())
+
+  @@index([leadId])
+  @@index([assignedToId])
+  @@index([dueAt])
+  @@index([completedAt])
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model MessageTemplate {
+  id        String          @id @default(cuid())
+  dealerId  String
+  dealer    Dealer          @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  name      String
+  channel   TemplateChannel
+  subject   String?
+  content   String
+  variables String[]
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([dealerId])
+  @@index([dealerId, channel])
+}
+
+enum TemplateChannel {
+  EMAIL
+  WHATSAPP
+}
+
+model AutoResponseConfig {
+  id              String  @id @default(cuid())
+  dealerId        String  @unique
+  dealer          Dealer  @relation(fields: [dealerId], references: [id], onDelete: Cascade)
+  enabled         Boolean @default(false)
+  emailTemplateId String?
+  whatsappMessage String?
+  delayMinutes    Int     @default(0)
+}
+
+model Opportunity {
+  id                String            @id @default(cuid())
+  leadId            String
+  lead              DealerLead        @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  vehicleId         String?
+  vehicle           Vehicle?          @relation(fields: [vehicleId], references: [id])
+  estimatedValue    Int
+  probability       Int               @default(50)
+  expectedCloseDate DateTime?
+  status            OpportunityStatus @default(OPEN)
+  notes             String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  @@index([leadId])
+  @@index([vehicleId])
+  @@index([status])
+}
+
+enum OpportunityStatus {
+  OPEN
+  WON
+  LOST
+}
+
+model TestDrive {
+  id          String          @id @default(cuid())
+  leadId      String
+  lead        DealerLead      @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  vehicleId   String
+  vehicle     Vehicle         @relation(fields: [vehicleId], references: [id])
+  scheduledAt DateTime
+  duration    Int             @default(30)
+  status      TestDriveStatus @default(SCHEDULED)
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([leadId])
+  @@index([vehicleId])
+  @@index([scheduledAt])
+  @@index([status])
+}
+
+enum TestDriveStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+model LeadPreferences {
+  id          String     @id @default(cuid())
+  leadId      String     @unique
+  lead        DealerLead @relation(fields: [leadId], references: [id], onDelete: Cascade)
+  brandIds    String[]
+  modelIds    String[]
+  minPrice    Int?
+  maxPrice    Int?
+  minYear     Int?
+  maxYear     Int?
+  vehicleType String?
+  condition   String?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
 }

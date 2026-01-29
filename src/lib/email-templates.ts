@@ -261,3 +261,122 @@ ${
 `;
   return baseTemplate(content);
 }
+
+/**
+ * New lead notification email template
+ */
+export function newLeadEmailTemplate(
+  recipientName: string,
+  lead: {
+    name: string;
+    email: string;
+    phone?: string | null;
+    message: string;
+    vehicleTitle?: string | null;
+  },
+  leadUrl: string
+): string {
+  const content = `
+<h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #18181b;">
+  Hola ${recipientName},
+</h2>
+<p style="margin: 0 0 16px; font-size: 16px; color: #3f3f46; line-height: 1.6;">
+  Tienes un nuevo lead esperando tu atención.
+</p>
+<div style="margin: 0 0 24px; padding: 20px; background-color: #f4f4f5; border-radius: 8px;">
+  <p style="margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #18181b;">
+    ${lead.name}
+  </p>
+  ${
+    lead.vehicleTitle
+      ? `<p style="margin: 0 0 12px; font-size: 14px; color: #2563eb;">
+      Interesado en: ${lead.vehicleTitle}
+    </p>`
+      : ""
+  }
+  <p style="margin: 0 0 8px; font-size: 14px; color: #3f3f46;">
+    <strong>Email:</strong> ${lead.email}
+  </p>
+  ${
+    lead.phone
+      ? `<p style="margin: 0 0 8px; font-size: 14px; color: #3f3f46;">
+      <strong>Teléfono:</strong> ${lead.phone}
+    </p>`
+      : ""
+  }
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e4e4e7;">
+    <p style="margin: 0 0 8px; font-size: 14px; color: #71717a; font-weight: 500;">
+      Mensaje:
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f46; white-space: pre-line;">
+      ${lead.message}
+    </p>
+  </div>
+</div>
+${emailButton("Ver Lead", leadUrl)}
+<p style="margin: 0; font-size: 14px; color: #71717a; line-height: 1.6;">
+  Responde rápidamente para aumentar tus posibilidades de conversión.
+</p>
+`;
+  return baseTemplate(content);
+}
+
+/**
+ * Lead assigned notification email template
+ */
+export function leadAssignedEmailTemplate(
+  recipientName: string,
+  assignedByName: string,
+  lead: {
+    name: string;
+    email: string;
+    phone?: string | null;
+    message: string;
+    vehicleTitle?: string | null;
+  },
+  leadUrl: string
+): string {
+  const content = `
+<h2 style="margin: 0 0 16px; font-size: 20px; font-weight: 600; color: #18181b;">
+  Hola ${recipientName},
+</h2>
+<p style="margin: 0 0 16px; font-size: 16px; color: #3f3f46; line-height: 1.6;">
+  <strong>${assignedByName}</strong> te ha asignado un nuevo lead para que lo gestiones.
+</p>
+<div style="margin: 0 0 24px; padding: 20px; background-color: #f4f4f5; border-radius: 8px;">
+  <p style="margin: 0 0 12px; font-size: 18px; font-weight: 600; color: #18181b;">
+    ${lead.name}
+  </p>
+  ${
+    lead.vehicleTitle
+      ? `<p style="margin: 0 0 12px; font-size: 14px; color: #2563eb;">
+      Interesado en: ${lead.vehicleTitle}
+    </p>`
+      : ""
+  }
+  <p style="margin: 0 0 8px; font-size: 14px; color: #3f3f46;">
+    <strong>Email:</strong> ${lead.email}
+  </p>
+  ${
+    lead.phone
+      ? `<p style="margin: 0 0 8px; font-size: 14px; color: #3f3f46;">
+      <strong>Teléfono:</strong> ${lead.phone}
+    </p>`
+      : ""
+  }
+  <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid #e4e4e7;">
+    <p style="margin: 0 0 8px; font-size: 14px; color: #71717a; font-weight: 500;">
+      Mensaje:
+    </p>
+    <p style="margin: 0; font-size: 14px; color: #3f3f46; white-space: pre-line;">
+      ${lead.message}
+    </p>
+  </div>
+</div>
+${emailButton("Ver Lead", leadUrl)}
+<p style="margin: 0; font-size: 14px; color: #71717a; line-height: 1.6;">
+  Este lead ahora es tu responsabilidad. Contactalo lo antes posible.
+</p>
+`;
+  return baseTemplate(content);
+}
